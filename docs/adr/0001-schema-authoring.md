@@ -23,3 +23,5 @@ The preview has no production Engine API, canonical signing implementation, RPC 
 - [pnpm build approvals](https://pnpm.io/settings/build)
 
 Versions were checked against the package registries during this change and pinned in the lockfile. Updates are reviewed changes.
+
+The pinned Effect exporter preserves `isPattern` constraints only for supported Unicode (`u`) regexes. Source patterns use that flag and a strict cross-language end anchor. Generation fails if a non-enum string loses its constraint; isolated projection fixtures and Python-consumer rejection tests cover this boundary.

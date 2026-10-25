@@ -10,6 +10,7 @@ import {
   FoundationInventory,
   LIMITS,
 } from "../dist/index.js";
+import { checkProjection } from "./check-architecture.mjs";
 
 const root = resolve(import.meta.dirname, "..");
 const json = (value) => `${JSON.stringify(value, null, 2)}\n`;
@@ -24,6 +25,8 @@ const schema = (value) => {
 };
 const artifactSchema = schema(ArtifactRef);
 const names = Object.keys(ArtifactRef.fields);
+const projectionErrors = checkProjection(artifactSchema.properties);
+if (projectionErrors.length) throw new Error(projectionErrors.join("\n"));
 if (names.some((name) => artifactSchema.properties[name].type !== "string")) {
   throw new Error(
     "Projection generator supports string-only ArtifactRef fields; extend it explicitly.",
@@ -90,7 +93,7 @@ generated.set(
       package_manager: packageJson.packageManager,
     },
     sources: Object.fromEntries(
-      ["src/index.ts", "tools/generate.mjs"].map((path) => [
+      ["src/index.ts", "tools/generate.mjs", "tools/check-architecture.mjs"].map((path) => [
         path,
         sha(readFileSync(join(root, path))),
       ]),

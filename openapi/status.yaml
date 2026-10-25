@@ -28,7 +28,7 @@ paths:
           description: Opaque logical job identifier.
           schema:
             type: string
-            pattern: "^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,127}$"
+            pattern: '^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,127}(?![\s\S])'
       responses:
         "200":
           description: Current public state without cryptographic payloads or credentials.

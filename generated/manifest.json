@@ -8,11 +8,12 @@
     "package_manager": "pnpm@12.5.1"
   },
   "sources": {
-    "src/index.ts": "27f0b22463ef22937c07d3fe2f0963c8ad19f0826b95cec4664970e3839cc4f3",
-    "tools/generate.mjs": "baf858f160dd41810b0ad9681a2c5bd5388ef76db120b7a74cb0c6de122234e0"
+    "src/index.ts": "2f6d3a27788112e5fda745d57aedf06ab8813f54125a63e4c0b4d7b5d15b3bb6",
+    "tools/generate.mjs": "346620894132428279068548012589f8abd13647479e9def18b73b9151005e62",
+    "tools/check-architecture.mjs": "0234d21835ce7da33ab847a69b47ab6efebe2f2005a1fff94630c8a4501856ba"
   },
   "files": {
-    "artifact-ref.schema.json": "8a188817f4089e95fa723e05afd2c089b3722f50c8434737ec9f930a9c12f5dd",
+    "artifact-ref.schema.json": "d8cdb71f7b06114cf4fac231a1363069e96d42b95b6b36e294b80c37817bbb8e",
     "foundation-inventory.schema.json": "56e8d97aa1cf0fe8b50a658848d0049f1e19c90bbb7ab6f4baf3a22329de84ef",
     "fixtures/artifact-ref.json": "2ca34ea7b98553d569fddb58d34aea995c83209e6c5488447de01e4c3f1ad01b",
     "limits.json": "f3ec6ba6ff3ff3bba649716cf0f1aaee799e467266d68552929fb6a877761ff7",

@@ -2,6 +2,17 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+export function checkProjection(properties) {
+  const errors = [];
+  for (const [name, value] of Object.entries(properties)) {
+    if (value.type !== "string") errors.push(`${name}: unsupported structural projection type`);
+    if (!value.enum && !value.const && typeof value.pattern !== "string") {
+      errors.push(`${name}: string constraint was lost during schema export`);
+    }
+  }
+  return errors;
+}
+
 export function checkManifest(manifest) {
   const errors = [];
   for (const group of [

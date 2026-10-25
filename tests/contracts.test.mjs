@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import { Schema } from "effect";
 import { artifactRefFixture, decodeArtifactRef, FoundationInventory } from "../dist/index.js";
-import { checkManifest } from "../tools/check-architecture.mjs";
+import { checkManifest, checkProjection } from "../tools/check-architecture.mjs";
 
 test("reference fixture round-trips without payload or credentials", () => {
   assert.deepEqual(decodeArtifactRef(artifactRefFixture), artifactRefFixture);
@@ -56,4 +56,10 @@ test("architecture guard accepts valid isolated input and rejects runtime and si
     }).join("\n"),
     /local source/,
   );
+});
+
+test("projection guard fails closed when a filter or supported type is lost", () => {
+  assert.deepEqual(checkProjection({ id: { type: "string", pattern: "^[a-z]+$" } }), []);
+  assert.match(checkProjection({ id: { type: "string" } }).join("\n"), /constraint was lost/);
+  assert.match(checkProjection({ id: { type: "number" } }).join("\n"), /unsupported/);
 });
