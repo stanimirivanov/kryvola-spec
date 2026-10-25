@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "opaque_artifact_id": {
+      "type": "string"
+    },
+    "tenant_scope": {
+      "type": "string"
+    },
+    "immutable_version": {
+      "type": "string"
+    },
+    "manifest_digest": {
+      "type": "string"
+    },
+    "byte_length": {
+      "type": "string"
+    },
+    "media_type": {
+      "type": "string",
+      "enum": [
+        "application/vnd.kryvola.tfhe-ciphertext"
+      ]
+    },
+    "schema_version": {
+      "type": "string",
+      "enum": [
+        "1"
+      ]
+    }
+  },
+  "required": [
+    "opaque_artifact_id",
+    "tenant_scope",
+    "immutable_version",
+    "manifest_digest",
+    "byte_length",
+    "media_type",
+    "schema_version"
+  ],
+  "additionalProperties": false
+}

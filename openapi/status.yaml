@@ -1,0 +1,70 @@
+openapi: 3.1.0
+info:
+  title: Kryvola job status API preview
+  version: 0.1.0-preview.1
+  description: Candidate status contract from design sections 4 and 9. No server is implemented here. This is not the frozen Engine API.
+  license:
+    name: Apache-2.0
+    identifier: Apache-2.0
+servers:
+  - url: https://api.kryvola.invalid
+    description: Documentation-only reserved domain; no deployed endpoint.
+security:
+  - bearerAuth: []
+tags:
+  - name: Jobs
+    description: Authorized metadata-only job status.
+paths:
+  /v1/jobs/{job_id}:
+    get:
+      operationId: getJobStatus
+      summary: Read an authorized job's status
+      description: Possession of an identifier does not authorize access or result release. Tenant authorization and evidence policy are enforced independently.
+      tags: [Jobs]
+      parameters:
+        - name: job_id
+          in: path
+          required: true
+          description: Opaque logical job identifier.
+          schema:
+            type: string
+            pattern: "^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,127}$"
+      responses:
+        "200":
+          description: Current public state without cryptographic payloads or credentials.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [job_id, state]
+                properties:
+                  job_id:
+                    type: string
+                    description: Opaque logical job identifier.
+                  state:
+                    type: string
+                    description: COMPUTE_SELECTED does not authorize disclosure.
+                    enum:
+                      [
+                        ADMITTED,
+                        COMPUTE_SELECTED,
+                        EVIDENCE_PENDING,
+                        EVIDENCE_VERIFIED,
+                        RELEASED,
+                        EVIDENCE_FAILED,
+                        CANCELLED,
+                        EXPIRED,
+                      ]
+        "401":
+          description: Missing or invalid identity.
+        "404":
+          description: Job absent or inaccessible to this identity.
+        "429":
+          description: Status-query quota exceeded.
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Access token from the approved deployment identity provider.

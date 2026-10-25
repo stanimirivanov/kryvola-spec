@@ -1,0 +1,5 @@
+engineStrict: true
+saveExact: true
+verifyDepsBeforeRun: error
+allowBuilds:
+  "@bufbuild/buf@1.75.0": true

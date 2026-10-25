@@ -1,0 +1,37 @@
+{
+  "name": "@kryvola/spec",
+  "version": "0.1.0-preview.1",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "packageManager": "pnpm@12.5.1",
+  "engines": {
+    "node": ">=24.18.0 <25"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "format": "biome format --write .",
+    "lint": "biome check .",
+    "generate": "pnpm build && node tools/generate.mjs",
+    "generated:check": "pnpm build && node tools/generate.mjs --check",
+    "architecture:check": "node tools/check-architecture.mjs",
+    "proto:check": "buf format generated/proto --diff --exit-code && buf lint",
+    "openapi:check": "redocly lint --max-problems 100",
+    "openapi:build": "redocly bundle status@v1 --output dist/openapi.yaml && redocly build-docs status@v1 --output dist/openapi.html",
+    "test": "pnpm build && pnpm test:unit",
+    "check:fast": "pnpm lint && pnpm typecheck && pnpm architecture:check",
+    "check": "pnpm lint && pnpm architecture:check && pnpm build && node tools/generate.mjs --check && pnpm test:unit && pnpm proto:check && pnpm openapi:check && pnpm openapi:build",
+    "inspect": "pnpm build && node tools/inspect.mjs",
+    "test:unit": "node --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "effect": "4.0.6"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.6.3",
+    "@bufbuild/buf": "1.75.0",
+    "@redocly/cli": "2.71.0",
+    "typescript": "7.0.2"
+  }
+}
