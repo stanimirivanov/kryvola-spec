@@ -10,9 +10,11 @@ export const LIMITS = {
   artifact_max_bytes: "1073741824",
 } as const;
 
-const Identifier = Schema.String.check(Schema.isPattern(/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,127}$/));
-const Digest = Schema.String.check(Schema.isPattern(/^[0-9a-f]{64}$/));
-const Decimal = Schema.String.check(Schema.isPattern(/^(0|[1-9][0-9]{0,19})$/));
+const Identifier = Schema.String.check(
+  Schema.isPattern(/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,127}(?![\s\S])/),
+);
+const Digest = Schema.String.check(Schema.isPattern(/^[0-9a-f]{64}(?![\s\S])/));
+const Decimal = Schema.String.check(Schema.isPattern(/^(0|[1-9][0-9]{0,19})(?![\s\S])/));
 
 /** Reference metadata only. Possession never grants artifact access. */
 export const ArtifactRef = Schema.Struct({

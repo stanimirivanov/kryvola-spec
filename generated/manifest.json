@@ -8,7 +8,7 @@
     "package_manager": "pnpm@12.5.1"
   },
   "sources": {
-    "src/index.ts": "77563d0819a8bb2248fd7fb10b825f01dd36fdeef0d3be63fc6110def89df683",
+    "src/index.ts": "27f0b22463ef22937c07d3fe2f0963c8ad19f0826b95cec4664970e3839cc4f3",
     "tools/generate.mjs": "baf858f160dd41810b0ad9681a2c5bd5388ef76db120b7a74cb0c6de122234e0"
   },
   "files": {

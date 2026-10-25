@@ -19,6 +19,9 @@ test("reference-only contract rejects payload, credentials, wrong digest and non
     { byte_length: "1073741825" },
     { byte_length: 1 },
     { tenant_scope: "" },
+    { tenant_scope: "tenant\n" },
+    { manifest_digest: `${"a".repeat(64)}\n` },
+    { byte_length: "1\n" },
   ])
     assert.throws(() => decodeArtifactRef({ ...artifactRefFixture, ...change }));
 });
