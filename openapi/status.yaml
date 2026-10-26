@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Kryvola job status API preview
-  version: 0.1.0-preview.1
+  version: 0.1.0-preview.4
   description: Candidate status contract from design sections 4 and 9. No server is implemented here. This is not the frozen Engine API.
   license:
     name: Apache-2.0
@@ -47,7 +47,6 @@ paths:
                     description: COMPUTE_SELECTED does not authorize disclosure.
                     enum:
                       [
-                        ADMITTED,
                         COMPUTE_SELECTED,
                         EVIDENCE_PENDING,
                         EVIDENCE_VERIFIED,
@@ -56,6 +55,18 @@ paths:
                         CANCELLED,
                         EXPIRED,
                       ]
+        "202":
+          description: Job admitted; no public result status exists yet. Retry polling with backoff. This does not mean compute was selected or released.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [job_id]
+                properties:
+                  job_id:
+                    type: string
+                    description: Opaque logical job identifier.
         "401":
           description: Missing or invalid identity.
         "404":

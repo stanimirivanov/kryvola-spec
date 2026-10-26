@@ -1,6 +1,12 @@
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import {
+  ENGINE_FIELD_NUMBERS,
+  ENGINE_METHODS,
+  ENGINE_SCHEMAS,
+  engineFixtures,
+} from "../dist/engine.js";
+import {
   ARTIFACT_REF_FIELD_NUMBERS,
   ArtifactRef,
   AssuranceProfile,
@@ -58,11 +64,25 @@ generated.set(
   renderControl(CONTROL_SCHEMAS, CONTROL_FIELD_NUMBERS),
 );
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
+for (const [name, schema] of Object.entries(ENGINE_SCHEMAS)) {
+  generated.set(`engine/${name}.schema.json`, json(toJsonSchema(schema)));
+}
+generated.set("fixtures/engine.json", json(engineFixtures));
+generated.set(
+  "proto/kryvola/spec/v1/engine.proto",
+  renderControl(ENGINE_SCHEMAS, ENGINE_FIELD_NUMBERS, {
+    externalSchemas: { ...CONTROL_SCHEMAS, ArtifactRef },
+    imports: ["kryvola/spec/v1/artifact_ref.proto", "kryvola/spec/v1/control.proto"],
+    methods: ENGINE_METHODS,
+  }),
+);
 const sources = new Map(
   [
     "src/index.ts",
     "src/assurance.ts",
     "src/control.ts",
+    "src/engine.ts",
+    "src/transport.ts",
     "tools/generate.mjs",
     "tools/check-architecture.mjs",
     "tools/projection.mjs",
