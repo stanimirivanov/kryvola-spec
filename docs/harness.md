@@ -14,4 +14,14 @@ Fast check: `pnpm check:fast`. Full foundation check: `pnpm check`. Neither sile
 
 M0-PR2: `src/assurance.ts` and `tests/assurance.test.mjs` implement strict baseline declarations, review/activation consistency and a reference requirements/evidence/consent matrix under `pnpm check`. Generation includes their schemas/fixtures and source hash. Structural exports do not enforce every cross-field rule; the evaluator does not authenticate profiles, verify proofs or authorize runtime disclosure. Named security/parameter/legal review remains pending; all published profiles are disabled. See [assurance](assurance.md).
 
+## Generator stages (M0-PR3)
+
+- `tools/projection.mjs`: strict Effect-to-JSON-Schema export, string-only ArtifactRef descriptors, existing explicit-tag checks, and pure native/wire/limit rendering. Field declaration order never allocates tags. The existing guard in `tools/check-architecture.mjs` still rejects lost constraints, including unsupported regex export.
+- `tools/provenance.mjs`: deterministic SHA-256 hashes of supplied source/artifact bytes; no filesystem access, schema interpretation, signatures or protocol commitments.
+- `tools/generate.mjs`: selects schemas/fixtures in stable order, reads sources, composes outputs, and writes or checks the artifact directory. The CLI and its missing/extra/stale-file behavior are unchanged.
+
+`tests/fixtures/projection-baseline.json` records the pre-refactor source revision and all 17 contract-output hashes. `tests/projection.test.mjs` checks byte/hash equivalence, output order, rendering, explicit-tag negatives, Unicode-pattern loss and provenance under `pnpm test:unit` / `pnpm check`. Regeneration never updates the baseline; intentional future contract changes must explicitly review/update the fixture rather than concealing refactor drift. Only source provenance in `generated/manifest.json` changes here, including both extracted helpers; bundle `0.1.0-preview.2` and all contract bytes remain unchanged.
+
+This refactor does not add a generic IDL, new field types, full Protobuf tag-range validation or native runtime codecs. Those behavior changes belong to later contract/wire PRs. Use the existing `pnpm generate`, `pnpm generated:check` and `pnpm check` commands.
+
 CI is configured for pull requests and main pushes, with commit-pinned actions, read-only contents access and no persistent checkout credentials. Local results and CI configuration are distinct; no hosted CI result is claimed without observation. A maintainer must configure branch/ruleset protection to require `verify`, review requirements and any desired secret scanning. No remote protections are changed by this PR.

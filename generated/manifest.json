@@ -10,8 +10,10 @@
   "sources": {
     "src/index.ts": "0418e2de3311220dbb6b1d8451023525a2c169995619a7e1c9dba578289ac706",
     "src/assurance.ts": "f25196882830b5b4be60425f2a7531f0f12c77908eb42dc4415d8b23d05cb414",
-    "tools/generate.mjs": "37aec78b80cbebe702cf47f59e441450ea366d500abf6811fc1a6669b3e11b23",
-    "tools/check-architecture.mjs": "0234d21835ce7da33ab847a69b47ab6efebe2f2005a1fff94630c8a4501856ba"
+    "tools/generate.mjs": "5cc960da7f7de9d406b1e27910c4e0c5c2d542f3ac6137fe9002f659df8222e7",
+    "tools/check-architecture.mjs": "0234d21835ce7da33ab847a69b47ab6efebe2f2005a1fff94630c8a4501856ba",
+    "tools/projection.mjs": "367c529d02c5dd8037d47db32292747585d6b3c125ac5b9105baec8794155a54",
+    "tools/provenance.mjs": "ac59572fbbc100fa915ecba8ab73e4cfa44b75111f670f49724fa680e6c0c6ea"
   },
   "files": {
     "artifact-ref.schema.json": "d8cdb71f7b06114cf4fac231a1363069e96d42b95b6b36e294b80c37817bbb8e",
