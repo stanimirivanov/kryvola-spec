@@ -4,6 +4,7 @@ dist
 .cache/*
 !.cache/native-input
 native/target
+tools/conformance/rust/target
 native/python/.venv
 .env
 .env.*

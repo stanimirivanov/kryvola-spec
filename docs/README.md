@@ -24,3 +24,5 @@ Other repositories consume a checked, commit-pinned copy of `generated/`, not th
 [Immutable authoring policy](policy.md) documents issue #18's readonly containers, runtime mutation guards and public declaration type tests.
 
 [Effect validation facade](validation.md) documents issue #19's additive branded results, safe typed failures and validation-phase boundaries.
+
+[Rust canonical conformance](canonical-rust.md) describes M0-PR8's isolated parser/commitment adapter, fixed vectors and Docker gate.

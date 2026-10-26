@@ -18,6 +18,7 @@
     "generated:check": "pnpm build && node tools/generate.mjs --check",
     "native:generate": "pnpm generated:check && node tools/native.mjs generate",
     "native:check": "pnpm generated:check && node tools/native.mjs check",
+    "check:canonical": "pnpm generated:check && node tools/check-canonical.mjs",
     "architecture:check": "node tools/check-architecture.mjs",
     "proto:check": "buf format generated/proto --diff --exit-code && buf lint",
     "openapi:check": "redocly lint --max-problems 100",
