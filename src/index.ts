@@ -1,6 +1,19 @@
 import { Schema } from "effect";
 
-export const CONTRACT_VERSION = "0.1.0-preview.1";
+export {
+  AssuranceProfile,
+  AssuranceRequest,
+  assessAssurance,
+  baselineAssuranceFixture,
+  baselineConsentFixture,
+  baselineRequestFixture,
+  ConsentDeclaration,
+  decodeAssuranceProfile,
+  decodeAssuranceRequest,
+  METADATA_LEAKAGE,
+} from "./assurance.js";
+
+export const CONTRACT_VERSION = "0.1.0-preview.2";
 export const LIMITS = {
   control_bytes: "65536",
   temporal_payload_bytes: "32768",

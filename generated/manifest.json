@@ -1,5 +1,5 @@
 {
-  "contract_version": "0.1.0-preview.1",
+  "contract_version": "0.1.0-preview.2",
   "status": "preview",
   "hash_purpose": "SHA-256 build provenance; protocol commitments remain BLAKE3",
   "toolchain": {
@@ -8,13 +8,20 @@
     "package_manager": "pnpm@12.5.1"
   },
   "sources": {
-    "src/index.ts": "2f6d3a27788112e5fda745d57aedf06ab8813f54125a63e4c0b4d7b5d15b3bb6",
-    "tools/generate.mjs": "346620894132428279068548012589f8abd13647479e9def18b73b9151005e62",
+    "src/index.ts": "0418e2de3311220dbb6b1d8451023525a2c169995619a7e1c9dba578289ac706",
+    "src/assurance.ts": "f25196882830b5b4be60425f2a7531f0f12c77908eb42dc4415d8b23d05cb414",
+    "tools/generate.mjs": "37aec78b80cbebe702cf47f59e441450ea366d500abf6811fc1a6669b3e11b23",
     "tools/check-architecture.mjs": "0234d21835ce7da33ab847a69b47ab6efebe2f2005a1fff94630c8a4501856ba"
   },
   "files": {
     "artifact-ref.schema.json": "d8cdb71f7b06114cf4fac231a1363069e96d42b95b6b36e294b80c37817bbb8e",
     "foundation-inventory.schema.json": "56e8d97aa1cf0fe8b50a658848d0049f1e19c90bbb7ab6f4baf3a22329de84ef",
+    "assurance-profile.schema.json": "9279738164378de5fa63ee5bfd2271f449c2af54aec2f9c077ef1c8788628474",
+    "assurance-request.schema.json": "81facc33bb7de68389ca30098f39f1eda82f338b947ed712486e8f6981247d4e",
+    "consent-declaration.schema.json": "854c2a7c9f8bd477c2b89f9d34be2d6f20e5f9a0f421bc94e80fe8fde82d629b",
+    "fixtures/fhe-q1-assurance.json": "267dee8330668952adf11fe00cd96d0c5a45217d17b714e4266485dfb6c48eb0",
+    "fixtures/fhe-q1-consent.json": "6dfd22dab99f13d1bcbfeacb2b0e06ca894be250c8222ec5ac3353900db74c7d",
+    "fixtures/fhe-q1-request.json": "74c53a2885d8fbc23dbb4147cb32885ecf11105c3526e813c1f26416f083e103",
     "fixtures/artifact-ref.json": "2ca34ea7b98553d569fddb58d34aea995c83209e6c5488447de01e4c3f1ad01b",
     "limits.json": "f3ec6ba6ff3ff3bba649716cf0f1aaee799e467266d68552929fb6a877761ff7",
     "python/artifact_ref.py": "e0502938aac8e28001fb4bb8446c5139dfd9940e35cda2becb3c0cf17c81bcbe",

@@ -12,4 +12,6 @@
 
 Fast check: `pnpm check:fast`. Full foundation check: `pnpm check`. Neither silently skips absent tools/inputs. Formatting fixes use `pnpm format`; generated drift uses `pnpm generate`, then rerun the affected checks. Required expensive crypto/hardware/security tests are deferred, not represented by a no-op passing command.
 
+M0-PR2: `src/assurance.ts` and `tests/assurance.test.mjs` implement strict baseline declarations, review/activation consistency and a reference requirements/evidence/consent matrix under `pnpm check`. Generation includes their schemas/fixtures and source hash. Structural exports do not enforce every cross-field rule; the evaluator does not authenticate profiles, verify proofs or authorize runtime disclosure. Named security/parameter/legal review remains pending; all published profiles are disabled. See [assurance](assurance.md).
+
 CI is configured for pull requests and main pushes, with commit-pinned actions, read-only contents access and no persistent checkout credentials. Local results and CI configuration are distinct; no hosted CI result is claimed without observation. A maintainer must configure branch/ruleset protection to require `verify`, review requirements and any desired secret scanning. No remote protections are changed by this PR.
