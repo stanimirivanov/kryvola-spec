@@ -79,7 +79,12 @@ export function renderLimits(limits) {
 }
 
 /** Narrow control projection: constrained strings or explicitly registered messages only. */
-export function renderControl(schemas, tags) {
+export function renderControl(
+  schemas,
+  tags,
+  { externalSchemas = {}, imports = [], methods = [] } = {},
+) {
+  const registry = { ...externalSchemas, ...schemas };
   const messages = Object.entries(schemas).map(([name, schema]) => {
     const properties = toJsonSchema(schema).properties;
     const numbers = tags[name];
@@ -99,13 +104,37 @@ export function renderControl(schemas, tags) {
       throw new Error(`${name}: invalid explicit control tags`);
     }
     const lines = fields.map((field) => {
-      const nested = Object.entries(schemas).find(([, value]) => value === schema.fields[field]);
-      if (nested) return `  ${nested[0]} ${field} = ${numbers[field]};`;
-      const errors = checkProjection({ [field]: properties[field] });
+      const repeated = properties[field].type === "array";
+      if (
+        repeated &&
+        (!Number.isInteger(properties[field].minItems) ||
+          !Number.isInteger(properties[field].maxItems))
+      ) {
+        throw new Error(`${name}.${field}: arrays must be explicitly bounded`);
+      }
+      const value = repeated ? schema.fields[field].value : schema.fields[field];
+      const nested = Object.entries(registry).find(([, registered]) => registered === value);
+      if (nested)
+        return `  ${repeated ? "repeated " : ""}${nested[0]} ${field} = ${numbers[field]};`;
+      const errors = checkProjection({
+        [field]: repeated ? properties[field].items : properties[field],
+      });
       if (errors.length) throw new Error(errors.join("\n"));
-      return `  optional string ${field} = ${numbers[field]};`;
+      return `  ${repeated ? "repeated" : "optional"} string ${field} = ${numbers[field]};`;
     });
     return `message ${name} {\n${lines.join("\n")}\n}`;
   });
-  return `// Generated structural preview; validate presence, constraints and context in application decoders.\nsyntax = "proto3";\n\npackage kryvola.spec.v1;\n\n${messages.join("\n\n")}\n`;
+  const dependencies = imports.length
+    ? `${imports.map((path) => `import "${path}";`).join("\n")}\n\n`
+    : "";
+  const service = methods.length
+    ? `\n\nservice EngineService {\n${methods
+        .map((method) => {
+          if (!schemas[`${method}Request`] || !schemas[`${method}Response`])
+            throw new Error("Missing RPC schema");
+          return `  rpc ${method}(${method}Request) returns (${method}Response);`;
+        })
+        .join("\n")}\n}`
+    : "";
+  return `// Generated structural preview; validate presence, constraints and context in application decoders.\nsyntax = "proto3";\n\npackage kryvola.spec.v1;\n\n${dependencies}${messages.join("\n\n")}${service}\n`;
 }

@@ -1,5 +1,7 @@
 # Development harness and enforcement
 
+M0-PR5: `src/engine.ts`, `src/transport.ts` and `tests/engine.test.mjs` cover strict Engine RPC/event declarations, reference negotiation, observation consistency, serialized byte limits and OpenAPI status agreement in `pnpm check`. The narrow projector adds bounded repeated fields/imported messages and unary service declarations without changing prior contract outputs. Native codec conformance and deployed transport enforcement remain gaps; see [Engine boundaries](engine.md).
+
 | Requirement/source                                    | Governed files                                        | Enforcement / command                                                                                    | Limit or manual review                                                                           |
 | ----------------------------------------------------- | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | User schema-stack amendment / ADR 0001                | `package.json`, `src/`, `openapi/`                    | Exact lock, `pnpm typecheck`, `pnpm openapi:check`, `pnpm openapi:build`                                 | Schema semantics and API support remain reviewer judgments                                       |

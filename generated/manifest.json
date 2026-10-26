@@ -1,5 +1,5 @@
 {
-  "contract_version": "0.1.0-preview.3",
+  "contract_version": "0.1.0-preview.4",
   "status": "preview",
   "hash_purpose": "SHA-256 build provenance; protocol commitments remain BLAKE3",
   "toolchain": {
@@ -8,12 +8,14 @@
     "package_manager": "pnpm@12.5.1"
   },
   "sources": {
-    "src/index.ts": "1bed3c4dc9ee54c61448a4730aca9c1da86fd83fbac13e4daf93fa9a2fa3039b",
+    "src/index.ts": "2cc20fbdd00015a94357ece907a0f4b2439f065eaa428683bfd74b9a3c347e97",
     "src/assurance.ts": "f25196882830b5b4be60425f2a7531f0f12c77908eb42dc4415d8b23d05cb414",
     "src/control.ts": "0c7f4d134bd9dfe3fe23e863d29e1890745ea6588faa2760080d2b655fcfa660",
-    "tools/generate.mjs": "3a440b5308ec67cfc642f6d3743f88a2ed84972840c49b5dd2e5c6031332b533",
+    "src/engine.ts": "0b7195ad781e569cb079b3a099d58e1643f6f097983d9e3bdcdbd7872bfa8e4c",
+    "src/transport.ts": "544840e9ef827e9dd83a1b925ca50477fee315f30b5d211921c7ab4c3c60ed9f",
+    "tools/generate.mjs": "1a3a130bef5a81079f8352839cc6d7b3cd9d561f88193f8a1b0e9d559b96e804",
     "tools/check-architecture.mjs": "0234d21835ce7da33ab847a69b47ab6efebe2f2005a1fff94630c8a4501856ba",
-    "tools/projection.mjs": "c5564770dfbdd9403e6cd36263c8d6b463a68b53e7aed12a67f62d898b5e7193",
+    "tools/projection.mjs": "9e0cd286465133b31a1f1aa99a8f80061bcff8f9ff40e09ee43c509c61713b2c",
     "tools/provenance.mjs": "ac59572fbbc100fa915ecba8ab73e4cfa44b75111f670f49724fa680e6c0c6ea"
   },
   "files": {
@@ -43,6 +45,18 @@
     "control/PublicResultStatus.schema.json": "196f6b961ed5a93bcb7279157c1ec03f95523e552cb1af3d5c6774f7a1acf037",
     "control/PhysicalExecutionState.schema.json": "3c85811af01ed59d88d78442db31173b34367d5d64a64c0c488cb9c522aa4981",
     "fixtures/control.json": "643c3993eb657e027f9b24382c00b3ec7c7490728007d36d02ab82d8888fcaeb",
-    "proto/kryvola/spec/v1/control.proto": "2bf205704f5ddb5c2ee6d86cdf72d51d50b71640b41ab94601be05ca662820b6"
+    "proto/kryvola/spec/v1/control.proto": "2bf205704f5ddb5c2ee6d86cdf72d51d50b71640b41ab94601be05ca662820b6",
+    "engine/Capabilities.schema.json": "3aa235ba23b1832732fcbd2d2a3fc6f681f101e8c73c86f43eb81db7522fd1bc",
+    "engine/GetCapabilitiesRequest.schema.json": "6e579d70263581282f95b69bbfca7cece44275d91b7959c2a9bbcd813b40d4b1",
+    "engine/GetCapabilitiesResponse.schema.json": "4282c32d47f7a7c22815cfd98b42cb361a5ef99895804b4a0a7b758bf64e0f8d",
+    "engine/ExecuteRequest.schema.json": "19129c20bcb267da0cbb8649c869c75cbdb4db0fcc4ce0d980c7228486d245ae",
+    "engine/ExecuteResponse.schema.json": "bacdf392842e0fd2cc7c710d000cfe7e3c047f6e08a96063cbeefa2b51972424",
+    "engine/GetExecutionStatusRequest.schema.json": "393f6e7cf80c7f342dd26f6746d4fc12500f67e45ec606e5cc7fdb2574c34a1f",
+    "engine/GetExecutionStatusResponse.schema.json": "5aba588e4d7deecc1110875276bbf1a47f0383d3eb24ea074ca12a47142f657c",
+    "engine/CancelExecutionRequest.schema.json": "01ae2d057fa4f3abe1248efae38e9e9ea448e08f1f563dcd206fcc213e78ca49",
+    "engine/CancelExecutionResponse.schema.json": "50ca8ebd7f62348ee00340f824fa1006994d1534df6c330831392b20b8f60117",
+    "engine/ExecutionObservedEvent.schema.json": "f5af7b040af4c7d801a6b8a6cf567dde467b1d8b9f04fd6188c5bee638351031",
+    "fixtures/engine.json": "63ba7b371210866c227a5fe033a2f306c23e977dc4e460295bf0671dd3b944de",
+    "proto/kryvola/spec/v1/engine.proto": "7c0ccbe3408367c51f85fa916d86eb4ec53d2328013f55ecb2be2f9e39f36df6"
   }
 }

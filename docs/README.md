@@ -12,3 +12,5 @@
 Other repositories consume a checked, commit-pinned copy of `generated/`, not this repository's source tree. Change a contract here, run generation/verification, commit it, then explicitly update consumers' `spec.lock.json` and artifacts.
 
 [Reference and identity previews](control.md) describes M0-PR4 contracts, strict decoding, status separation and wire-preview limitations.
+
+[Engine API and transport boundaries](engine.md) describes M0-PR5 negotiation, events, cancellation and byte-budget contracts.
