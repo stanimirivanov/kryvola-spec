@@ -2,7 +2,7 @@
   "contract_version": "0.1.0-preview.9",
   "purpose": "Native codec build provenance, not canonical commitments or authorization",
   "sources": {
-    ".dockerignore": "602e5c24f08ca35763b1f0d81be96849e5408284107891d5ca72d25b9836a470",
+    ".dockerignore": "8194375929fcebd8421dc727e93c2b73986210471d67daa93b9f78bd746301b9",
     ".gitattributes": "c34e325c169522daba87971317b7119097cb7d0f65a7b5252ad4d25912ef7ebd",
     ".node-version": "55075b5ec4e8b31936cbbc282b8829116d1fd48f2f2f1856dee592a6650700ce",
     "generated/artifact-ref.schema.json": "d8cdb71f7b06114cf4fac231a1363069e96d42b95b6b36e294b80c37817bbb8e",

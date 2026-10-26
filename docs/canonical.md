@@ -70,3 +70,5 @@ Adopt `canonicalize` 5.1.0 (Apache-2.0) as a JCS dependency and `@noble/hashes` 
 Run `pnpm generate`, `pnpm native:generate` (native provenance covers spec inputs), then `pnpm check`. Focused gate: `pnpm build`, then `node --test tests/canonical.test.mjs`. Existing `pnpm native:check` covers wire bindings, not native JCS.
 
 References: [RFC 8785](https://www.rfc-editor.org/rfc/rfc8785), [RFC 8032](https://www.rfc-editor.org/rfc/rfc8032), [canonicalize](https://github.com/erdtman/canonicalize), [noble-hashes scope/license](https://github.com/paulmillr/noble-hashes), [BLAKE3 specification](https://github.com/BLAKE3-team/BLAKE3-specs).
+
+[Python conformance and Rust differential gate](canonical-python.md) adds M0-PR9 fixture compatibility evidence; C++ remains M0-PR10.
