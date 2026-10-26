@@ -1,5 +1,7 @@
 # Development harness and enforcement
 
+Issue #18: `tests/policy.test.mjs` runs isolated mutation/validation regressions for exported policy containers. `pnpm test:types` uses `tsconfig.type-tests.json` and `type-tests/policy.ts` to check emitted readonly declarations after `pnpm build`; `pnpm check` includes this no-emit gate. See [policy ownership and compatibility](policy.md).
+
 Issue #17: `src/fhe-q1.ts` shares Engine and signed v2 arithmetic declarations. `tests/fhe-q1.test.mjs` covers cross-contract matching, fixed v2 bytes/signatures, version/domain rejection, context substitution, input order and exact 8/16/32/64-bit overflow semantics. `pnpm check` includes this gate; see [v2 migration and scope](fhe-q1-arithmetic.md).
 
 M0-PR7: `src/canonical.ts` and `tests/canonical.test.mjs` define/test closed signed-format candidates, raw-byte JCS validation, BLAKE3/Ed25519 framing and operation identity. `fixtures/canonical/` supplies fixed positive/negative bytes exported with Effect schemas by `pnpm generate`. `pnpm check` runs the reference gate; native canonical adapters remain M0-PR8–10. See [canonical scope and trust boundaries](canonical.md).

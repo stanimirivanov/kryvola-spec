@@ -79,7 +79,7 @@ export const ExecutionObservedEvent = Schema.Struct({
   operation: Operation,
   observation: GetExecutionStatusResponse,
 });
-export const ENGINE_SCHEMAS = {
+export const ENGINE_SCHEMAS = Object.freeze({
   Capabilities,
   GetCapabilitiesRequest,
   GetCapabilitiesResponse,
@@ -90,15 +90,15 @@ export const ENGINE_SCHEMAS = {
   CancelExecutionRequest,
   CancelExecutionResponse,
   ExecutionObservedEvent,
-};
-export const ENGINE_METHODS = [
+});
+export const ENGINE_METHODS = Object.freeze([
   "GetCapabilities",
   "Execute",
   "GetExecutionStatus",
   "CancelExecution",
-] as const;
-export const ENGINE_FIELD_NUMBERS = {
-  Capabilities: {
+] as const);
+export const ENGINE_FIELD_NUMBERS = Object.freeze({
+  Capabilities: Object.freeze({
     schema_version: 1,
     engine_digest: 2,
     parameter_set_digest: 3,
@@ -107,10 +107,10 @@ export const ENGINE_FIELD_NUMBERS = {
     operators: 6,
     arithmetic: 7,
     max_parallel_executions: 8,
-  },
-  GetCapabilitiesRequest: { schema_version: 1 },
-  GetCapabilitiesResponse: { schema_version: 1, capabilities: 2 },
-  ExecuteRequest: {
+  } as const),
+  GetCapabilitiesRequest: Object.freeze({ schema_version: 1 } as const),
+  GetCapabilitiesResponse: Object.freeze({ schema_version: 1, capabilities: 2 } as const),
+  ExecuteRequest: Object.freeze({
     schema_version: 1,
     operation: 2,
     execution: 3,
@@ -122,19 +122,33 @@ export const ENGINE_FIELD_NUMBERS = {
     input_refs: 9,
     output_contract_digest: 10,
     resource_profile_digest: 11,
-  },
-  ExecuteResponse: { schema_version: 1, execution: 2 },
-  GetExecutionStatusRequest: { schema_version: 1, attempt: 2, execution_id: 3 },
-  GetExecutionStatusResponse: { schema_version: 1, execution: 2, output_refs: 3, error_code: 4 },
-  CancelExecutionRequest: { schema_version: 1, attempt: 2, execution_id: 3, cancellation_id: 4 },
-  CancelExecutionResponse: {
+  } as const),
+  ExecuteResponse: Object.freeze({ schema_version: 1, execution: 2 } as const),
+  GetExecutionStatusRequest: Object.freeze({
+    schema_version: 1,
+    attempt: 2,
+    execution_id: 3,
+  } as const),
+  GetExecutionStatusResponse: Object.freeze({
+    schema_version: 1,
+    execution: 2,
+    output_refs: 3,
+    error_code: 4,
+  } as const),
+  CancelExecutionRequest: Object.freeze({
+    schema_version: 1,
+    attempt: 2,
+    execution_id: 3,
+    cancellation_id: 4,
+  } as const),
+  CancelExecutionResponse: Object.freeze({
     schema_version: 1,
     attempt: 2,
     execution_id: 3,
     cancellation_id: 4,
     cancellation_state: 5,
-  },
-  ExecutionObservedEvent: {
+  } as const),
+  ExecutionObservedEvent: Object.freeze({
     schema_version: 1,
     event_id: 2,
     causation_id: 3,
@@ -142,8 +156,8 @@ export const ENGINE_FIELD_NUMBERS = {
     event_type: 5,
     operation: 6,
     observation: 7,
-  },
-} as const;
+  } as const),
+} as const);
 const strict = { onExcessProperty: "error" } as const;
 
 /** Reference negotiation only: advertisements are not authenticated qualification or grants. */

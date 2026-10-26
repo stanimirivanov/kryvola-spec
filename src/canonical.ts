@@ -70,7 +70,7 @@ const Plan = Schema.Struct({
   security_profile: Schema.Literal("FHE-Q1"),
 });
 /** CANONICAL_V2_SCHEMAS adds modular candidates without reinterpreting signed v1. */
-export const CANONICAL_V2_SCHEMAS = {
+export const CANONICAL_V2_SCHEMAS = Object.freeze({
   manifest: Schema.Struct({
     ...Manifest.fields,
     schema_version: Schema.Literal("2"),
@@ -84,7 +84,7 @@ export const CANONICAL_V2_SCHEMAS = {
     precision: FheQ1Precision,
     operators: list(FheQ1Operator, 2),
   }),
-};
+});
 /** CanonicalVersion is selected explicitly by the caller; existing APIs default to v1. */
 export type CanonicalVersion = "1" | "2";
 const Approval = Schema.Struct({
@@ -167,7 +167,7 @@ const OperationIdentity = Schema.Struct({
   stage_id: Id,
   workflow_epoch: U64,
 });
-export const CANONICAL_SCHEMAS = {
+export const CANONICAL_SCHEMAS = Object.freeze({
   manifest: Manifest,
   plan: Plan,
   approval: Approval,
@@ -175,7 +175,7 @@ export const CANONICAL_SCHEMAS = {
   journal: Journal,
   receipt: Receipt,
   "operation-identity": OperationIdentity,
-};
+});
 export type CanonicalKind = keyof typeof CANONICAL_SCHEMAS;
 type CanonicalValue =
   | {
@@ -217,12 +217,13 @@ export const SignatureEnvelopeV2 = Schema.Struct({
   ...HeaderV2,
   signature: SignatureEnvelope.fields.signature,
 });
-export const CANONICAL_LIMITS = {
+/** CANONICAL_LIMITS cannot be changed by consumers to relax validation. */
+export const CANONICAL_LIMITS = Object.freeze({
   document_bytes: 1048576,
   depth: 16,
   chunk_bytes: 4194304,
   artifact_bytes: 1073741824,
-} as const;
+} as const);
 const utf8 = new TextEncoder();
 const fail = (message: string): never => {
   throw new Error(message);

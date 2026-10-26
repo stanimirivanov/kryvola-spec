@@ -1,5 +1,5 @@
 {
-  "contract_version": "0.1.0-preview.7",
+  "contract_version": "0.1.0-preview.8",
   "status": "preview",
   "hash_purpose": "SHA-256 build provenance; protocol commitments remain BLAKE3",
   "toolchain": {
@@ -8,17 +8,17 @@
     "package_manager": "pnpm@12.5.1"
   },
   "sources": {
-    "src/index.ts": "f7dcdfbbb814a27e2c37d2dbc85c934d6bf0acb93352293a1d78887e49799c10",
-    "src/assurance.ts": "f25196882830b5b4be60425f2a7531f0f12c77908eb42dc4415d8b23d05cb414",
-    "src/control.ts": "0c7f4d134bd9dfe3fe23e863d29e1890745ea6588faa2760080d2b655fcfa660",
-    "src/engine.ts": "471d48449ecbc64d03a21d05a3f55f99e7fa29936108830f206c64d6fabc3198",
+    "src/index.ts": "33d964b2080990344e72850216bd11c8fa1c8f53488917743b3e8f66213d0ba3",
+    "src/assurance.ts": "1fbf2110dbb6cccade14a96ee1dd181092b5ebbb9e6d51bec40961e8ea39a525",
+    "src/control.ts": "de23c9b959e31922154142a32fb9d7f7ff207cf1dc510e8669aad7ecb714f6c0",
+    "src/engine.ts": "ac3b5e9f623b618950b82f2dc1aed0f4c1ad0f3317c8c7d3f3aa48efee78c270",
     "src/transport.ts": "544840e9ef827e9dd83a1b925ca50477fee315f30b5d211921c7ab4c3c60ed9f",
-    "src/canonical.ts": "f38a723eef4148f486ed1eb28d2926efab6b07e2b1c02fac990ea80eb195c34c",
+    "src/canonical.ts": "06c467b06ceeaedc316b25a8201eaacde15e1107cca0f86b4228fbff38523331",
     "src/fhe-q1.ts": "45641c84f86dafb10ca37dbfceb1098f107e683dab810d8b617efb4ee10e3c7a",
     "fixtures/canonical/corpus.json": "192b1dc82a5ce12f6bbefc8a1b48215b7f3a7d259a623b389aaac6308ee9c73b",
     "fixtures/canonical/negative.json": "c6aee95c1b170eea7f21a4a5306a14fb7ee804a1704a4d5e6c1158097b11be00",
     "fixtures/canonical/modular-v2.json": "264c60e0be1ae54e155b0f33543cb09c651ef4b24ceb1968ef899bd2a7e543dd",
-    "package.json": "492572d2ab0a8e33060d212683b6e17df0d48108e4f79c71331a61032c1af246",
+    "package.json": "c633b6debd94e36fe5173579e9567dc71a1d8c52b21ea8f9e134ff8a65d14fc8",
     "pnpm-lock.yaml": "8eb1cc4dacefd97c8f959c4c7ff1cc6707411bce6203e6c3b8de495a68701c4d",
     "tools/generate.mjs": "1e435a862ed5f2821ab9f94b03644bd770774d3d3804e55923ed27da0239d40b",
     "tools/check-architecture.mjs": "0234d21835ce7da33ab847a69b47ab6efebe2f2005a1fff94630c8a4501856ba",

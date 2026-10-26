@@ -3,7 +3,7 @@ import { Schema } from "effect";
 const Identifier = Schema.String.check(
   Schema.isPattern(/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,127}(?![\s\S])/u),
 );
-export const METADATA_LEAKAGE = [
+export const METADATA_LEAKAGE = Object.freeze([
   "INPUT_SHAPE",
   "MODEL_PROGRAM",
   "CRYPTO_PAYLOAD_SIZE",
@@ -11,7 +11,7 @@ export const METADATA_LEAKAGE = [
   "ACCESS_PATTERN",
   "KEY_REUSE",
   "CACHE_STATE",
-] as const;
+] as const);
 const LeakageList = Schema.Array(Schema.Literals(METADATA_LEAKAGE)).check(
   Schema.isMaxLength(METADATA_LEAKAGE.length),
 );
