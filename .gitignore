@@ -2,6 +2,7 @@ node_modules/
 dist/
 .cache/
 native/target/
+tools/conformance/rust/target/
 native/python/.venv/
 **/__pycache__/
 .pnpm-store/
