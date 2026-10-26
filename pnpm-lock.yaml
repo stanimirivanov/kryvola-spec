@@ -166,6 +166,12 @@ importers:
 
   .:
     dependencies:
+      '@noble/hashes':
+        specifier: 2.4.0
+        version: 2.4.0
+      canonicalize:
+        specifier: 5.1.0
+        version: 5.1.0
       effect:
         specifier: 4.0.6
         version: 4.0.6
@@ -301,6 +307,10 @@ packages:
     engines: {node: '>=12'}
     hasBin: true
 
+  '@noble/hashes@2.4.0':
+    resolution: {integrity: sha512-X5XaVWZIBCT7HHZGm5I7ZQXDwLG+bGXuSrMQAW+7Zvl87h1kmc1ZB1VSRJcpUfoUrGQp4Fkoxm5kZ+Ms+aW+eA==}
+    engines: {node: '>= 20.19.0'}
+
   '@redocly/cli@2.71.0':
     resolution: {integrity: sha512-QaAo5zdmvtK2GCJzLNZYCn5q3tm2MYImvRt/kDJdwd/zYJsTjNrGl+aindv63tFBrh0FWckXeUnOM5aM+7NQuA==}
     engines: {node: '>=22.12.0 || >=20.19.0 <21.0.0', npm: '>=10'}
@@ -426,6 +436,11 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  canonicalize@5.1.0:
+    resolution: {integrity: sha512-bab9+WefZljqQ8jT0qRwVmTyzAUU63K97QIQD3agynIBrb6sa5M2eAy8Hv8K3p4V9+ONVYZKtGYl4Dg+/5Gumw==}
+    engines: {node: '>=22'}
+    hasBin: true
+
   effect@4.0.6:
     resolution: {integrity: sha512-Tc3mkzuLR6t6P9dhLt0D2GrxYtmU5td4XEJEiXCmILz53IRIfJyHsKZWjTA3xEjiwpNTtXBgI4iqYPxMztBDrw==}
 
@@ -510,6 +525,8 @@ snapshots:
       '@bufbuild/buf-win32-arm64': 1.75.0
       '@bufbuild/buf-win32-x64': 1.75.0
 
+  '@noble/hashes@2.4.0': {}
+
   '@redocly/cli@2.71.0': {}
 
   '@typescript/typescript-aix-ppc64@7.0.2':
@@ -571,6 +588,8 @@ snapshots:
 
   '@typescript/typescript-win32-x64@7.0.2':
     optional: true
+
+  canonicalize@5.1.0: {}
 
   effect@4.0.6: {}
 

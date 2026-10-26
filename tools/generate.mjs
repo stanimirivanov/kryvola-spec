@@ -1,5 +1,6 @@
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
+import { CANONICAL_SCHEMAS, SignatureEnvelope } from "../dist/canonical.js";
 import {
   ENGINE_FIELD_NUMBERS,
   ENGINE_METHODS,
@@ -38,7 +39,19 @@ const root = resolve(import.meta.dirname, "..");
 const json = (value) => `${JSON.stringify(value, null, 2)}\n`;
 const descriptor = describeArtifactRef(ArtifactRef, ARTIFACT_REF_FIELD_NUMBERS);
 const generated = new Map();
+for (const [name, schema] of Object.entries({
+  ...CANONICAL_SCHEMAS,
+  signature: SignatureEnvelope,
+})) {
+  generated.set(`canonical/${name}.schema.json`, json(toJsonSchema(schema)));
+}
 generated.set("artifact-ref.schema.json", json(descriptor.schema));
+for (const name of ["corpus", "negative"]) {
+  generated.set(
+    `fixtures/canonical-${name}.json`,
+    readFileSync(join(root, `fixtures/canonical/${name}.json`), "utf8"),
+  );
+}
 generated.set("foundation-inventory.schema.json", json(toJsonSchema(FoundationInventory)));
 generated.set("assurance-profile.schema.json", json(toJsonSchema(AssuranceProfile)));
 generated.set("assurance-request.schema.json", json(toJsonSchema(AssuranceRequest)));
@@ -83,6 +96,11 @@ const sources = new Map(
     "src/control.ts",
     "src/engine.ts",
     "src/transport.ts",
+    "src/canonical.ts",
+    "fixtures/canonical/corpus.json",
+    "fixtures/canonical/negative.json",
+    "package.json",
+    "pnpm-lock.yaml",
     "tools/generate.mjs",
     "tools/check-architecture.mjs",
     "tools/projection.mjs",

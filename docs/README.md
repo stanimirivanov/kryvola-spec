@@ -16,3 +16,5 @@ Other repositories consume a checked, commit-pinned copy of `generated/`, not th
 [Engine API and transport boundaries](engine.md) describes M0-PR5 negotiation, events, cancellation and byte-budget contracts.
 
 [Native wire generation](native-wire.md) describes M0-PR6 bindings, pinned native toolchains, golden vectors and the separate Docker conformance gate.
+
+[Canonical objects and commitments](canonical.md) describes M0-PR7's opt-in signed-format candidate, reference framing, fixed corpus and remaining native/trust gates.

@@ -1,6 +1,6 @@
 {
   "name": "@kryvola/spec",
-  "version": "0.1.0-preview.5",
+  "version": "0.1.0-preview.6",
   "private": true,
   "type": "module",
   "license": "Apache-2.0",
@@ -28,6 +28,8 @@
     "test:unit": "node --test tests/*.test.mjs"
   },
   "dependencies": {
+    "@noble/hashes": "2.4.0",
+    "canonicalize": "5.1.0",
     "effect": "4.0.6"
   },
   "devDependencies": {
