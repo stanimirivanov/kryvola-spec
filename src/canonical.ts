@@ -3,6 +3,7 @@ import { bytesToHex } from "@noble/hashes/utils.js";
 import canonicalize from "canonicalize";
 import { Schema } from "effect";
 import { Uint64Decimal } from "./control.js";
+import { FheQ1Arithmetic, FheQ1Operator, FheQ1Precision } from "./fhe-q1.js";
 
 const Id = Schema.String.check(Schema.isPattern(/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,127}(?![\s\S])/u));
 const Digest = Schema.String.check(Schema.isPattern(/^[0-9a-f]{64}(?![\s\S])/u));
@@ -68,6 +69,24 @@ const Plan = Schema.Struct({
   consent_digest: Digest,
   security_profile: Schema.Literal("FHE-Q1"),
 });
+/** CANONICAL_V2_SCHEMAS adds modular candidates without reinterpreting signed v1. */
+export const CANONICAL_V2_SCHEMAS = {
+  manifest: Schema.Struct({
+    ...Manifest.fields,
+    schema_version: Schema.Literal("2"),
+    arithmetic: FheQ1Arithmetic,
+    precision: FheQ1Precision,
+  }),
+  plan: Schema.Struct({
+    ...Plan.fields,
+    schema_version: Schema.Literal("2"),
+    arithmetic: FheQ1Arithmetic,
+    precision: FheQ1Precision,
+    operators: list(FheQ1Operator, 2),
+  }),
+};
+/** CanonicalVersion is selected explicitly by the caller; existing APIs default to v1. */
+export type CanonicalVersion = "1" | "2";
 const Approval = Schema.Struct({
   ...base,
   object_type: Schema.Literal("approval"),
@@ -158,9 +177,12 @@ export const CANONICAL_SCHEMAS = {
   "operation-identity": OperationIdentity,
 };
 export type CanonicalKind = keyof typeof CANONICAL_SCHEMAS;
-type CanonicalValue = {
-  [K in CanonicalKind]: (typeof CANONICAL_SCHEMAS)[K]["Type"];
-}[CanonicalKind];
+type CanonicalValue =
+  | {
+      [K in CanonicalKind]: (typeof CANONICAL_SCHEMAS)[K]["Type"];
+    }[CanonicalKind]
+  | typeof CANONICAL_V2_SCHEMAS.plan.Type
+  | typeof CANONICAL_V2_SCHEMAS.manifest.Type;
 export const SignedKind = Schema.Literals([
   "manifest",
   "plan",
@@ -183,6 +205,18 @@ export const SignatureEnvelope = Schema.Struct({
   signature: Schema.String.check(Schema.isPattern(/^[A-Za-z0-9_-]{85}[AQgw](?![\s\S])/u)),
 });
 export const SignatureHeader = Schema.Struct(Header);
+const HeaderV2 = {
+  ...Header,
+  schema_version: Schema.Literal("2"),
+  payload_kind: Schema.Literals(["manifest", "plan"]),
+};
+/** SignatureHeaderV2 binds only a v2 manifest or plan; other signed objects remain v1. */
+export const SignatureHeaderV2 = Schema.Struct(HeaderV2);
+/** SignatureEnvelopeV2 uses a separate signature domain and preserves the v1 envelope. */
+export const SignatureEnvelopeV2 = Schema.Struct({
+  ...HeaderV2,
+  signature: SignatureEnvelope.fields.signature,
+});
 export const CANONICAL_LIMITS = {
   document_bytes: 1048576,
   depth: 16,
@@ -213,6 +247,18 @@ function jsonValues(value: unknown, depth = 0): void {
 }
 function semantics(kind: CanonicalKind, value: unknown): void {
   const v = value as CanonicalValue;
+  if (
+    (v.object_type === "plan" || v.object_type === "manifest") &&
+    v.schema_version === "2" &&
+    v.parameters.radix_bits !== v.precision.dtype.slice(4)
+  )
+    fail("dtype/radix width mismatch");
+  if (
+    v.object_type === "plan" &&
+    v.schema_version === "2" &&
+    new Set(v.operators).size !== v.operators.length
+  )
+    fail("duplicate required operators");
   const shapes =
     v.object_type === "manifest"
       ? [v.shape]
@@ -261,17 +307,35 @@ function semantics(kind: CanonicalKind, value: unknown): void {
   )
     fail("artifact size");
 }
-export function canonicalBytes(kind: CanonicalKind | "signature", input: unknown): Uint8Array {
+export function canonicalBytes(
+  kind: CanonicalKind | "signature",
+  input: unknown,
+  version: CanonicalVersion = "1",
+): Uint8Array {
   jsonValues(input);
-  const schema = kind === "signature" ? SignatureEnvelope : CANONICAL_SCHEMAS[kind];
-  if (!schema) fail("unsupported kind");
+  if (version !== "1" && version !== "2") fail("unsupported canonical version");
+  const schema =
+    kind === "signature"
+      ? version === "1"
+        ? SignatureEnvelope
+        : SignatureEnvelopeV2
+      : version === "1"
+        ? CANONICAL_SCHEMAS[kind]
+        : kind === "plan" || kind === "manifest"
+          ? CANONICAL_V2_SCHEMAS[kind]
+          : undefined;
+  if (!schema) throw new Error("unsupported kind/version");
   const value = Schema.decodeUnknownSync(schema, { onExcessProperty: "error" })(input);
   if (kind !== "signature") semantics(kind, value);
   const bytes = utf8.encode(canonicalize(value));
   if (bytes.length > CANONICAL_LIMITS.document_bytes) fail("document size");
   return bytes;
 }
-export function decodeCanonical(kind: CanonicalKind | "signature", bytes: Uint8Array): unknown {
+export function decodeCanonical(
+  kind: CanonicalKind | "signature",
+  bytes: Uint8Array,
+  version: CanonicalVersion = "1",
+): unknown {
   if (bytes.length > CANONICAL_LIMITS.document_bytes) fail("document size");
   const text = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(bytes);
   // Bound nesting before JSON.parse. Braces within strings do not count.
@@ -289,20 +353,27 @@ export function decodeCanonical(kind: CanonicalKind | "signature", bytes: Uint8A
     } else if (c === "}" || c === "]") depth--;
   }
   const value: unknown = JSON.parse(text);
-  const canonical = canonicalBytes(kind, value);
+  const canonical = canonicalBytes(kind, value, version);
   // Duplicate keys (including escaped aliases) cannot equal the unique-key JCS output.
   if (canonical.length !== bytes.length || canonical.some((byte, i) => byte !== bytes[i]))
     fail("noncanonical or duplicate fields");
   return value;
 }
-const domain = (tag: string) => utf8.encode(`kryvola/${tag}/v1\0`);
+const domain = (tag: string, version: CanonicalVersion = "1") =>
+  utf8.encode(`kryvola/${tag}/v${version}\0`);
 const hash = (...parts: Uint8Array[]) => {
   const state = blake3.create({ dkLen: 32 });
   for (const part of parts) state.update(part);
   return bytesToHex(state.digest());
 };
-export const commitment = (kind: CanonicalKind, value: unknown): string =>
-  hash(domain(kind), canonicalBytes(kind, value));
+export const commitment = (
+  kind: CanonicalKind,
+  value: unknown,
+  version: CanonicalVersion = "1",
+): string => {
+  const bytes = canonicalBytes(kind, value, version);
+  return hash(domain(kind, version), bytes);
+};
 export function uint64le(value: string): Uint8Array {
   Schema.decodeUnknownSync(U64)(value);
   const bytes = new Uint8Array(8);
@@ -320,14 +391,21 @@ export function blobDigest(bytes: Uint8Array): string {
 export function operationId(input: unknown): string {
   return commitment("operation-identity", input);
 }
-export function signaturePreimage(header: unknown, payload: Uint8Array): Uint8Array {
+export function signaturePreimage(
+  header: unknown,
+  payload: Uint8Array,
+  version: CanonicalVersion = "1",
+): Uint8Array {
   jsonValues(header);
-  const h = Schema.decodeUnknownSync(SignatureHeader, { onExcessProperty: "error" })(header);
-  const value = decodeCanonical(h.payload_kind, payload);
-  if (h.payload_digest !== commitment(h.payload_kind, value)) fail("payload digest mismatch");
+  const h = Schema.decodeUnknownSync(version === "1" ? SignatureHeader : SignatureHeaderV2, {
+    onExcessProperty: "error",
+  })(header);
+  const value = decodeCanonical(h.payload_kind, payload, version);
+  if (h.payload_digest !== commitment(h.payload_kind, value, version))
+    fail("payload digest mismatch");
   const metadata = utf8.encode(canonicalize(h));
   const parts = [
-    domain(`signature/${h.payload_kind}`),
+    domain(`signature/${h.payload_kind}`, version),
     uint64le(String(metadata.length)),
     metadata,
     uint64le(String(payload.length)),

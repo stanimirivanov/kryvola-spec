@@ -15,7 +15,7 @@ export {
 
 export * from "./control.js";
 
-export const CONTRACT_VERSION = "0.1.0-preview.6";
+export const CONTRACT_VERSION = "0.1.0-preview.7";
 export const LIMITS = {
   control_bytes: "65536",
   temporal_payload_bytes: "32768",

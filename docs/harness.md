@@ -1,5 +1,7 @@
 # Development harness and enforcement
 
+Issue #17: `src/fhe-q1.ts` shares Engine and signed v2 arithmetic declarations. `tests/fhe-q1.test.mjs` covers cross-contract matching, fixed v2 bytes/signatures, version/domain rejection, context substitution, input order and exact 8/16/32/64-bit overflow semantics. `pnpm check` includes this gate; see [v2 migration and scope](fhe-q1-arithmetic.md).
+
 M0-PR7: `src/canonical.ts` and `tests/canonical.test.mjs` define/test closed signed-format candidates, raw-byte JCS validation, BLAKE3/Ed25519 framing and operation identity. `fixtures/canonical/` supplies fixed positive/negative bytes exported with Effect schemas by `pnpm generate`. `pnpm check` runs the reference gate; native canonical adapters remain M0-PR8–10. See [canonical scope and trust boundaries](canonical.md).
 
 M0-PR6: `pnpm native:generate` creates real native bindings under `bindings/`; `pnpm native:check` checks generation drift, compiles Rust/C++ and runs shared codec/loopback gRPC conformance. `pnpm check` additionally verifies committed native provenance via `tools/native.mjs manifest-check`. CI's separate `native` job runs the full native gate. See [scope, dependency pins and remaining runtime gaps](native-wire.md).

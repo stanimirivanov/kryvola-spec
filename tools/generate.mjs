@@ -1,6 +1,11 @@
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
-import { CANONICAL_SCHEMAS, SignatureEnvelope } from "../dist/canonical.js";
+import {
+  CANONICAL_SCHEMAS,
+  CANONICAL_V2_SCHEMAS,
+  SignatureEnvelope,
+  SignatureEnvelopeV2,
+} from "../dist/canonical.js";
 import {
   ENGINE_FIELD_NUMBERS,
   ENGINE_METHODS,
@@ -46,7 +51,13 @@ for (const [name, schema] of Object.entries({
   generated.set(`canonical/${name}.schema.json`, json(toJsonSchema(schema)));
 }
 generated.set("artifact-ref.schema.json", json(descriptor.schema));
-for (const name of ["corpus", "negative"]) {
+for (const [name, schema] of Object.entries({
+  ...CANONICAL_V2_SCHEMAS,
+  signature: SignatureEnvelopeV2,
+})) {
+  generated.set(`canonical/v2/${name}.schema.json`, json(toJsonSchema(schema)));
+}
+for (const name of ["corpus", "negative", "modular-v2"]) {
   generated.set(
     `fixtures/canonical-${name}.json`,
     readFileSync(join(root, `fixtures/canonical/${name}.json`), "utf8"),
@@ -97,8 +108,10 @@ const sources = new Map(
     "src/engine.ts",
     "src/transport.ts",
     "src/canonical.ts",
+    "src/fhe-q1.ts",
     "fixtures/canonical/corpus.json",
     "fixtures/canonical/negative.json",
+    "fixtures/canonical/modular-v2.json",
     "package.json",
     "pnpm-lock.yaml",
     "tools/generate.mjs",

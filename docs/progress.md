@@ -1,5 +1,11 @@
 # Foundation progress
 
+## Issue #17: coherent FHE-Q1 arithmetic and v2 migration
+
+26 October 2026, [issue #17](https://github.com/stanimirivanov/kryvola-spec/issues/17): bundle `0.1.0-preview.7` adds [shared unsigned modular ADD/MUL semantics](fhe-q1-arithmetic.md), explicitly selected v2 signed plan/manifest/envelope formats and version-separated commitment/signature domains. The plan-to-Engine reference checker binds exact plan/context/operator/input intent. Fixed v2 signatures, eight negative byte cases and a test-only plaintext oracle cover widths 8/16/32/64, wrapping operation overflow and rejected out-of-range operands. Historical v1 bytes/default APIs remain unchanged; v1 plans are excluded from the new baseline checker.
+
+Local `pnpm check` passed: 44 tests, 54 deterministic artifacts, lint/build/architecture/provenance/Buf/Redocly gates. `pnpm native:generate` and `pnpm native:check` passed: 20 golden messages and 90 negative cases across three languages, plus Rust/Python loopback gRPC. Hash comparisons preserve all 49 prior contract outputs and all 24 native outputs; no consumer pin or Protobuf tag changes. Hosted CI is not claimed. Native canonical adapters, actual encrypted evaluation, parameter/model/program qualification, authentication and state/release enforcement remain separate gates. No assurance profile is enabled; M0 remains partial. Review issues #18/#19 remain independent follow-up work.
+
 ## M0-PR7: canonical objects and commitments
 
 26 October 2026, [issue #15](https://github.com/stanimirivanov/kryvola-spec/issues/15): bundle `0.1.0-preview.6` adds the [opt-in canonical-format candidate](canonical.md), closed Effect schemas, bounded JCS reference decoding, BLAKE3 commitments, Ed25519 preimages and operation-ID derivation. The fixed corpus covers seven object kinds, six public-test-key signatures and 24 negative byte cases. An acyclic key-blob/context/manifest regression prevents mutually dependent commitments. Local `pnpm check` passed: 40 tests, 50 deterministic artifacts, lint/build/architecture/provenance/Buf/Redocly checks. All 39 previous contract artifact hashes and 24 native output hashes remain unchanged; consumer pins are untouched.
