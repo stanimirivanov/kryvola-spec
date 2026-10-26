@@ -22,3 +22,5 @@ Other repositories consume a checked, commit-pinned copy of `generated/`, not th
 [FHE-Q1 arithmetic and v2 migration](fhe-q1-arithmetic.md) resolves issue #17's plan/Engine mismatch with an explicitly versioned modular candidate and a cross-contract reference checker.
 
 [Immutable authoring policy](policy.md) documents issue #18's readonly containers, runtime mutation guards and public declaration type tests.
+
+[Effect validation facade](validation.md) documents issue #19's additive branded results, safe typed failures and validation-phase boundaries.

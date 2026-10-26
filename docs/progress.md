@@ -1,5 +1,11 @@
 # Foundation progress
 
+## Issue #19: branded Effect validation and safe failures
+
+26 October 2026, [issue #19](https://github.com/stanimirivanov/kryvola-spec/issues/19): bundle `0.1.0-preview.9` adds [Effect-facing operation/canonical validation](validation.md) with private nominal constructors, explicit no-service Effect signatures and stable tagged/code failures. Brands follow the complete existing reference checks, including operation tenant/job correlations and bounded canonical-byte semantics. Canonical format selection is explicit; kind/version brands and declarations reject structural substitutes. Failures retain no input, original cause or parser diagnostic. Tests cover synthetic `TOKEN_X` exclusion, all v1/v2 golden objects/envelopes and negative bytes, semantic failures and lazy revalidation. Synchronous APIs and raw wire types retain their behavior; brands do not establish signature trust or authorization.
+
+Local `pnpm check` passed: 49 tests, public declaration checks, 54 deterministic artifacts and existing lint/build/architecture/provenance/Buf/Redocly gates. `pnpm native:generate` refreshed provenance. Hash comparisons preserve all 53 prior contract outputs and all 24 native outputs. No dependencies, consumer pins, schemas, wire/digest/signature vectors or assurance enablement change. The safe adapter intentionally trades all synchronous validation diagnostics for coarse typed failures; brands remain compile-time phase markers with caller ownership obligations. Hosted CI is not claimed; M0 remains partial.
+
 ## Issue #18: immutable exported validation policy
 
 26 October 2026, [issue #18](https://github.com/stanimirivanov/kryvola-spec/issues/18): bundle `0.1.0-preview.8` protects [owned policy containers](policy.md) with runtime freezing and matching readonly declarations. Limits, canonical v1/v2/control/Engine registry slots, vocabulary tuples and both levels of numeric wire-tag maps reject mutation. An isolated runtime regression verifies that mutation attempts cannot relax validation; an emitted-declaration type gate rejects writes while preserving reads, literal tags and caller-owned copies. Schema derivation remains supported; Effect ASTs/parser internals are not recursively frozen.

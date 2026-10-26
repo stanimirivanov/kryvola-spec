@@ -109,6 +109,7 @@ const sources = new Map(
     "src/transport.ts",
     "src/canonical.ts",
     "src/fhe-q1.ts",
+    "src/validation.ts",
     "fixtures/canonical/corpus.json",
     "fixtures/canonical/negative.json",
     "fixtures/canonical/modular-v2.json",

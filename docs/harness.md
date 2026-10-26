@@ -1,5 +1,7 @@
 # Development harness and enforcement
 
+Issue #19: `tests/validation.test.mjs` checks branded operation/canonical facades, typed sanitized failures and lazy execution. `type-tests/validation.ts` extends the existing `pnpm test:types` gate with validated-phase and kind/version checks against public declarations. Both are included in `pnpm check`; see [Effect validation boundaries](validation.md).
+
 Issue #18: `tests/policy.test.mjs` runs isolated mutation/validation regressions for exported policy containers. `pnpm test:types` uses `tsconfig.type-tests.json` and `type-tests/policy.ts` to check emitted readonly declarations after `pnpm build`; `pnpm check` includes this no-emit gate. See [policy ownership and compatibility](policy.md).
 
 Issue #17: `src/fhe-q1.ts` shares Engine and signed v2 arithmetic declarations. `tests/fhe-q1.test.mjs` covers cross-contract matching, fixed v2 bytes/signatures, version/domain rejection, context substitution, input order and exact 8/16/32/64-bit overflow semantics. `pnpm check` includes this gate; see [v2 migration and scope](fhe-q1-arithmetic.md).
