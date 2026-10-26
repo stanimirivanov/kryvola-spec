@@ -10,13 +10,19 @@ import {
   baselineConsentFixture,
   baselineRequestFixture,
   CONTRACT_VERSION,
+  CONTROL_FIELD_NUMBERS,
+  CONTROL_SCHEMAS,
   ConsentDeclaration,
+  controlFixtures,
   FoundationInventory,
   LIMITS,
+  PhysicalExecutionState,
+  PublicResultStatus,
 } from "../dist/index.js";
 import {
   describeArtifactRef,
   renderArtifactRef,
+  renderControl,
   renderLimits,
   toJsonSchema,
 } from "./projection.mjs";
@@ -39,11 +45,24 @@ generated.set("limits.json", json(LIMITS));
 for (const [path, bytes] of [...renderArtifactRef(descriptor), ...renderLimits(LIMITS)]) {
   generated.set(path, bytes);
 }
+for (const [name, schema] of Object.entries({
+  ...CONTROL_SCHEMAS,
+  PublicResultStatus,
+  PhysicalExecutionState,
+})) {
+  generated.set(`control/${name}.schema.json`, json(toJsonSchema(schema)));
+}
+generated.set("fixtures/control.json", json(controlFixtures));
+generated.set(
+  "proto/kryvola/spec/v1/control.proto",
+  renderControl(CONTROL_SCHEMAS, CONTROL_FIELD_NUMBERS),
+);
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
 const sources = new Map(
   [
     "src/index.ts",
     "src/assurance.ts",
+    "src/control.ts",
     "tools/generate.mjs",
     "tools/check-architecture.mjs",
     "tools/projection.mjs",

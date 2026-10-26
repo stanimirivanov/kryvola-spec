@@ -10,3 +10,5 @@
 [FHE-Q1 assurance and consent](assurance.md) describes the M0-PR2 preview schemas, reference policy checks, evidence modes and residual threat boundaries. Its baseline fixture remains disabled and unreviewed.
 
 Other repositories consume a checked, commit-pinned copy of `generated/`, not this repository's source tree. Change a contract here, run generation/verification, commit it, then explicitly update consumers' `spec.lock.json` and artifacts.
+
+[Reference and identity previews](control.md) describes M0-PR4 contracts, strict decoding, status separation and wire-preview limitations.
