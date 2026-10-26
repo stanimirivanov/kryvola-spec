@@ -1,5 +1,7 @@
 # Reference and identity previews (M0-PR4)
 
+M0-PR7 adds [opt-in canonical commitments and operation-ID derivation](canonical.md). The unsigned preview IDs/digests below remain illustrative; computed identities require an explicit consumer update.
+
 M0-PR6 adds [real native bindings and conformance](native-wire.md) alongside these unchanged structural previews; deployed semantic/authorization enforcement remains separate.
 
 Bundle `0.1.0-preview.3` adds strict Effect declarations in `src/control.ts`, JSON Schemas and fixtures under `generated/control/` and `generated/fixtures/control.json`, and `generated/proto/kryvola/spec/v1/control.proto`. ArtifactRef v1 and every pre-existing contract artifact retain their bytes and tags. Consumer pins require a separate explicit update.

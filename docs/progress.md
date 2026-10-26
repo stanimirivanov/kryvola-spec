@@ -1,5 +1,11 @@
 # Foundation progress
 
+## M0-PR7: canonical objects and commitments
+
+26 October 2026, [issue #15](https://github.com/stanimirivanov/kryvola-spec/issues/15): bundle `0.1.0-preview.6` adds the [opt-in canonical-format candidate](canonical.md), closed Effect schemas, bounded JCS reference decoding, BLAKE3 commitments, Ed25519 preimages and operation-ID derivation. The fixed corpus covers seven object kinds, six public-test-key signatures and 24 negative byte cases. An acyclic key-blob/context/manifest regression prevents mutually dependent commitments. Local `pnpm check` passed: 40 tests, 50 deterministic artifacts, lint/build/architecture/provenance/Buf/Redocly checks. All 39 previous contract artifact hashes and 24 native output hashes remain unchanged; consumer pins are untouched.
+
+Local `pnpm native:check` passed against unchanged wire inputs/outputs (20 golden cases, 90 negatives across three languages and Rust/Python loopback RPC). `pnpm native:generate` refreshed provenance after the final canonical change. This does not provide native JCS evidence: adapters remain M0-PR8–10. Production key trust/signing, cryptographic parameter approval, external artifact qualification, authorization/state/release enforcement and ratification remain pending. No profile is enabled; KRY-004/M0 remain partial. Hosted CI is configured but no hosted result is claimed.
+
 ## M0-PR6: native codecs and wire conformance
 
 26 October 2026, [issue #13](https://github.com/stanimirivanov/kryvola-spec/issues/13): bundle `0.1.0-preview.5` adds [native Protobuf codecs and Engine RPC bindings](native-wire.md), pinned Cargo/uv/compiler inputs, generated provenance and a separate Docker conformance gate. Local `pnpm native:generate` and `pnpm native:check` passed: deterministic regeneration, compiled Rust/C++ codecs, compiled C++ RPC declarations, 20 golden cases and 90 negative cases across three languages, and Rust/Python loopback gRPC. Local `pnpm check` passed with 34 tests and 40 unchanged contract artifacts apart from manifest metadata. No hosted CI result is claimed.
