@@ -1,5 +1,7 @@
 # Reference and identity previews (M0-PR4)
 
+M0-PR6 adds [real native bindings and conformance](native-wire.md) alongside these unchanged structural previews; deployed semantic/authorization enforcement remains separate.
+
 Bundle `0.1.0-preview.3` adds strict Effect declarations in `src/control.ts`, JSON Schemas and fixtures under `generated/control/` and `generated/fixtures/control.json`, and `generated/proto/kryvola/spec/v1/control.proto`. ArtifactRef v1 and every pre-existing contract artifact retain their bytes and tags. Consumer pins require a separate explicit update.
 
 **BEHAVIOR-ADJACENT:** new decoders require all declared fields, exact version `"1"`, known enum values and no unknown properties, including nested objects. References contain immutable IDs/versions and lowercase 64-character hexadecimal commitments; they grant no access. Digest algorithm/domain binding and operation-ID derivation require the later canonical-format contracts in M0-PR7. Fixture identifiers and digests are illustrative, not computed commitments. These declarations do not enable any assurance profile.

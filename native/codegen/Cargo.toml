@@ -1,0 +1,9 @@
+[package]
+name = "kryvola-wire-codegen"
+version = "0.1.0"
+edition = "2024"
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+tonic-prost-build = "=0.14.6"

@@ -1,5 +1,5 @@
 {
-  "contract_version": "0.1.0-preview.4",
+  "contract_version": "0.1.0-preview.5",
   "status": "preview",
   "hash_purpose": "SHA-256 build provenance; protocol commitments remain BLAKE3",
   "toolchain": {
@@ -8,7 +8,7 @@
     "package_manager": "pnpm@12.5.1"
   },
   "sources": {
-    "src/index.ts": "2cc20fbdd00015a94357ece907a0f4b2439f065eaa428683bfd74b9a3c347e97",
+    "src/index.ts": "0e98c977d85d1cd158d257393fa1063f96f3743d5f9186aaf4840e0cb6e0d169",
     "src/assurance.ts": "f25196882830b5b4be60425f2a7531f0f12c77908eb42dc4415d8b23d05cb414",
     "src/control.ts": "0c7f4d134bd9dfe3fe23e863d29e1890745ea6588faa2760080d2b655fcfa660",
     "src/engine.ts": "0b7195ad781e569cb079b3a099d58e1643f6f097983d9e3bdcdbd7872bfa8e4c",

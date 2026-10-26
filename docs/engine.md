@@ -1,5 +1,7 @@
 # Bounded Engine API and events (M0-PR5)
 
+M0-PR6 adds [native message/RPC bindings and conformance](native-wire.md); the limitations below describe this original contract preview. Production adapters and authorization remain unimplemented.
+
 Bundle `0.1.0-preview.4` adds `src/engine.ts` and `src/transport.ts` as explicit submodules; import their built declarations from `dist/engine.js` and `dist/transport.js`. They reuse the root ArtifactRef and control contracts without a circular root re-export. All previous contract bytes/tags remain unchanged. No dependencies, native runtime packages or consumer pins change.
 
 The generated `EngineService` follows [gRPC unary service definitions](https://grpc.io/docs/what-is-grpc/core-concepts/): `GetCapabilities`, `Execute`, `GetExecutionStatus`, `CancelExecution`. Effect owns logical schemas/fixtures and explicit stable tags; the generator exports JSON Schema and `engine.proto`, including bounded repeated strings/references and imported identity messages. Wire schemas do not enforce all constraints. Native presence/unknown-field validation and cross-language conformance remain M0-PR6; no service or fake runtime engine is implemented.

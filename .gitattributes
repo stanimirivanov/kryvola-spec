@@ -1,1 +1,3 @@
 * text=auto eol=lf
+bindings/** linguist-generated=true
+bindings/descriptor.bin binary
