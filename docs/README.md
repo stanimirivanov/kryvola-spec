@@ -14,3 +14,5 @@ Other repositories consume a checked, commit-pinned copy of `generated/`, not th
 [Reference and identity previews](control.md) describes M0-PR4 contracts, strict decoding, status separation and wire-preview limitations.
 
 [Engine API and transport boundaries](engine.md) describes M0-PR5 negotiation, events, cancellation and byte-budget contracts.
+
+[Native wire generation](native-wire.md) describes M0-PR6 bindings, pinned native toolchains, golden vectors and the separate Docker conformance gate.

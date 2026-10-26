@@ -1,5 +1,11 @@
 # Foundation progress
 
+## M0-PR6: native codecs and wire conformance
+
+26 October 2026, [issue #13](https://github.com/stanimirivanov/kryvola-spec/issues/13): bundle `0.1.0-preview.5` adds [native Protobuf codecs and Engine RPC bindings](native-wire.md), pinned Cargo/uv/compiler inputs, generated provenance and a separate Docker conformance gate. Local `pnpm native:generate` and `pnpm native:check` passed: deterministic regeneration, compiled Rust/C++ codecs, compiled C++ RPC declarations, 20 golden cases and 90 negative cases across three languages, and Rust/Python loopback gRPC. Local `pnpm check` passed with 34 tests and 40 unchanged contract artifacts apart from manifest metadata. No hosted CI result is claimed.
+
+C++ gRPC runtime linkage/live calls remain a consumer-integration gate. Strict wrappers are tested directly; production RPC adapters must enforce validation before permissive typed decoding. Cross-object semantics, authorization, durable state, canonical signing, release packaging and consumer pin updates remain later work. Native codecs do not decode cryptographic payloads or enable an assurance profile. This completes the native generation/conformance scope only; KRY-003 and M0 remain partial.
+
 ## M0-PR5: bounded Engine API and events
 
 26 October 2026, [issue #11](https://github.com/stanimirivanov/kryvola-spec/issues/11): [Engine/event contracts and byte guards](engine.md) add capability/execute/status/cancel previews, bounded reference lists, advisory observation envelopes and admission-versus-result OpenAPI responses in bundle `0.1.0-preview.4`. Local `pnpm check` passed: 33 tests, 40 deterministic artifacts, lint/build/Buf/Redocly checks. Previous contract outputs are unchanged. Native codecs, servers, transport hooks, durable deduplication/fencing, signing and consumer updates remain pending. KRY-003/M0 are not marked complete.

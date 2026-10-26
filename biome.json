@@ -1,7 +1,9 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.6.3/schema.json",
   "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
-  "files": { "includes": ["**", "!generated/**", "!docs/kryvola-*-v2.md", "!pnpm-lock.yaml"] },
+  "files": {
+    "includes": ["**", "!generated/**", "!bindings/**", "!docs/kryvola-*-v2.md", "!pnpm-lock.yaml"]
+  },
   "formatter": { "enabled": true, "indentStyle": "space", "lineWidth": 100 },
   "linter": { "enabled": true, "rules": { "preset": "none" } }
 }

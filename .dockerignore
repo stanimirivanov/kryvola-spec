@@ -1,0 +1,11 @@
+node_modules
+dist
+.git
+.cache/*
+!.cache/native-input
+native/target
+native/python/.venv
+.env
+.env.*
+**/__pycache__
+bindings

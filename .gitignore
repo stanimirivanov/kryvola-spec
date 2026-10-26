@@ -1,6 +1,9 @@
 node_modules/
 dist/
 .cache/
+native/target/
+native/python/.venv/
+**/__pycache__/
 .pnpm-store/
 *.tsbuildinfo
 .env

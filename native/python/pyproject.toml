@@ -1,0 +1,10 @@
+[project]
+name = "kryvola-wire-conformance"
+version = "0.1.0"
+license = "Apache-2.0"
+requires-python = ">=3.14,<3.15"
+dependencies = ["protobuf==7.35.1", "grpcio==1.85.0", "jsonschema==4.26.0"]
+
+[tool.uv]
+required-version = "==0.12.5"
+package = false
