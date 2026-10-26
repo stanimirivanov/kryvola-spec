@@ -308,6 +308,9 @@ function semantics(kind: CanonicalKind, value: unknown): void {
   )
     fail("artifact size");
 }
+/** canonicalBytes synchronously validates strict structure/reference semantics and emits JCS.
+ * Throws SchemaError or Error; diagnostics are not sanitized. No trust/signature verification.
+ */
 export function canonicalBytes(
   kind: CanonicalKind | "signature",
   input: unknown,
@@ -332,6 +335,10 @@ export function canonicalBytes(
   if (bytes.length > CANONICAL_LIMITS.document_bytes) fail("document size");
   return bytes;
 }
+/** decodeCanonical synchronously checks bounded UTF-8/JCS bytes, structure and semantics.
+ * Throws decoding/JSON SyntaxError, SchemaError or Error with potentially raw diagnostics.
+ * Use decodeCanonicalEffect for safe typed errors; neither API authenticates the document.
+ */
 export function decodeCanonical(
   kind: CanonicalKind | "signature",
   bytes: Uint8Array,

@@ -12,6 +12,7 @@ const upperPrefixes = [...maximum].flatMap((digit, index) => {
     ? [`${maximum.slice(0, index)}[${lower}-${Number(digit) - 1}][0-9]{${19 - index}}`]
     : [];
 });
+/** Uint64Decimal validates a canonical unsigned 64-bit decimal string; it is a raw wire type. */
 export const Uint64Decimal = Schema.String.check(
   Schema.isPattern(
     new RegExp(`^(0|[1-9][0-9]{0,18}|${upperPrefixes.join("|")}|${maximum})(?![\\s\\S])`, "u"),
@@ -58,7 +59,9 @@ export const DisclosureIdentity = Schema.Struct({
   recipient: Identifier,
   disclosure_index: Uint64Decimal,
 });
-/** Immutable intent; no public result exists until selection or a terminal verdict. */
+/** Operation describes structural immutable intent; use decodeOperation for tenant/job checks.
+ * Neither the schema nor decoder establishes authorization or public result selection.
+ */
 export const Operation = Schema.Struct({
   schema_version: Version,
   tenant_scope: Identifier,
@@ -159,6 +162,10 @@ export const decodePlanRef = Schema.decodeUnknownSync(PlanRef, strict);
 export const decodeDisclosureIdentity = Schema.decodeUnknownSync(DisclosureIdentity, strict);
 export const decodeAttempt = Schema.decodeUnknownSync(Attempt, strict);
 export const decodeExecution = Schema.decodeUnknownSync(Execution, strict);
+/** decodeOperation synchronously checks strict structure and tenant/job correlations.
+ * Throws SchemaError for structure or Error for correlation failures; diagnostics may
+ * contain input. Use decodeOperationEffect for a safe typed failure channel. No authorization.
+ */
 export function decodeOperation(input: unknown): typeof Operation.Type {
   const operation = Schema.decodeUnknownSync(Operation, strict)(input);
   for (const ref of [
