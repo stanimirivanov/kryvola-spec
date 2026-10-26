@@ -13,7 +13,9 @@ export {
   METADATA_LEAKAGE,
 } from "./assurance.js";
 
-export const CONTRACT_VERSION = "0.1.0-preview.2";
+export * from "./control.js";
+
+export const CONTRACT_VERSION = "0.1.0-preview.3";
 export const LIMITS = {
   control_bytes: "65536",
   temporal_payload_bytes: "32768",

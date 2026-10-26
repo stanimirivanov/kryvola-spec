@@ -77,3 +77,35 @@ export function renderLimits(limits) {
     ],
   ]);
 }
+
+/** Narrow control projection: constrained strings or explicitly registered messages only. */
+export function renderControl(schemas, tags) {
+  const messages = Object.entries(schemas).map(([name, schema]) => {
+    const properties = toJsonSchema(schema).properties;
+    const numbers = tags[name];
+    const fields = Object.keys(schema.fields);
+    if (
+      !numbers ||
+      fields.length !== Object.keys(numbers).length ||
+      new Set(Object.values(numbers)).size !== fields.length ||
+      fields.some(
+        (field) =>
+          !Number.isInteger(numbers[field]) ||
+          numbers[field] < 1 ||
+          numbers[field] > 536870911 ||
+          (numbers[field] >= 19000 && numbers[field] <= 19999),
+      )
+    ) {
+      throw new Error(`${name}: invalid explicit control tags`);
+    }
+    const lines = fields.map((field) => {
+      const nested = Object.entries(schemas).find(([, value]) => value === schema.fields[field]);
+      if (nested) return `  ${nested[0]} ${field} = ${numbers[field]};`;
+      const errors = checkProjection({ [field]: properties[field] });
+      if (errors.length) throw new Error(errors.join("\n"));
+      return `  optional string ${field} = ${numbers[field]};`;
+    });
+    return `message ${name} {\n${lines.join("\n")}\n}`;
+  });
+  return `// Generated structural preview; validate presence, constraints and context in application decoders.\nsyntax = "proto3";\n\npackage kryvola.spec.v1;\n\n${messages.join("\n\n")}\n`;
+}

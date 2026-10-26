@@ -1,5 +1,5 @@
 {
-  "contract_version": "0.1.0-preview.2",
+  "contract_version": "0.1.0-preview.3",
   "status": "preview",
   "hash_purpose": "SHA-256 build provenance; protocol commitments remain BLAKE3",
   "toolchain": {
@@ -8,11 +8,12 @@
     "package_manager": "pnpm@12.5.1"
   },
   "sources": {
-    "src/index.ts": "0418e2de3311220dbb6b1d8451023525a2c169995619a7e1c9dba578289ac706",
+    "src/index.ts": "1bed3c4dc9ee54c61448a4730aca9c1da86fd83fbac13e4daf93fa9a2fa3039b",
     "src/assurance.ts": "f25196882830b5b4be60425f2a7531f0f12c77908eb42dc4415d8b23d05cb414",
-    "tools/generate.mjs": "5cc960da7f7de9d406b1e27910c4e0c5c2d542f3ac6137fe9002f659df8222e7",
+    "src/control.ts": "0c7f4d134bd9dfe3fe23e863d29e1890745ea6588faa2760080d2b655fcfa660",
+    "tools/generate.mjs": "3a440b5308ec67cfc642f6d3743f88a2ed84972840c49b5dd2e5c6031332b533",
     "tools/check-architecture.mjs": "0234d21835ce7da33ab847a69b47ab6efebe2f2005a1fff94630c8a4501856ba",
-    "tools/projection.mjs": "367c529d02c5dd8037d47db32292747585d6b3c125ac5b9105baec8794155a54",
+    "tools/projection.mjs": "c5564770dfbdd9403e6cd36263c8d6b463a68b53e7aed12a67f62d898b5e7193",
     "tools/provenance.mjs": "ac59572fbbc100fa915ecba8ab73e4cfa44b75111f670f49724fa680e6c0c6ea"
   },
   "files": {
@@ -32,6 +33,16 @@
     "proto/kryvola/spec/v1/artifact_ref.proto": "e19083c4129724d62dbc02419af43d3f0322a18b659517aef744de7ff0fed6af",
     "rust/limits.rs": "50fae4630da3ba59a3e9cc30f774a2fc03389269fb8a019e320cde9f995a5eb1",
     "python/limits.py": "36d64b29f10451b0f1c4061c66124ecfa70833adb950cf6f095de12865a02d1b",
-    "cpp/limits.hpp": "2ae45e887c9edc5236972ea9e334bb0e3cb4fbd72498f1594dd6485f93678670"
+    "cpp/limits.hpp": "2ae45e887c9edc5236972ea9e334bb0e3cb4fbd72498f1594dd6485f93678670",
+    "control/KeyContextRef.schema.json": "ca2c4ceedaaaea454b074435d2e4ef59fc40aa6d13b0ea11899abff93c3e6035",
+    "control/PlanRef.schema.json": "64df013f11ff2265ed848495da3282874b2cecdbe84080c25acb296365d85a56",
+    "control/DisclosureIdentity.schema.json": "de5eb8afd63590524d6c59bbc35845f15b666a67d41ca0265ed54c7ab32180d4",
+    "control/Operation.schema.json": "c96098664bdfdf94ed5ff2e297e1c788f73c6f10876bec9f7a82edd4361120fd",
+    "control/Attempt.schema.json": "892e5c8427ecf4730b8800d006085d1c24815b9039515ab565cb6e9ba7305a41",
+    "control/Execution.schema.json": "024b1ac9a52aba9b3dd29dccd01d0d4f324a775bd612d59e07c4bf59088d14f4",
+    "control/PublicResultStatus.schema.json": "196f6b961ed5a93bcb7279157c1ec03f95523e552cb1af3d5c6774f7a1acf037",
+    "control/PhysicalExecutionState.schema.json": "3c85811af01ed59d88d78442db31173b34367d5d64a64c0c488cb9c522aa4981",
+    "fixtures/control.json": "643c3993eb657e027f9b24382c00b3ec7c7490728007d36d02ab82d8888fcaeb",
+    "proto/kryvola/spec/v1/control.proto": "2bf205704f5ddb5c2ee6d86cdf72d51d50b71640b41ab94601be05ca662820b6"
   }
 }

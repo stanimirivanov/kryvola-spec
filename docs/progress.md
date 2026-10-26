@@ -1,5 +1,9 @@
 # Foundation progress
 
+## M0-PR4: reference and operation identities
+
+26 October 2026, [issue #9](https://github.com/stanimirivanov/kryvola-spec/issues/9): added [reference and identity previews](control.md), strict Effect decoding, bounded decimal epochs/deadlines, separate public/physical state vocabularies, explicit-tag presence-bearing Protobuf previews and deterministic schema/fixture exports in bundle `0.1.0-preview.3`. Focused contract/regression tests passed (13 tests, 28 generated artifacts); all 17 legacy contract artifacts retain their original hashes. No runtime authorization, persistence, native codecs, canonical signing or consumer pin updates are implemented. This completes the M0-PR4 declaration scope only; KRY-003 and M0 remain partial.
+
 Scope: repository bootstrap associated with GitHub issue #1, 25 October 2026.
 
 | Item                                                     | Status                                    | Evidence / remaining work                                                                                          |
