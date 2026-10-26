@@ -1,5 +1,11 @@
 # Foundation progress
 
+## Issue #18: immutable exported validation policy
+
+26 October 2026, [issue #18](https://github.com/stanimirivanov/kryvola-spec/issues/18): bundle `0.1.0-preview.8` protects [owned policy containers](policy.md) with runtime freezing and matching readonly declarations. Limits, canonical v1/v2/control/Engine registry slots, vocabulary tuples and both levels of numeric wire-tag maps reject mutation. An isolated runtime regression verifies that mutation attempts cannot relax validation; an emitted-declaration type gate rejects writes while preserving reads, literal tags and caller-owned copies. Schema derivation remains supported; Effect ASTs/parser internals are not recursively frozen.
+
+Local `pnpm check` passed: 45 tests, the new public declaration gate, 54 deterministic artifacts and existing lint/build/architecture/provenance/Buf/Redocly gates. `pnpm native:generate` and `pnpm native:check` passed: 20 golden messages and 90 negative cases across three languages, plus Rust/Python loopback gRPC. Hash comparisons preserve all 53 prior contract outputs and all 24 native outputs. No dependency, wire format, limit, consumer pin, digest or signature changes. Public mutation is intentionally rejected; read-only consumers remain compatible. This is protection against accidental policy-container mutation, not an arbitrary-code sandbox. Hosted CI is not claimed; issue #19 remains separate, no assurance profile is enabled and M0 remains partial.
+
 ## Issue #17: coherent FHE-Q1 arithmetic and v2 migration
 
 26 October 2026, [issue #17](https://github.com/stanimirivanov/kryvola-spec/issues/17): bundle `0.1.0-preview.7` adds [shared unsigned modular ADD/MUL semantics](fhe-q1-arithmetic.md), explicitly selected v2 signed plan/manifest/envelope formats and version-separated commitment/signature domains. The plan-to-Engine reference checker binds exact plan/context/operator/input intent. Fixed v2 signatures, eight negative byte cases and a test-only plaintext oracle cover widths 8/16/32/64, wrapping operation overflow and rejected out-of-range operands. Historical v1 bytes/default APIs remain unchanged; v1 plans are excluded from the new baseline checker.

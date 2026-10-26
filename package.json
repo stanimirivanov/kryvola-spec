@@ -1,6 +1,6 @@
 {
   "name": "@kryvola/spec",
-  "version": "0.1.0-preview.7",
+  "version": "0.1.0-preview.8",
   "private": true,
   "type": "module",
   "license": "Apache-2.0",
@@ -11,6 +11,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test:types": "tsc -p tsconfig.type-tests.json",
     "format": "biome format --write .",
     "lint": "biome check .",
     "generate": "pnpm build && node tools/generate.mjs",
@@ -23,7 +24,7 @@
     "openapi:build": "redocly bundle status@v1 --output dist/openapi.yaml && redocly build-docs status@v1 --output dist/openapi.html",
     "test": "pnpm build && pnpm test:unit",
     "check:fast": "pnpm lint && pnpm typecheck && pnpm architecture:check",
-    "check": "pnpm lint && pnpm architecture:check && pnpm build && node tools/generate.mjs --check && node tools/native.mjs manifest-check && pnpm test:unit && pnpm proto:check && pnpm openapi:check && pnpm openapi:build",
+    "check": "pnpm lint && pnpm architecture:check && pnpm build && pnpm test:types && node tools/generate.mjs --check && node tools/native.mjs manifest-check && pnpm test:unit && pnpm proto:check && pnpm openapi:check && pnpm openapi:build",
     "inspect": "pnpm build && node tools/inspect.mjs",
     "test:unit": "node --test tests/*.test.mjs"
   },

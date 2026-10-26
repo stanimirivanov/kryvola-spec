@@ -15,15 +15,16 @@ export {
 
 export * from "./control.js";
 
-export const CONTRACT_VERSION = "0.1.0-preview.7";
-export const LIMITS = {
+export const CONTRACT_VERSION = "0.1.0-preview.8";
+/** LIMITS is immutable policy metadata, shared by validation and projection. */
+export const LIMITS = Object.freeze({
   control_bytes: "65536",
   temporal_payload_bytes: "32768",
   temporal_call_bytes: "131072",
   chunk_default_bytes: "1048576",
   chunk_max_bytes: "4194304",
   artifact_max_bytes: "1073741824",
-} as const;
+} as const);
 
 const Identifier = Schema.String.check(
   Schema.isPattern(/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,127}(?![\s\S])/u),
@@ -44,7 +45,7 @@ export const ArtifactRef = Schema.Struct({
 export type ArtifactRef = typeof ArtifactRef.Type;
 
 // Explicit stable wire tags. New fields require new tags; never infer them from declaration order.
-export const ARTIFACT_REF_FIELD_NUMBERS = {
+export const ARTIFACT_REF_FIELD_NUMBERS = Object.freeze({
   opaque_artifact_id: 1,
   tenant_scope: 2,
   immutable_version: 3,
@@ -52,7 +53,7 @@ export const ARTIFACT_REF_FIELD_NUMBERS = {
   byte_length: 5,
   media_type: 6,
   schema_version: 7,
-} as const;
+} as const);
 
 /** This schema deliberately cannot describe a qualified production release. */
 export const FoundationInventory = Schema.Struct({

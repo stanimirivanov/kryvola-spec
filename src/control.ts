@@ -89,34 +89,40 @@ export const Execution = Schema.Struct({
   deadline_unix_ms: Uint64Decimal,
   physical_state: PhysicalExecutionState,
 });
-export const CONTROL_SCHEMAS = {
+export const CONTROL_SCHEMAS = Object.freeze({
   KeyContextRef,
   PlanRef,
   DisclosureIdentity,
   Operation,
   Attempt,
   Execution,
-};
+});
 // Explicit tags, independent of schema declaration order. Never recycle retired tags.
-export const CONTROL_FIELD_NUMBERS = {
-  KeyContextRef: {
+export const CONTROL_FIELD_NUMBERS = Object.freeze({
+  KeyContextRef: Object.freeze({
     schema_version: 1,
     tenant_scope: 2,
     key_context_id: 3,
     immutable_version: 4,
     key_context_digest: 5,
     key_epoch: 6,
-  },
-  PlanRef: { schema_version: 1, tenant_scope: 2, plan_id: 3, immutable_version: 4, plan_digest: 5 },
-  DisclosureIdentity: {
+  } as const),
+  PlanRef: Object.freeze({
+    schema_version: 1,
+    tenant_scope: 2,
+    plan_id: 3,
+    immutable_version: 4,
+    plan_digest: 5,
+  } as const),
+  DisclosureIdentity: Object.freeze({
     schema_version: 1,
     tenant_scope: 2,
     logical_job_id: 3,
     output_stage: 4,
     recipient: 5,
     disclosure_index: 6,
-  },
-  Operation: {
+  } as const),
+  Operation: Object.freeze({
     schema_version: 1,
     tenant_scope: 2,
     logical_job_id: 3,
@@ -129,24 +135,24 @@ export const CONTROL_FIELD_NUMBERS = {
     plan_ref: 10,
     key_context_ref: 11,
     disclosure_identity: 12,
-  },
-  Attempt: {
+  } as const),
+  Attempt: Object.freeze({
     schema_version: 1,
     tenant_scope: 2,
     operation_id: 3,
     workflow_epoch: 4,
     attempt_epoch: 5,
     fence: 6,
-  },
-  Execution: {
+  } as const),
+  Execution: Object.freeze({
     schema_version: 1,
     attempt: 2,
     execution_id: 3,
     session_epoch: 4,
     deadline_unix_ms: 5,
     physical_state: 6,
-  },
-} as const;
+  } as const),
+} as const);
 const strict = { onExcessProperty: "error" } as const;
 export const decodeKeyContextRef = Schema.decodeUnknownSync(KeyContextRef, strict);
 export const decodePlanRef = Schema.decodeUnknownSync(PlanRef, strict);

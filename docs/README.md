@@ -20,3 +20,5 @@ Other repositories consume a checked, commit-pinned copy of `generated/`, not th
 [Canonical objects and commitments](canonical.md) describes M0-PR7's opt-in signed-format candidate, reference framing, fixed corpus and remaining native/trust gates.
 
 [FHE-Q1 arithmetic and v2 migration](fhe-q1-arithmetic.md) resolves issue #17's plan/Engine mismatch with an explicitly versioned modular candidate and a cross-contract reference checker.
+
+[Immutable authoring policy](policy.md) documents issue #18's readonly containers, runtime mutation guards and public declaration type tests.

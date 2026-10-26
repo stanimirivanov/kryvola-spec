@@ -1,0 +1,15 @@
+# Immutable authoring policy — issue #18
+
+Bundle `0.1.0-preview.8` protects owned policy containers against process-local accidental mutation. `LIMITS` and `CANONICAL_LIMITS` are frozen at runtime. The canonical v1/v2, control and Engine schema registries have frozen slots; callers cannot replace/delete entries or add new entries. Leakage and Engine method vocabularies are frozen tuples. Root wire tags and both levels of the control/Engine wire-tag maps are frozen.
+
+**Public API compatibility:** these exports now have readonly properties matching their runtime ownership. Assigning to a frozen export throws TypeError in strict JavaScript/ES modules; reflective writes cannot change the policy either. Read-only consumers, schema derivation and metadata copies remain supported. Callers that previously mutated shared exports must use their own copies instead; copies do not configure Kryvola validators or generators. Dynamic policy/plugin registration through these constants is not an API. No schema, limit, format version, wire tag, digest or signature bytes change.
+
+Only owned plain containers are frozen. Effect Schema objects, ASTs and parser internals are not recursively frozen; callers may derive new schemas with normal Effect APIs. This prevents registry replacement and policy-container writes, not deliberate tampering with arbitrary objects/code inside the same process. No new service or Layer is needed for static authoring policy.
+
+Fixture exports are sample data, not policy or validation defaults. Validators do not read them. Consumers/tests must use `structuredClone` before changing a fixture; nested aliases among the published examples should not be treated as independently owned mutable state. Caller-owned fixture/metadata copies remain mutable. Freezing fixtures or introducing a fixture factory API is outside this policy-container correction.
+
+`tests/policy.test.mjs` runs mutation probes in a disposable Node process, testing both the original oversized-reference/registry-replacement regressions and equivalent containers. It checks that invalid input remains rejected, existing v1/v2 golden bytes remain accepted, and caller schema derivation/copies work. The child process prevents a broken freeze regression from contaminating other tests.
+
+`type-tests/policy.ts` checks emitted public declarations: expected compiler errors reject registry, nested tag-map, limit and vocabulary writes, while valid reads/literal tags/caller-owned copies compile. Run `pnpm build` then `pnpm test:types`; `pnpm check` already builds and runs that no-emit gate. A removed readonly guarantee causes an unused `@ts-expect-error` failure. The type-test file is compiled only, never executed, and adds no dependency.
+
+After authoring changes run `pnpm generate` and `pnpm native:generate` to refresh provenance, then `pnpm check`. Native wire conformance remains the existing separate `pnpm native:check` gate. This change enables no assurance profile and does not add authorization or typed Effect validation facades; issue #19 remains separate work.
