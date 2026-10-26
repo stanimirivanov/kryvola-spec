@@ -5,8 +5,14 @@ import { Schema } from "effect";
 import {
   ARTIFACT_REF_FIELD_NUMBERS,
   ArtifactRef,
+  AssuranceProfile,
+  AssuranceRequest,
   artifactRefFixture,
+  baselineAssuranceFixture,
+  baselineConsentFixture,
+  baselineRequestFixture,
   CONTRACT_VERSION,
+  ConsentDeclaration,
   FoundationInventory,
   LIMITS,
 } from "../dist/index.js";
@@ -42,6 +48,12 @@ if (
 const generated = new Map();
 generated.set("artifact-ref.schema.json", json(artifactSchema));
 generated.set("foundation-inventory.schema.json", json(schema(FoundationInventory)));
+generated.set("assurance-profile.schema.json", json(schema(AssuranceProfile)));
+generated.set("assurance-request.schema.json", json(schema(AssuranceRequest)));
+generated.set("consent-declaration.schema.json", json(schema(ConsentDeclaration)));
+generated.set("fixtures/fhe-q1-assurance.json", json(baselineAssuranceFixture));
+generated.set("fixtures/fhe-q1-consent.json", json(baselineConsentFixture));
+generated.set("fixtures/fhe-q1-request.json", json(baselineRequestFixture));
 generated.set("fixtures/artifact-ref.json", json(artifactRefFixture));
 generated.set("limits.json", json(LIMITS));
 generated.set(
@@ -93,10 +105,12 @@ generated.set(
       package_manager: packageJson.packageManager,
     },
     sources: Object.fromEntries(
-      ["src/index.ts", "tools/generate.mjs", "tools/check-architecture.mjs"].map((path) => [
-        path,
-        sha(readFileSync(join(root, path))),
-      ]),
+      [
+        "src/index.ts",
+        "src/assurance.ts",
+        "tools/generate.mjs",
+        "tools/check-architecture.mjs",
+      ].map((path) => [path, sha(readFileSync(join(root, path)))]),
     ),
     files: Object.fromEntries([...generated].map(([path, bytes]) => [path, sha(bytes)])),
   }),

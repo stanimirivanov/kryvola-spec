@@ -96,6 +96,7 @@ test("governance index, documents and template have resolving local links", () =
     "docs/adr/0003-release-governance.md",
     "docs/adr/template.md",
     "docs/progress.md",
+    "docs/assurance.md",
   ])
     checkLinks(path, read(path));
   assert.throws(() => checkLinks("docs/ownership.md", "[missing](missing-governance-document.md)"));

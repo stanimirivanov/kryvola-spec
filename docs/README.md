@@ -7,4 +7,6 @@
 5. [Harness](harness.md) maps requirements to code and checks.
 6. [Progress](progress.md) records evidence and remaining work. File timestamps do not establish authority.
 
+[FHE-Q1 assurance and consent](assurance.md) describes the M0-PR2 preview schemas, reference policy checks, evidence modes and residual threat boundaries. Its baseline fixture remains disabled and unreviewed.
+
 Other repositories consume a checked, commit-pinned copy of `generated/`, not this repository's source tree. Change a contract here, run generation/verification, commit it, then explicitly update consumers' `spec.lock.json` and artifacts.
