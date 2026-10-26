@@ -1,4 +1,5 @@
 import { Schema } from "effect";
+import { CANONICAL_V2_SCHEMAS, commitment, decodeCanonical } from "./canonical.js";
 import {
   Attempt,
   checkExecutionContext,
@@ -7,6 +8,7 @@ import {
   Operation,
   Uint64Decimal,
 } from "./control.js";
+import { FheQ1Arithmetic, FheQ1Operator } from "./fhe-q1.js";
 import { ArtifactRef, artifactRefFixture, decodeArtifactRef } from "./index.js";
 
 const Version = Operation.fields.schema_version;
@@ -14,7 +16,7 @@ const Id = Operation.fields.operation_id;
 const Digest = Operation.fields.policy_digest;
 const list = <S extends Schema.Constraint>(schema: S, min: number, max: number) =>
   Schema.Array(schema).check(Schema.isMinLength(min), Schema.isMaxLength(max));
-const Operators = Schema.Literals(["ADD", "MUL"]);
+const Operators = FheQ1Operator;
 export const Capabilities = Schema.Struct({
   schema_version: Version,
   engine_digest: Digest,
@@ -22,7 +24,7 @@ export const Capabilities = Schema.Struct({
   security_profiles: list(Schema.Literal("FHE-Q1"), 1, 1),
   program_digests: list(Digest, 1, 32),
   operators: list(Operators, 1, 2),
-  arithmetic: Schema.Literal("EXACT_MODULAR"),
+  arithmetic: FheQ1Arithmetic,
   max_parallel_executions: Uint64Decimal,
 });
 export const GetCapabilitiesRequest = Schema.Struct({ schema_version: Version });
@@ -171,6 +173,47 @@ export function validateExecuteRequest(input: unknown, advertised: unknown, nowU
     if (ref.tenant_scope !== request.operation.tenant_scope)
       throw new Error("Input tenant mismatch");
   }
+  return request;
+}
+
+/** validatePlannedExecuteRequest correlates an explicitly selected v2 plan with Engine intent.
+ * Throws on format/context/support mismatches; does not authenticate the plan or grant execution.
+ */
+export function validatePlannedExecuteRequest(
+  planBytes: Uint8Array,
+  input: unknown,
+  advertised: unknown,
+  nowUnixMs: string,
+) {
+  const plan = Schema.decodeUnknownSync(
+    CANONICAL_V2_SCHEMAS.plan,
+    strict,
+  )(decodeCanonical("plan", planBytes, "2"));
+  const request = validateExecuteRequest(input, advertised, nowUnixMs);
+  if (
+    plan.tenant_scope !== request.operation.tenant_scope ||
+    commitment("plan", plan, "2") !== request.operation.plan_ref.plan_digest ||
+    plan.key_context_digest !== request.operation.key_context_ref.key_context_digest ||
+    plan.engine_digest !== request.engine_digest ||
+    plan.parameters.parameter_set_digest !== request.parameter_set_digest ||
+    plan.program_digest !== request.program_digest ||
+    plan.security_profile !== request.security_profile ||
+    plan.output_contract_digest !== request.output_contract_digest ||
+    plan.resource_profile_digest !== request.resource_profile_digest
+  )
+    throw new Error("Plan/Engine context mismatch");
+  if (
+    plan.operators.length !== request.required_operators.length ||
+    plan.operators.some((op) => !request.required_operators.includes(op))
+  )
+    throw new Error("Plan/Engine operator mismatch");
+  if (
+    plan.input_manifest_digests.length !== request.input_refs.length ||
+    plan.input_manifest_digests.some(
+      (digest, i) => digest !== request.input_refs[i]?.manifest_digest,
+    )
+  )
+    throw new Error("Plan/Engine input order mismatch");
   return request;
 }
 

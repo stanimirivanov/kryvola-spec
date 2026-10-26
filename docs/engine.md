@@ -1,5 +1,7 @@
 # Bounded Engine API and events (M0-PR5)
 
+Issue #17 adds [shared unsigned modular semantics and a v2 plan-to-Engine checker](fhe-q1-arithmetic.md). Engine v1 wire schemas remain unchanged; `validatePlannedExecuteRequest` adds explicit signed-format/context correlation without authenticating or authorizing execution.
+
 M0-PR6 adds [native message/RPC bindings and conformance](native-wire.md); the limitations below describe this original contract preview. Production adapters and authorization remain unimplemented.
 
 Bundle `0.1.0-preview.4` adds `src/engine.ts` and `src/transport.ts` as explicit submodules; import their built declarations from `dist/engine.js` and `dist/transport.js`. They reuse the root ArtifactRef and control contracts without a circular root re-export. All previous contract bytes/tags remain unchanged. No dependencies, native runtime packages or consumer pins change.

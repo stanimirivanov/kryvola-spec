@@ -18,3 +18,5 @@ Other repositories consume a checked, commit-pinned copy of `generated/`, not th
 [Native wire generation](native-wire.md) describes M0-PR6 bindings, pinned native toolchains, golden vectors and the separate Docker conformance gate.
 
 [Canonical objects and commitments](canonical.md) describes M0-PR7's opt-in signed-format candidate, reference framing, fixed corpus and remaining native/trust gates.
+
+[FHE-Q1 arithmetic and v2 migration](fhe-q1-arithmetic.md) resolves issue #17's plan/Engine mismatch with an explicitly versioned modular candidate and a cross-contract reference checker.

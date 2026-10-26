@@ -1,5 +1,7 @@
 # Canonical objects and commitments (M0-PR7)
 
+Issue #17 adds [modular plan/manifest v2 and explicit migration](fhe-q1-arithmetic.md) in bundle `0.1.0-preview.7`. The v1 definitions/corpus below remain historical and unchanged; v1 plans are not compatible FHE-Q1 execution plans. Default canonical API calls still select v1; the new checker requires an explicitly selected v2 plan.
+
 Bundle `0.1.0-preview.6` introduces an **unratified, explicit opt-in** v1 signed-format candidate. Effect in `src/canonical.ts` owns the closed schemas; `generated/canonical/` exports structural JSON Schema. `fixtures/canonical/` is the fixed candidate corpus, copied to `generated/fixtures/canonical-{corpus,negative}.json`. Tests compare exact bytes, digests and public-test-key signatures. Import the reference submodule from `dist/canonical.js`; it is not a production signing or authorization library. Rust/Python/C++ canonical adapters remain M0-PR8–10. Protobuf is not a signing representation.
 
 **BEHAVIOR-ADJACENT / compatibility:** existing unsigned fixtures, RPC tags and consumer pins remain unchanged. Existing illustrative operation IDs/digests are not silently reinterpreted as computed commitments. Adopting signed objects requires explicit validation of their format, context and producer trust. Adding a signed field or changing semantics requires a new object version, domain and vectors. Do not call this candidate a frozen production format.
