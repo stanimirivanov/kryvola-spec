@@ -28,9 +28,13 @@ import {
   controlFixtures,
   FoundationInventory,
   LIMITS,
+  MeasurementReport,
+  ModelDescriptor,
   PhysicalExecutionState,
   PublicResultStatus,
+  ReleaseCandidate,
 } from "../dist/index.js";
+import { profileFixtureFiles } from "./profile-fixtures.mjs";
 import {
   describeArtifactRef,
   renderArtifactRef,
@@ -44,6 +48,15 @@ const root = resolve(import.meta.dirname, "..");
 const json = (value) => `${JSON.stringify(value, null, 2)}\n`;
 const descriptor = describeArtifactRef(ArtifactRef, ARTIFACT_REF_FIELD_NUMBERS);
 const generated = new Map();
+for (const [name, schema] of Object.entries({
+  ModelDescriptor,
+  MeasurementReport,
+  ReleaseCandidate,
+})) {
+  generated.set(`profiles/${name}.schema.json`, json(toJsonSchema(schema)));
+}
+for (const [name, bytes] of profileFixtureFiles())
+  generated.set(`fixtures/profiles/${name}`, bytes);
 for (const [name, schema] of Object.entries({
   ...CANONICAL_SCHEMAS,
   signature: SignatureEnvelope,
@@ -110,6 +123,8 @@ const sources = new Map(
     "src/canonical.ts",
     "src/fhe-q1.ts",
     "src/validation.ts",
+    "src/measurement.ts",
+    "src/release.ts",
     "fixtures/canonical/corpus.json",
     "fixtures/canonical/negative.json",
     "fixtures/canonical/modular-v2.json",
@@ -119,6 +134,7 @@ const sources = new Map(
     "tools/check-architecture.mjs",
     "tools/projection.mjs",
     "tools/provenance.mjs",
+    "tools/profile-fixtures.mjs",
   ].map((path) => [path, readFileSync(join(root, path))]),
 );
 generated.set(

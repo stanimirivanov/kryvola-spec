@@ -1,5 +1,7 @@
 # Development harness and enforcement
 
+M0-PR13: `src/measurement.ts` and `src/release.ts` author the shared profile snapshot; `pnpm generate` exports their schemas and synthetic fixtures. `pnpm check:release` verifies the snapshot and exact model/report file hashes; `pnpm check`/CI verify includes the file gate and `tests/profiles.test.mjs` for incomplete/mixed profiles, accounting, immutable pins and rejected qualification claims. See [units, validation boundaries and consumer adoption](measurement-release.md). Native/canonical/state gates remain separate; external artifact/review authentication and actual benchmark/qualification evidence are not supplied by this gate.
+
 M0-PR12: the existing `pnpm check:state`/CI `verify` gate additionally runs `tools/check-release-state.mjs` over `models/release/` and `fixtures/state/release.json`. It checks bounded release/cancel/revocation/recovery interleavings, scenario expectations and five required mutant counterexamples. See [composition boundaries and assumptions](state-release.md). Heavy native/canonical suites remain separate CI jobs.
 
 M0-PR11: `pnpm check:state` runs `tools/check-state.mjs` over `models/attempts/` and fixed `fixtures/state/` traces. `pnpm check`/CI `verify` includes exhaustive finite-state safety exploration, non-vacuous outcome coverage and required mutant counterexamples. See [bounds, atomicity assumptions and runtime gaps](state-attempts.md). No Docker or service dependency is required for this gate.
