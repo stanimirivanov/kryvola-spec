@@ -1,6 +1,6 @@
 # Canonical objects and commitments (M0-PR7)
 
-[M0-PR8's Rust adapter](canonical-rust.md) now supplies the native Rust gate through `pnpm check:canonical`; references below to pending PR8–10 describe the original M0-PR7 scope. Python/C++ adapters remain M0-PR9/10.
+[Rust](canonical-rust.md), [Python](canonical-python.md) and [C++](canonical-cpp.md) adapters now share `pnpm check:canonical` and compare actual outputs. References below to pending PR8–10 describe the original M0-PR7 scope; these test adapters do not establish production qualification.
 
 Issue #17 adds [modular plan/manifest v2 and explicit migration](fhe-q1-arithmetic.md) in bundle `0.1.0-preview.7`. The v1 definitions/corpus below remain historical and unchanged; v1 plans are not compatible FHE-Q1 execution plans. Default canonical API calls still select v1; the new checker requires an explicitly selected v2 plan.
 
@@ -71,4 +71,4 @@ Run `pnpm generate`, `pnpm native:generate` (native provenance covers spec input
 
 References: [RFC 8785](https://www.rfc-editor.org/rfc/rfc8785), [RFC 8032](https://www.rfc-editor.org/rfc/rfc8032), [canonicalize](https://github.com/erdtman/canonicalize), [noble-hashes scope/license](https://github.com/paulmillr/noble-hashes), [BLAKE3 specification](https://github.com/BLAKE3-team/BLAKE3-specs).
 
-[Python conformance and Rust differential gate](canonical-python.md) adds M0-PR9 fixture compatibility evidence; C++ remains M0-PR10.
+[Python conformance and Rust differential gate](canonical-python.md) adds M0-PR9 fixture compatibility evidence; [M0-PR10](canonical-cpp.md) extends comparison to C++.

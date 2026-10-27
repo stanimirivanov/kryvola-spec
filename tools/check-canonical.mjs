@@ -25,7 +25,7 @@ function run(args, timeout, capture = false) {
 }
 mkdirSync(resolve(root, ".cache"), { recursive: true });
 const transcripts = [];
-for (const language of ["rust", "python"]) {
+for (const language of ["rust", "python", "cpp"]) {
   const iidfile = `.cache/canonical-${language}-image-id`;
   run(
     ["build", "--file", `tools/conformance/${language}/Dockerfile`, "--iidfile", iidfile, "."],
@@ -65,7 +65,7 @@ for (const language of ["rust", "python"]) {
   assert.equal(new Set(records.map(([version, kind]) => `${version}/${kind}`)).size, 9);
   transcripts.push(records.sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b))));
 }
-assert.deepEqual(transcripts[0], transcripts[1], "Rust/Python canonical outputs differ");
-console.log(
-  "Rust/Python canonical conformance and differential outputs passed; C++ remains M0-PR10.",
-);
+for (const transcript of transcripts.slice(1)) {
+  assert.deepEqual(transcripts[0], transcript, "Cross-language canonical outputs differ");
+}
+console.log("Rust/Python/C++ canonical conformance and differential outputs passed.");
