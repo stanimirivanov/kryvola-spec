@@ -25,3 +25,12 @@ test("native golden logical values satisfy the authoritative Effect contracts", 
     vectors.some(({ type, value }) => type === "Attempt" && value.fence === "18446744073709551615"),
   );
 });
+
+test("native Docker provenance input uses repository LF bytes", () => {
+  const bytes = readFileSync(new URL("../.dockerignore", import.meta.url));
+  assert.equal(
+    bytes.includes(Buffer.from("\r")),
+    false,
+    ".dockerignore must use LF before native generation",
+  );
+});
