@@ -21,6 +21,7 @@ jobs:
           node-version-file: .node-version
       - run: npm install --global pnpm@12.5.1
       - run: pnpm install --frozen-lockfile
+      # Includes bounded state exploration and required mutant counterexamples.
       - run: pnpm check
       - run: pnpm inspect
   canonical:

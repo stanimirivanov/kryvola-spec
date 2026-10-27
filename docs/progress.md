@@ -1,5 +1,11 @@
 # Foundation progress
 
+## M0-PR11: bounded attempt/fence safety model
+
+27 October 2026, [issue #29](https://github.com/stanimirivanov/kryvola-spec/issues/29): added the [attempt/lease/fence model](state-attempts.md), fixed scenario expectations and dependency-free bounded exploration. The model separates durable dispatch intent, physical launch, acknowledgement, finalized output and atomic fenced selection. It permits duplicate pure executions and retains committed selection after lease expiry; only workflow decisions create logical epochs. Required negative controls expose retired-epoch resurrection, expired selection and stale-fence selection under a new live lease. No schemas, bundle version, runtime services, consumer pins or assurance enablement change. KRY-005/M0 remain partial; release/cancellation/recovery extensions belong to M0-PR12.
+
+Local verification is intentionally limited to the lightweight model gate, formatting, provenance generation and scoped diff checks. Full foundation/native/canonical checks are delegated to existing PR CI per user preference; no hosted result is claimed. Native generation refreshes source provenance only; native conformance is not run locally.
+
 ## M0-PR8: Rust canonical-format conformance
 
 26 October 2026, [issue #23](https://github.com/stanimirivanov/kryvola-spec/issues/23): an [isolated Rust test adapter](canonical-rust.md) validates bounded, duplicate-aware raw JSON against generated closed schemas and mirrored reference semantics before accepting exact JCS bytes. Fixed v1/v2 objects, domain-separated BLAKE3 commitments, operation identity, chunk/blob framing and public-key Ed25519 signatures are exercised independently of the TypeScript implementation. The new `pnpm check:canonical`/CI gate uses pinned Rust 1.98.1, a committed isolated Cargo lock and offline/read-only/resource-bounded test execution. It provides no production codec, trust policy, signing service or ciphertext decoder.
@@ -54,7 +60,7 @@ Scope: repository bootstrap associated with GitHub issue #1, 25 October 2026.
 | KRY-001 architecture map                                 | Partial; governance proposed              | M0-PR1 ownership inventory/ADR 0003; named owner/security approval and release-set tooling remain pending          |
 | KRY-002 threat/assurance profiles                        | Preview declarations and reference checks | M0-PR2 strict schemas/policy tests; all published profiles disabled, security/parameter/legal ratification pending |
 | KRY-003/004 APIs/canonical formats                       | Preview only                              | No full Engine API, RPC bindings, canonical signing or production freeze                                           |
-| KRY-005 durable state protocol                           | Deferred                                  | No Temporal/SQL/Ray implementation or concurrency proof                                                            |
+| KRY-005 durable state protocol                           | Bounded attempt safety model              | M0-PR11 finite exploration; release model and live Temporal/SQL/Ray qualification remain pending                    |
 | KRY-006–010 feasibility/platform gates                   | Deferred                                  | No crypto benchmark, heavy engine packaging, model approval or full local stack                                    |
 
 No complete M0 milestone is marked done. Next: review and extend KRY-002/003 with the full bounded Engine/control contracts and versioned assurance profiles before fabric runtime integration.

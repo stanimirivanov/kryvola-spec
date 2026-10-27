@@ -1,0 +1,131 @@
+{
+  "required_coverage": [
+    "AUTHORIZED",
+    "REJECTED",
+    "LAUNCHED",
+    "ACKNOWLEDGED",
+    "COMPLETED",
+    "SELECTED",
+    "CONFLICT",
+    "ATTEMPT_EXPIRED",
+    "RENEWED",
+    "DUPLICATE",
+    "RETRY",
+    "RETAINED"
+  ],
+  "mutations": {
+    "reacquire-retired": "irreversible-retirement",
+    "unfenced-selection": "current-live-fence",
+    "ignore-fence": "current-live-fence"
+  },
+  "traces": [
+    {
+      "name": "lost ack duplicates pure work but selection is immutable and survives expiry",
+      "actions": [
+        "worker-authorize",
+        "workflow-authorize",
+        "ensure:1",
+        "launch:1",
+        "ensure:1",
+        "launch:1",
+        "ack:1",
+        "complete:1-2",
+        "select:1-2",
+        "complete:1-1",
+        "select:1-1",
+        "select:1-2",
+        "tick",
+        "lookup",
+        "ensure:1"
+      ],
+      "outcomes": [
+        "REJECTED",
+        "AUTHORIZED",
+        "ENSURED",
+        "LAUNCHED",
+        "ENSURED",
+        "LAUNCHED",
+        "ACKNOWLEDGED",
+        "COMPLETED",
+        "SELECTED",
+        "COMPLETED",
+        "CONFLICT",
+        "SELECTED",
+        "TIME_ADVANCED",
+        "SELECTED",
+        "SELECTED"
+      ],
+      "selected": "1-2"
+    },
+    {
+      "name": "expired attempt cannot renew or reacquire; workflow authorizes next fence",
+      "actions": [
+        "workflow-authorize",
+        "ensure:1",
+        "launch:1",
+        "tick",
+        "renew:1",
+        "ensure:1",
+        "worker-authorize",
+        "workflow-authorize",
+        "ensure:2",
+        "complete:1-1",
+        "select:1-1",
+        "launch:2",
+        "complete:2-1",
+        "select:2-1"
+      ],
+      "outcomes": [
+        "AUTHORIZED",
+        "ENSURED",
+        "LAUNCHED",
+        "TIME_ADVANCED",
+        "REJECTED",
+        "ATTEMPT_EXPIRED",
+        "REJECTED",
+        "AUTHORIZED",
+        "ENSURED",
+        "COMPLETED",
+        "REJECTED",
+        "LAUNCHED",
+        "COMPLETED",
+        "SELECTED"
+      ],
+      "selected": "2-1"
+    },
+    {
+      "name": "SQL intent survives bridge crash before launch; deadline bounds renewal",
+      "actions": [
+        "workflow-authorize",
+        "ensure:1",
+        "ensure:1",
+        "renew:1",
+        "tick",
+        "renew:1",
+        "launch:1",
+        "tick",
+        "renew:1",
+        "tick",
+        "ensure:1",
+        "complete:1-1",
+        "select:1-1"
+      ],
+      "outcomes": [
+        "AUTHORIZED",
+        "ENSURED",
+        "ENSURED",
+        "RENEWED",
+        "TIME_ADVANCED",
+        "RENEWED",
+        "LAUNCHED",
+        "TIME_ADVANCED",
+        "RENEWED",
+        "TIME_ADVANCED",
+        "ATTEMPT_EXPIRED",
+        "COMPLETED",
+        "REJECTED"
+      ],
+      "selected": null
+    }
+  ]
+}
