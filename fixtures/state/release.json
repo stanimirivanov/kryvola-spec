@@ -1,0 +1,132 @@
+{
+  "required_coverage": [
+    "GRANTED",
+    "REPLAYED",
+    "DISCLOSURE_CONFLICT",
+    "CANCELLED",
+    "REVOKED",
+    "CONTINUED",
+    "RECONCILED",
+    "RECOVERY_PENDING",
+    "READMITTED",
+    "GRANT_AFTER_EXPIRY",
+    "RECOVERY_DEDUP",
+    "RELEASE_WINS",
+    "CANCEL_WINS",
+    "RECOVERY_REPLAY",
+    "REVOKE_WINS"
+  ],
+  "mutations": {
+    "early-ack": "ack-after-tombstone",
+    "forget-tombstone": "durable-cancellation",
+    "skip-release-barrier": "authorized-release-barrier",
+    "stale-selection": "current-recovery-selection",
+    "epoch-scoped-ledger": "one-stable-disclosure"
+  },
+  "traces": [
+    {
+      "name": "selection survives lease expiry and Continue-As-New; release retry has one effect",
+      "grants": 1,
+      "steps": [
+        ["release:0", "REJECTED"],
+        ["authorize-release", "REJECTED"],
+        ["select:0:1-1", "SELECTED"],
+        ["verify", "VERIFIED"],
+        ["authorize-release", "RELEASE_AUTHORIZED"],
+        ["tick", "TIME_ADVANCED"],
+        ["continue-as-new", "CONTINUED"],
+        ["release:0", "GRANTED"],
+        ["release:0", "REPLAYED"],
+        ["select:0:1-2", "CONFLICT"]
+      ]
+    },
+    {
+      "name": "cancel wins only after tombstone commit and acknowledgement follows barrier",
+      "grants": 0,
+      "steps": [
+        ["select:0:1-1", "SELECTED"],
+        ["verify", "VERIFIED"],
+        ["authorize-release", "RELEASE_AUTHORIZED"],
+        ["cancel-request", "CANCEL_PENDING"],
+        ["cancel-ack", "REJECTED"],
+        ["cancel-commit", "CANCEL_COMMITTED"],
+        ["release:0", "REJECTED"],
+        ["cancel-ack", "CANCELLED"],
+        ["recover", "RECOVERING"],
+        ["reconcile", "RECONCILED"],
+        ["select:1:1-1", "REJECTED"]
+      ]
+    },
+    {
+      "name": "release wins before cancellation commit; later cancellation cannot erase its record",
+      "grants": 1,
+      "steps": [
+        ["select:0:1-2", "SELECTED"],
+        ["verify", "VERIFIED"],
+        ["authorize-release", "RELEASE_AUTHORIZED"],
+        ["cancel-request", "CANCEL_PENDING"],
+        ["release:0", "GRANTED"],
+        ["cancel-commit", "CANCEL_COMMITTED"],
+        ["cancel-ack", "CANCELLED"],
+        ["release:0", "REJECTED"],
+        ["recover", "RECOVERING"],
+        ["reconcile", "RECONCILED"]
+      ]
+    },
+    {
+      "name": "recovery quarantine rejects old completion and prevents changed-output redisclosure",
+      "grants": 1,
+      "steps": [
+        ["select:0:1-1", "SELECTED"],
+        ["verify", "VERIFIED"],
+        ["authorize-release", "RELEASE_AUTHORIZED"],
+        ["release:0", "GRANTED"],
+        ["recover", "RECOVERING"],
+        ["release:0", "REJECTED"],
+        ["select:1:1-2", "REJECTED"],
+        ["reconcile", "RECONCILED"],
+        ["workflow-readmit", "READMITTED"],
+        ["select:0:1-1", "REJECTED"],
+        ["select:1:1-2", "SELECTED"],
+        ["verify", "VERIFIED"],
+        ["authorize-release", "RELEASE_AUTHORIZED"],
+        ["release:0", "REJECTED"],
+        ["release:1", "DISCLOSURE_CONFLICT"]
+      ]
+    },
+    {
+      "name": "reconciled recovery reuses the same grant for the same immutable output",
+      "grants": 1,
+      "steps": [
+        ["select:0:1-1", "SELECTED"],
+        ["verify", "VERIFIED"],
+        ["authorize-release", "RELEASE_AUTHORIZED"],
+        ["release:0", "GRANTED"],
+        ["recover", "RECOVERING"],
+        ["reconcile-unknown", "RECOVERY_PENDING"],
+        ["workflow-readmit", "REJECTED"],
+        ["release:1", "REJECTED"],
+        ["reconcile", "RECONCILED"],
+        ["workflow-readmit", "READMITTED"],
+        ["select:1:1-1", "SELECTED"],
+        ["verify", "VERIFIED"],
+        ["authorize-release", "RELEASE_AUTHORIZED"],
+        ["release:1", "REPLAYED"]
+      ]
+    },
+    {
+      "name": "revocation wins even after workflow authorization and persists through recovery",
+      "grants": 0,
+      "steps": [
+        ["select:0:1-1", "SELECTED"],
+        ["verify", "VERIFIED"],
+        ["authorize-release", "RELEASE_AUTHORIZED"],
+        ["revoke", "REVOKED"],
+        ["release:0", "REJECTED"],
+        ["recover", "RECOVERING"],
+        ["reconcile", "RECONCILED"],
+        ["select:1:1-1", "REJECTED"]
+      ]
+    }
+  ]
+}

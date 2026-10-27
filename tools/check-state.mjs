@@ -74,3 +74,5 @@ for (const [mutation, expected] of Object.entries(fixtures.mutations)) {
   assert.equal(result.failure, expected, `negative control ${mutation} did not fail as expected`);
   console.log(`Counterexample ${mutation}: ${JSON.stringify(result.trace)} -> ${result.failure}`);
 }
+
+await import("./check-release-state.mjs");

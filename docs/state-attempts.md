@@ -64,6 +64,7 @@ and execution bounds limit the evidence; multiple tenants, clock skew, arithmeti
 overflow, malicious storage, resource starvation and interactive one-use material
 need separate qualification. The model covers pure restartable compute only.
 
-M0-PR12 adds stable workflow/recovery identity, disclosure deduplication and
-cancellation/revocation ordering. No release, consent, SQL service/migration,
-Temporal workflow or Ray adapter is implemented here. M0/KRY-005 remain partial.
+The [M0-PR12 release model](state-release.md) adds stable workflow/recovery identity,
+disclosure deduplication and cancellation/revocation ordering at the compute boundary.
+No release service, consent service, SQL migration, Temporal workflow or Ray adapter
+is implemented here. M0/KRY-005 remain partial.

@@ -1,5 +1,11 @@
 # Foundation progress
 
+## M0-PR12: disclosure, cancellation and recovery safety model
+
+27 October 2026, [issue #31](https://github.com/stanimirivanov/kryvola-spec/issues/31): added the [release-boundary model](state-release.md) composed with M0-PR11's real attempt transitions. It preserves stable disclosure identity across Continue-As-New and coordinated recovery; models explicit evidence/workflow authorization, cancellation commit-before-acknowledgement, revocation, recovery quarantine and independent reconciliation; and retains committed selection after dispatch expiry. The ledger replays identical output and rejects conflicting output, with five required broken-rule counterexamples. No contract artifacts, dependencies, bundle version, consumer pins or assurance enablement change. KRY-005/M0 remain partial pending runtime and broader qualification.
+
+Verification is limited locally to `pnpm check:state`, automated formatting, full lightweight lint and scoped diff checks. Foundation/native/canonical suites run through existing PR CI per user preference; no hosted result is claimed. The finite release-boundary projection is not an unbounded proof or live database/Temporal/Ray/restore test.
+
 ## M0-PR11: bounded attempt/fence safety model
 
 27 October 2026, [issue #29](https://github.com/stanimirivanov/kryvola-spec/issues/29): added the [attempt/lease/fence model](state-attempts.md), fixed scenario expectations and dependency-free bounded exploration. The model separates durable dispatch intent, physical launch, acknowledgement, finalized output and atomic fenced selection. It permits duplicate pure executions and retains committed selection after lease expiry; only workflow decisions create logical epochs. Required negative controls expose retired-epoch resurrection, expired selection and stale-fence selection under a new live lease. No schemas, bundle version, runtime services, consumer pins or assurance enablement change. KRY-005/M0 remain partial; release/cancellation/recovery extensions belong to M0-PR12.
@@ -60,7 +66,7 @@ Scope: repository bootstrap associated with GitHub issue #1, 25 October 2026.
 | KRY-001 architecture map                                 | Partial; governance proposed              | M0-PR1 ownership inventory/ADR 0003; named owner/security approval and release-set tooling remain pending          |
 | KRY-002 threat/assurance profiles                        | Preview declarations and reference checks | M0-PR2 strict schemas/policy tests; all published profiles disabled, security/parameter/legal ratification pending |
 | KRY-003/004 APIs/canonical formats                       | Preview only                              | No full Engine API, RPC bindings, canonical signing or production freeze                                           |
-| KRY-005 durable state protocol                           | Bounded attempt safety model              | M0-PR11 finite exploration; release model and live Temporal/SQL/Ray qualification remain pending                   |
+| KRY-005 durable state protocol                           | Bounded state safety models               | M0-PR11/12 attempt and release exploration; live Temporal/SQL/Ray and restore qualification remain pending         |
 | KRY-006–010 feasibility/platform gates                   | Deferred                                  | No crypto benchmark, heavy engine packaging, model approval or full local stack                                    |
 
 No complete M0 milestone is marked done. Next: review and extend KRY-002/003 with the full bounded Engine/control contracts and versioned assurance profiles before fabric runtime integration.
