@@ -1,5 +1,7 @@
 # Development harness and enforcement
 
+M0-PR12: the existing `pnpm check:state`/CI `verify` gate additionally runs `tools/check-release-state.mjs` over `models/release/` and `fixtures/state/release.json`. It checks bounded release/cancel/revocation/recovery interleavings, scenario expectations and five required mutant counterexamples. See [composition boundaries and assumptions](state-release.md). Heavy native/canonical suites remain separate CI jobs.
+
 M0-PR11: `pnpm check:state` runs `tools/check-state.mjs` over `models/attempts/` and fixed `fixtures/state/` traces. `pnpm check`/CI `verify` includes exhaustive finite-state safety exploration, non-vacuous outcome coverage and required mutant counterexamples. See [bounds, atomicity assumptions and runtime gaps](state-attempts.md). No Docker or service dependency is required for this gate.
 
 M0-PR8: `pnpm check:canonical` runs `tools/check-canonical.mjs` and the isolated locked crate under `tools/conformance/rust`. The separate Docker/CI gate checks native Rust JCS/schema/semantic/framing/signature conformance against both fixed format corpora; it does not replace `pnpm check` or `pnpm native:check`. See [prerequisites, limits and dependency licenses](canonical-rust.md).
