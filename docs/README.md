@@ -28,3 +28,5 @@ Other repositories consume a checked, commit-pinned copy of `generated/`, not th
 [Rust canonical conformance](canonical-rust.md) describes M0-PR8's isolated parser/commitment adapter, fixed vectors and Docker gate.
 
 [Python canonical conformance](canonical-python.md) describes M0-PR9's isolated adapter and direct Rust/Python output comparison.
+
+[C++ canonical conformance](canonical-cpp.md) describes M0-PR10's restricted adapter, sanitizer checks and three-language differential gate.

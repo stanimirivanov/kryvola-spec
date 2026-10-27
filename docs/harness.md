@@ -43,3 +43,5 @@ CI is configured for pull requests and main pushes, with commit-pinned actions, 
 M0-PR4: `src/control.ts` / `tests/control.test.mjs` add reference/identity declarations and strict decoding. `pnpm check` covers required fields, uint64 limits, nested excess fields, context correlation, distinct status vocabularies, deterministic exports and control Protobuf tag/presence checks. The frozen M0-PR3 baseline remains an unchanged legacy subset; additive artifacts are independently checked. The narrow control renderer supports constrained strings and registered nested messages only. See [boundaries and deferred runtime gates](control.md).
 
 M0-PR9 extends `pnpm check:canonical` with the [Python adapter](canonical-python.md) and direct Rust/Python canonical/digest/preimage comparison; both remain test tooling.
+
+M0-PR10 extends `pnpm check:canonical` with the [C++ adapter](canonical-cpp.md), compile warnings as errors, sanitizer checks and Rust/Python/C++ byte/digest/preimage comparison. This is fixture conformance, not production trust qualification.
