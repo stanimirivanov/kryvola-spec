@@ -60,7 +60,7 @@ Scope: repository bootstrap associated with GitHub issue #1, 25 October 2026.
 | KRY-001 architecture map                                 | Partial; governance proposed              | M0-PR1 ownership inventory/ADR 0003; named owner/security approval and release-set tooling remain pending          |
 | KRY-002 threat/assurance profiles                        | Preview declarations and reference checks | M0-PR2 strict schemas/policy tests; all published profiles disabled, security/parameter/legal ratification pending |
 | KRY-003/004 APIs/canonical formats                       | Preview only                              | No full Engine API, RPC bindings, canonical signing or production freeze                                           |
-| KRY-005 durable state protocol                           | Bounded attempt safety model              | M0-PR11 finite exploration; release model and live Temporal/SQL/Ray qualification remain pending                    |
+| KRY-005 durable state protocol                           | Bounded attempt safety model              | M0-PR11 finite exploration; release model and live Temporal/SQL/Ray qualification remain pending                   |
 | KRY-006–010 feasibility/platform gates                   | Deferred                                  | No crypto benchmark, heavy engine packaging, model approval or full local stack                                    |
 
 No complete M0 milestone is marked done. Next: review and extend KRY-002/003 with the full bounded Engine/control contracts and versioned assurance profiles before fabric runtime integration.
