@@ -30,3 +30,5 @@ Other repositories consume a checked, commit-pinned copy of `generated/`, not th
 [Python canonical conformance](canonical-python.md) describes M0-PR9's isolated adapter and direct Rust/Python output comparison.
 
 [C++ canonical conformance](canonical-cpp.md) describes M0-PR10's restricted adapter, sanitizer checks and three-language differential gate.
+
+[Attempt and fence model](state-attempts.md) describes M0-PR11's bounded exploration, negative controls, atomic boundaries and runtime qualification gaps.

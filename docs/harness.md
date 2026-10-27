@@ -1,5 +1,7 @@
 # Development harness and enforcement
 
+M0-PR11: `pnpm check:state` runs `tools/check-state.mjs` over `models/attempts/` and fixed `fixtures/state/` traces. `pnpm check`/CI `verify` includes exhaustive finite-state safety exploration, non-vacuous outcome coverage and required mutant counterexamples. See [bounds, atomicity assumptions and runtime gaps](state-attempts.md). No Docker or service dependency is required for this gate.
+
 M0-PR8: `pnpm check:canonical` runs `tools/check-canonical.mjs` and the isolated locked crate under `tools/conformance/rust`. The separate Docker/CI gate checks native Rust JCS/schema/semantic/framing/signature conformance against both fixed format corpora; it does not replace `pnpm check` or `pnpm native:check`. See [prerequisites, limits and dependency licenses](canonical-rust.md).
 
 Issue #19: `tests/validation.test.mjs` checks branded operation/canonical facades, typed sanitized failures and lazy execution. `type-tests/validation.ts` extends the existing `pnpm test:types` gate with validated-phase and kind/version checks against public declarations. Both are included in `pnpm check`; see [Effect validation boundaries](validation.md).
