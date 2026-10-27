@@ -10,3 +10,5 @@ native/python/.venv/
 .env
 .env.*
 !.env.example
+
+tools/conformance/python/.venv/

@@ -10,3 +10,5 @@ native/python/.venv
 .env.*
 **/__pycache__
 bindings
+
+tools/conformance/python/.venv

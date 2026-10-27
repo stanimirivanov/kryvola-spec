@@ -31,6 +31,21 @@ fn normative_objects_commitments_and_public_signatures() -> Result<()> {
             assert_eq!(jcs(&vector["value"]), bytes);
             assert_eq!(decode(kind, &bytes, version)?, vector["value"]);
             assert_eq!(commitment(kind, &bytes, version)?, vector["digest"]);
+            let transcript_preimage = if let Some(envelope) = vector.get("envelope") {
+                hex::encode(preimage(envelope, &bytes, version)?)
+            } else {
+                String::new()
+            };
+            println!(
+                "KRYVOLA_RESULT {}",
+                serde_json::json!([
+                    version,
+                    kind,
+                    hex::encode(jcs(&vector["value"])),
+                    commitment(kind, &bytes, version)?,
+                    transcript_preimage
+                ])
+            );
             let mut missing = vector["value"].clone();
             missing.as_object_mut().unwrap().remove("tenant_scope");
             assert!(decode(kind, &jcs(&missing), version).is_err());
