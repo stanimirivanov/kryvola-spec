@@ -14,9 +14,11 @@ export {
 } from "./assurance.js";
 
 export * from "./control.js";
+export * from "./measurement.js";
+export * from "./release.js";
 export * from "./validation.js";
 
-export const CONTRACT_VERSION = "0.1.0-preview.9";
+export const CONTRACT_VERSION = "0.1.0-preview.10";
 /** LIMITS is immutable policy metadata, shared by validation and projection. */
 export const LIMITS = Object.freeze({
   control_bytes: "65536",

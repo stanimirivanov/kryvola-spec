@@ -34,3 +34,5 @@ Other repositories consume a checked, commit-pinned copy of `generated/`, not th
 [Attempt and fence model](state-attempts.md) describes M0-PR11's bounded exploration, negative controls, atomic boundaries and runtime qualification gaps.
 
 [Disclosure and recovery model](state-release.md) describes M0-PR12's stable identity, release deduplication, cancellation/revocation races and recovery quarantine.
+
+[Measurement and release candidates](measurement-release.md) describes M0-PR13's shared model/report/candidate schemas, exact file bindings, units and preview qualification limits.

@@ -1,5 +1,11 @@
 # Foundation progress
 
+## M0-PR13: model, measurement and release-candidate snapshot
+
+27 October 2026, [issue #33](https://github.com/stanimirivanov/kryvola-spec/issues/33): bundle `0.1.0-preview.10` adds the [shared profile snapshot](measurement-release.md), closed Effect schemas, strict semantic/cross-record checks and exact model/report file hashing. Records pin model/data/arithmetic, hardware/software, samples/failures, phase timings, resource/cost units, evidence policy, all five components and separate source/ratification revisions. The six new generated artifacts contain schema definitions and explicitly synthetic, disabled, unqualified examples. No measured results, authenticated review, enabled profile, production qualification, signed-format changes or consumer adoption is claimed. M0 remains partial.
+
+Local verification targets formatting, lint, compilation, five focused profile test groups, the release gate, deterministic generation and provenance/content-hash checks. Heavy native/canonical suites and broader foundation/interoperability/state verification are delegated to existing PR CI per user preference; no hosted result is claimed. The release gate establishes consistency and exact local file binding only; external artifact/review authenticity and qualified-release admission remain later work.
+
 ## M0-PR12: disclosure, cancellation and recovery safety model
 
 27 October 2026, [issue #31](https://github.com/stanimirivanov/kryvola-spec/issues/31): added the [release-boundary model](state-release.md) composed with M0-PR11's real attempt transitions. It preserves stable disclosure identity across Continue-As-New and coordinated recovery; models explicit evidence/workflow authorization, cancellation commit-before-acknowledgement, revocation, recovery quarantine and independent reconciliation; and retains committed selection after dispatch expiry. The ledger replays identical output and rejects conflicting output, with five required broken-rule counterexamples. No contract artifacts, dependencies, bundle version, consumer pins or assurance enablement change. KRY-005/M0 remain partial pending runtime and broader qualification.

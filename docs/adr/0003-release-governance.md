@@ -52,7 +52,7 @@ Rollback selects a previously qualified release set only after confirming it can
 
 Today `pnpm check` checks foundation contracts, deterministic generation, Buf/Redocly and local documentation/ownership invariants. Consumer foundation harnesses verify pinned generated files. These checks do not implement candidate publication, full interoperability, state exploration, signed release-set admission or deployment.
 
-M0-PR6 adds native wire/release tooling, M0-PR8–12 add canonical/state conformance, M0-PR13 defines release records, and M0-PR17/24/32/37 implement release-set/build acceptance. Those gates do not exist yet and are not prerequisites represented as passing here. Manual ownership/security review is recorded in [ownership](../ownership.md); legal and release-specific operational sign-off remain pending future evidence.
+M0-PR6 supplies native wire tooling, M0-PR8–12 supply canonical/state conformance, and M0-PR13 defines unqualified release-candidate records and a consistency/file-binding gate. M0-PR17/24/32/37 release-set/build acceptance remains later work; no successful schema check constitutes those gates. Manual ownership/security review is recorded in [ownership](../ownership.md); legal and release-specific operational sign-off remain pending future evidence.
 
 ## Consequences
 
