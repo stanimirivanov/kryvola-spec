@@ -53,6 +53,16 @@ Every block supplies the issue title, owning repository, dependencies, technical
 
 ### M0 — contracts, feasibility and reproducibility
 
+30 October 2026, M0-PR36: the [ratification candidate](m0-ratification.md) freezes
+the already-tested preview.10 contract/profile identities and records immutable
+wire/canonical/state, ML, platform and research crypto evidence. Its decision is
+BLOCKED_PENDING_SIGNOFFS: no owner/security approvals are inferred from merges,
+research-only crypto remains disabled for production, and five-component release
+acceptance remains separate. Warm p95 ≤5 s / cold p95 ≤15 s remain proposed M1
+owner-to-owner objectives, not measured service claims. M1's approved-baseline
+entry gate above is unchanged. Semantic review changes reopen affected contract
+and consumer checks; this record does not mark KRY-001–010 or M0 complete.
+
 #### KRY-001 — [Architecture] docs: establish repository boundaries and decision records
 
 **Repository:** `kryvola-spec` · **Dependencies:** none
