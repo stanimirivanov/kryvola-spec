@@ -185,6 +185,7 @@ export function qualify(folder = join(ROOT, "build/publication")) {
       [
         "sign-blob",
         "--yes",
+        "--use-signing-config=false",
         "--tlog-upload=false",
         "--key",
         `${key}.key`,
