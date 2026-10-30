@@ -7,6 +7,10 @@
 5. [Harness](harness.md) maps requirements to code and checks.
 6. [Progress](progress.md) records evidence and remaining work. File timestamps do not establish authority.
 
+[M0 ratification candidate](m0-ratification.md) pins the tested contract/profile
+bytes and cross-repository evidence. It remains blocked pending named sign-offs;
+record consistency and merged implementation PRs do not approve M0 or M1 admission.
+
 [FHE-Q1 assurance and consent](assurance.md) describes the M0-PR2 preview schemas, reference policy checks, evidence modes and residual threat boundaries. Its baseline fixture remains disabled and unreviewed.
 
 Other repositories consume a checked, commit-pinned copy of `generated/`, not this repository's source tree. Change a contract here, run generation/verification, commit it, then explicitly update consumers' `spec.lock.json` and artifacts.
