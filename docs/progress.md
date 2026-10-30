@@ -140,3 +140,10 @@ Local `pnpm check` passed: 64 tests, including six closure-record tests, plus
 lint, type/build, architecture, generated/native-manifest, state, Buf and Redocly
 gates. `pnpm format`, `pnpm lint` and diff whitespace checks passed. Full Docker
 native conformance was not rerun for this administrative-only change.
+
+## M0-CLOSE-PR3: experimental contract publication
+
+Issue #41 adds deterministic committed bundle packaging, source-bound provenance,
+checksum-pinned Cosign setup and manual main-only keyless publication. Local test
+signatures cannot become publication trust. Contract/native bytes and pending
+ratification are preserved; publication does not admit a profile or M1.
