@@ -57,3 +57,12 @@ M0-PR6 supplies native wire tooling, M0-PR8–12 supply canonical/state conforma
 ## Consequences
 
 Repository PRs remain independently reviewable and revertible. Coordinated publication/adoption requires additional consumer PRs and measured integration before release. No runtime dependency, wire schema, generated artifact, security claim or deployed setting changes in this decision's documentation PR.
+
+## Proposed M0 closure convention
+
+[M0 closure](../m0-closure.md) defines the proposed non-production acceptance
+scope, required review roles, exact subject bindings and successor-record rules.
+It remains pending human review and does not amend the approved milestone by
+itself. Its repository-local checker establishes consistency only; authenticated
+review and final composition acceptance remain separate implementation gates.
+The frozen pending ratification record remains historical evidence.
