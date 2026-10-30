@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "status": "PENDING_QUALIFICATION",
+  "components": null,
+  "candidate_sha256": null,
+  "input_lock_sha256": null,
+  "report_sha256": null,
+  "evidence": null,
+  "cleanup_verified": null,
+  "production_ready": false,
+  "m0_accepted": false,
+  "m1_admitted": false
+}
