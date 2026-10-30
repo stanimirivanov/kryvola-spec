@@ -47,3 +47,7 @@ pending review; this convention grants no M1 admission or profile activation.
 
 [Experimental contract publication](publication.md) describes committed bundle
 qualification, manual publishing and independently pinned verification.
+
+[Pending successor ratification decision](m0-ratification-decision.md) binds the
+frozen candidate and historical records to an exact administrative review packet.
+All eight decisions and composition/approval inputs remain pending.

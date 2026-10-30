@@ -154,3 +154,20 @@ qualification passed two committed archive builds, real ephemeral-key signature
 verification, wrong-key rejection and changed-manifest signature rejection. Docker
 canonical/native conformance and GitHub OIDC publication were not run locally;
 the manual release qualification job requires both Docker gates before publishing.
+
+## M0-CLOSE-PR11: pending successor ratification preparation
+
+Issue #43 prepares a successor administrative record and exact review packet over
+the frozen contract/profile/ownership and historical ratification/closure bytes.
+All eight roles remain pending with no reviewer evidence. Proposed exclusions are
+not accepted; legal/security and composition inputs remain missing. Consistency
+checks cannot authenticate a reviewer, ratify M0 or admit M1. Historical records
+and generated artifacts remain unchanged; actual decisions need a new authenticated
+successor after the user supplies approvals.
+
+Local `pnpm check` passed all 72 tests, including five successor-record tests,
+plus lint/type/build, architecture, generated/native-manifest, state, Buf and
+Redocly gates. `pnpm format`, `pnpm lint` and diff whitespace checks passed. The
+standalone checker reports BLOCKED_PENDING_SIGNOFFS with authenticated=false and
+M0/M1 admission false. Docker native/canonical conformance was not rerun for this
+administrative-only change; no actual reviewer authentication was attempted.
