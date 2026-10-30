@@ -44,3 +44,6 @@ Other repositories consume a checked, commit-pinned copy of `generated/`, not th
 [Proposed M0 closure](m0-closure.md) separates administrative record consistency,
 authenticated review and final composition acceptance. Scope/exclusions remain
 pending review; this convention grants no M1 admission or profile activation.
+
+[Experimental contract publication](publication.md) describes committed bundle
+qualification, manual publishing and independently pinned verification.

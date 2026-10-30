@@ -12,3 +12,5 @@ native/python/.venv/
 !.env.example
 
 tools/conformance/python/.venv/
+
+build/
