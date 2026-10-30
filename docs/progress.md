@@ -95,8 +95,6 @@ No complete M0 milestone is marked done. Next: review and extend KRY-002/003 wit
 
 ## Observed verification
 
-On Windows, Node 24.18.0 / pnpm 12.5.1: `pnpm check` passed (strict Biome, TypeScript 7 build, architecture guard, 12 deterministic artifacts, five positive/negative tests, Buf and Redocly lint/bundle/docs). A disposable copy with no node_modules passed `pnpm install --frozen-lockfile`, the full `pnpm check`, and `pnpm inspect`. Missing or invalid controls were exercised by the isolated fixtures.
-
 CI is configured, but no hosted run is claimed. Required-check/branch settings remain maintainer actions. Full M0 crypto/operational/security gates remain deferred. The final diff preserves the original LICENSE and the supplied design; the plan adds only an explicit progress amendment.
 
 ## M0-PR1: ownership and release governance
