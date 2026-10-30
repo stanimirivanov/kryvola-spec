@@ -40,3 +40,7 @@ Other repositories consume a checked, commit-pinned copy of `generated/`, not th
 [Disclosure and recovery model](state-release.md) describes M0-PR12's stable identity, release deduplication, cancellation/revocation races and recovery quarantine.
 
 [Measurement and release candidates](measurement-release.md) describes M0-PR13's shared model/report/candidate schemas, exact file bindings, units and preview qualification limits.
+
+[Proposed M0 closure](m0-closure.md) separates administrative record consistency,
+authenticated review and final composition acceptance. Scope/exclusions remain
+pending review; this convention grants no M1 admission or profile activation.

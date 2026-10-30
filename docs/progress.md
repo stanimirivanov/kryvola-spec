@@ -126,3 +126,17 @@ Local `pnpm check` passed (49 Node tests, public declaration checks, 54 generate
 27 October 2026, [issue #27](https://github.com/stanimirivanov/kryvola-spec/issues/27): added the [restricted C++ adapter](canonical-cpp.md) and direct Rust/Python/C++ comparison to `pnpm check:canonical`. The adapter uses pinned jsoncons/official portable C BLAKE3 sources and public OpenSSL Ed25519 verification. Raw surrogate-pair checks prevent the jsoncons pin from dropping an invalid low-surrogate key escape; restricted JCS quoting supplies the lowercase control escapes required by RFC 8785. UTF-16 ordering, exact byte equality and mirrored schema/semantic checks cover the unchanged v1/v2 candidates.
 
 Local `pnpm check` passed: 50 Node tests, public declaration checks, 54 artifacts and existing lint/build/architecture/provenance/Buf/Redocly gates. The final `pnpm check:canonical` passed five groups in each language and nine matching canonical-byte/commitment/preimage records, including eight public signatures, 32 normative negatives and C++ parser/framing/semantic regressions. C++ adapter/parser code passed AddressSanitizer and UndefinedBehaviorSanitizer with recovery disabled; schema validation is a separate uninstrumented, warnings-as-errors translation unit to bound compile cost. The final C++ compile step completed in about 333 seconds. An optimized GCC 12 sanitizer build emitted standard-library regex diagnostics; optimized consumer qualification remains outside this gate. Both complete provenance manifests, including all 53 contract and 24 native output hashes, remain identical to merged main. No bundle version, contract, dependency in another harness, consumer pin or assurance enablement changes. CI allows three builds; hosted CI is not claimed and M0 remains partial.
+
+## M0-CLOSE-PR1: proposed scoped closure records
+
+Issue #39 adds the proposed non-production closure scope and a repository-local
+review-record convention. The standalone checker and unit negatives cover role
+completeness, candidate-byte bindings, scope, activation denial and predecessor
+bindings. Structurally populated review evidence remains unauthenticated; M0/M1
+admission stays blocked. Frozen ratification and generated candidate bytes are
+unchanged. Approval authentication, publication and acceptance remain later work.
+
+Local `pnpm check` passed: 64 tests, including six closure-record tests, plus
+lint, type/build, architecture, generated/native-manifest, state, Buf and Redocly
+gates. `pnpm format`, `pnpm lint` and diff whitespace checks passed. Full Docker
+native conformance was not rerun for this administrative-only change.
