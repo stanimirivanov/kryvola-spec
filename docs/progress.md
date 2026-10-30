@@ -147,3 +147,10 @@ Issue #41 adds deterministic committed bundle packaging, source-bound provenance
 checksum-pinned Cosign setup and manual main-only keyless publication. Local test
 signatures cannot become publication trust. Contract/native bytes and pending
 ratification are preserved; publication does not admit a profile or M1.
+
+Local `pnpm check` passed all 67 tests and the existing lint/type/build,
+architecture, generated/native-manifest, state, Buf and Redocly gates. Publication
+qualification passed two committed archive builds, real ephemeral-key signature
+verification, wrong-key rejection and changed-manifest signature rejection. Docker
+canonical/native conformance and GitHub OIDC publication were not run locally;
+the manual release qualification job requires both Docker gates before publishing.
