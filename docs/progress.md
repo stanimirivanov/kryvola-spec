@@ -228,3 +228,17 @@ Verification: formatter/lint and full `pnpm check` passed, including all 84 test
 generated/native manifests, types, state, Protobuf and OpenAPI checks. The ledger
 checker also passed against the original retained composition directory. Merge
 with a merge commit to preserve the initial evidence commit referenced by the URL.
+
+## Solo-owner governance — issue #51
+
+ADR 0004 records the owner's explicit instruction to replace the proposed eight-role
+ceremony with a versioned agentic report and one owner GitHub comment. It preserves
+historical records and qualified artifact evidence and grants no actual candidate,
+legal/security, M1 or production approval. No acceptance publication occurs.
+The companion Platform verifier requires exact subject/report/revision bindings
+and independent owner policy; actual owner approval remains pending.
+
+Verification: required pnpm formatting/lint and fast type/architecture checks
+passed. This documentation-only change does not modify generated contracts,
+qualified evidence or historical review checkers; no tests mirroring the prose
+were added. Actual owner approval is still pending.
