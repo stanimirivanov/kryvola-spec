@@ -189,3 +189,19 @@ Verification: formatter/lint, focused ledger tests, fast checks and the full
 `pnpm check` gate passed, including all 78 unit tests, generated/native manifest
 consistency, state checks, Protobuf and OpenAPI checks. No actual composition was
 run and no authenticated review or acceptance is claimed.
+
+## M0-REL-PR4.1: structural successor record checks
+
+Issue #47 adds a standalone administrative checker binding the preserved pending
+predecessor, populated composition ledger and retained bytes to proposed
+ratification, packet, admitted-candidate and decision references. Proposal revision
+means the frozen payload commit, distinct from the eventual recorded outcome;
+verification of its Git contents and authentication remain PR4.2 work. Both
+proposed and recorded consistency results explicitly remain unauthenticated and
+never admit M0/M1/production. No actual successor or approvals are seeded.
+
+Formatter/lint and full `pnpm check` passed, including all 83 unit tests and
+existing generated/native manifests, type, state, Protobuf and OpenAPI gates.
+Five new test groups use synthetic evidence and opaque non-signature bundles;
+actual qualification and reviews remain pending. No release/acceptance artifact,
+workflow dispatch, signing, public contract change or dependency was introduced.
