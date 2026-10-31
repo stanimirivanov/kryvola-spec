@@ -171,3 +171,21 @@ Redocly gates. `pnpm format`, `pnpm lint` and diff whitespace checks passed. The
 standalone checker reports BLOCKED_PENDING_SIGNOFFS with authenticated=false and
 M0/M1 admission false. Docker native/canonical conformance was not rerun for this
 administrative-only change; no actual reviewer authentication was attempted.
+
+## M0-REL-PR3: composition ledger infrastructure; qualification still pending
+
+Issue #45 adds a local administrative ledger, retained-byte consistency checker
+and synthetic negative tests. The checked-in ledger remains PENDING_QUALIFICATION
+with null composition/evidence fields: no actual selected set, live report or
+retention location was supplied. Spec, ML and Platform releases remain missing
+from the inspected inventory; M0-REL-PR2 was skipped because current Fabric/Engines
+release asset pins already match Platform. This does not complete operational
+qualification, authenticate evidence, approve M0/M1 or change crypto permissions.
+No release/acceptance artifact, publisher dispatch, trust policy or approval is
+created. Future actual evidence must pass Platform qualification first and be
+recorded through a reviewed ledger update outside the tested Platform revision.
+
+Verification: formatter/lint, focused ledger tests, fast checks and the full
+`pnpm check` gate passed, including all 78 unit tests, generated/native manifest
+consistency, state checks, Protobuf and OpenAPI checks. No actual composition was
+run and no authenticated review or acceptance is claimed.

@@ -51,3 +51,7 @@ qualification, manual publishing and independently pinned verification.
 [Pending successor ratification decision](m0-ratification-decision.md) binds the
 frozen candidate and historical records to an exact administrative review packet.
 All eight decisions and composition/approval inputs remain pending.
+
+[Pending composition qualification ledger](m0-composition-qualification.md) records
+missing release/live evidence and provides a local retained-evidence consistency
+checker. It cannot replace Platform qualification or authenticate approvals.
