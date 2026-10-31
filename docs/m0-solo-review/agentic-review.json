@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "kind": "AGENTIC_REVIEW",
+  "subject_sha256": "348f32c09322ee0da99fd7cf941f98778ccd0e8bbdb3bbb33f6ebc8d11917fce",
+  "reviewer": "Codex agentic technical review, 2026-10-31; not independent specialist certification",
+  "repositories": ["spec", "fabric", "engines", "ml", "platform"],
+  "checks": {
+    "compatibility": {
+      "status": "PASS",
+      "summary": "Re-ran the merged Platform verify_composition against retained report/candidate/lock/selection/model/measurement and original published assets. All five exact publisher/subject bindings and supported driver pins passed. Original live report records exact installed wheels and driver-byte checks at b9993e98ef534039f8f8bbdd5346aa6363a9d7ed. Consumed spec remains preview.10 at 1a5b57a590487ba116913050af8041f5e5f1fb52; current verifier implementation is separate from the qualified driver."
+    },
+    "security": {
+      "status": "LIMITATION",
+      "summary": "Inspected retained isolation and admission reports: owner positive control, compute/service denials, non-key canary scanning, negative controls and cleanup passed. Publisher signatures were reverified with pinned Cosign. Candidate and foundation stay disabled. This covers tested local trust boundaries only; no real private keys, formal crypto assurance, private-witness security or production isolation is established."
+    },
+    "dependency_licensing": {
+      "status": "LIMITATION",
+      "summary": "Inspected signed publication labels, engine archive members (engine/LICENSE/Cargo.lock), matched two-build provenance and fake-only dependency constraints. Assembly rejects TFHE/SP1 SDK dependencies in the selected fake engine. Research dependency permission remains DENY for distribution/service. License/SBOM metadata and source policies are evidence, not legal clearance or a complete transitive/container-image license/security audit."
+    },
+    "operations": {
+      "status": "LIMITATION",
+      "summary": "Retained live reports show service readiness, S3 version/range/condition/race/restart checks, Redpanda-to-Temporal-to-Ray fake traversal, replay, artifact/SQL controls, shaped-network checks, isolation and cleanup. Archive/report hashes were checked; evidence is preserved by Spec issue #49. Publication needed one Platform readiness retry and one ML transparency-log retry. No long-duration reliability, HA/DR, production capacity or real inference latency guarantee is established."
+    }
+  },
+  "blockers": [],
+  "residual_risks": [
+    "The operator/qualification host and independently pinned policy remain trusted; signatures do not prove benign code, reviewer expertise or complete dependency provenance.",
+    "TFHE/SP1 distribution and commercial-service permissions remain DENY. Unknown legal/security questions are not converted into approvals by this review.",
+    "Retained evidence is host-trusted research metadata. Repository storage is not a guaranteed backup/retention service; preserve immutable evidence commits.",
+    "The approval API is a current snapshot, not an atomic audit history. Operator policy must remain current and retain revoked comment IDs. GitHub cannot tell whether the human or an agent used the same owner account."
+  ],
+  "limitations": [
+    "Scope is the exact PUBLIC/SYNTHETIC_FIXTURE/NONE fake-engine baseline; placeholder synthetic model/parameter/dataset identities and numerical values are not real inference or benchmark claims.",
+    "General model accuracy, real cryptographic computation, service SLOs, private witnesses, production profile enablement, deployment authorization, M1 admission and acceptance publication are excluded.",
+    "This agent performed the documented evidence/code-boundary review and binding re-verification. It did not independently repeat the Docker run during package preparation, commission specialist review or provide a legal opinion.",
+    "This package contains no owner approval. The qualification-time intended_use string retains its approvals-pending wording verbatim to preserve existing hashes; it is not an inferred decision."
+  ]
+}

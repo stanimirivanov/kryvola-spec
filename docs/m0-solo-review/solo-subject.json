@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "governance": "SOLO_OWNER_AGENTIC_V1",
+  "scope": "M0_CONTRACT_FEASIBILITY_AND_NONPRODUCTION_COMPOSITION",
+  "intended_use": "M0 public synthetic fake-engine non-production qualification; approvals pending",
+  "candidate_sha256": "bbfafdfc85f0bf41f90b6cd520f0fac5fb44eabcbf59507e411db1fb5f9fbf01",
+  "composition_sha256": "3085d512c596513c29f701ad1f90543e3114ee65eae6c7e588d05ce37cc6a909",
+  "selection_sha256": "d9d8eaee801d4424e585b1a73a772857d65807c753986b4efca86864f2c0a39c",
+  "exclusions": [
+    "Real owner-to-owner transport/cache latency and durable inference remain M1 work; warm p95 <=5 s and cold p95 <=15 s remain unmeasured objectives.",
+    "GPU/PBS statistics, alternate proof exports and private-witness claims remain disabled/unavailable; public SP1 Core research is not zero knowledge.",
+    "Synthetic integer fixture arithmetic is not general model accuracy or actual cryptographic service performance.",
+    "Production isolation/security qualification and deployment authorization remain later gates.",
+    "TFHE/SP1 distribution and commercial service permissions remain DENY; proposed scope is non-production fake-only composition."
+  ],
+  "production_ready": false,
+  "profile_enabled": false
+}

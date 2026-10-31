@@ -242,3 +242,24 @@ Verification: required pnpm formatting/lint and fast type/architecture checks
 passed. This documentation-only change does not modify generated contracts,
 qualified evidence or historical review checkers; no tests mirroring the prose
 were added. Actual owner approval is still pending.
+
+## Actual solo-owner review package — issue #53
+
+Prepare one agentic report over the actual qualified five-component set, binding
+the retained candidate, composition and selection digests. The merged Platform
+composition verifier rechecked actual publisher signatures, artifact/source pins,
+retained live controls and cleanup. Compatibility passed; security, dependency/
+licensing and operational conclusions are explicitly limited to the tested fake-only
+non-production scope. No specialist legal/crypto clearance or actual model/SLO
+claim is asserted. No new Docker run was claimed during package preparation.
+
+The owner policy deliberately leaves PR number, reviewed revision and approval
+comment ID null. No approval was posted or fabricated. Historical records and
+original qualified bytes are unchanged; the new v2 subject supersedes only the
+review ceremony. A package-binding test checks hashes, exact qualified subjects,
+limitations and pending state. No acceptance artifacts are prepared or published.
+
+Verification: actual composition/publisher re-verification passed, and full
+`pnpm check` passed with all 85 tests, generated/native manifests, types, state,
+Protobuf and OpenAPI gates. The real solo gate returned its expected exit 2
+SOLO_OWNER_REVIEW_REJECTED for the deliberately pending owner policy.
