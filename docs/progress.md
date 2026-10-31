@@ -263,3 +263,25 @@ Verification: actual composition/publisher re-verification passed, and full
 `pnpm check` passed with all 85 tests, generated/native manifests, types, state,
 Protobuf and OpenAPI gates. The real solo gate returned its expected exit 2
 SOLO_OWNER_REVIEW_REJECTED for the deliberately pending owner policy.
+
+## M0-REL-PR4.4: actual solo-owner non-production ratification
+
+Issue #55 records the explicit owner approval on Spec PR #54/comment 6547394306,
+agentic report and exact qualified subjects under adopted ADR 0004. Live approval,
+publisher signatures and composition predicates reverified at the exact Platform
+compatibility fix commit recorded in the JSON. GitHub still reported PR #45 open;
+the record explicitly states that dependency rather than claiming a main verification.
+
+The new versioned successor has m0_ratified=true and binds preserved predecessor,
+proposal, scope, owner comment and historical verification/policy hashes. Existing
+pending/eight-role records and policy templates remain unchanged. Current policy
+expiry/revocation remains mandatory for current use; the local structural checker
+never claims live authentication. M0 acceptance artifacts, runtime M1 admission,
+production, profile and deployment flags remain false; no publication occurred.
+
+Verification: required formatting/lint, the standalone historical-record checker
+and complete `pnpm check` passed, including all 89 tests, generated/native manifests,
+types, state, Protobuf and OpenAPI. Four new tests cover actual record consistency,
+CLI behavior, altered identity/subject/status/activation claims, historical evidence
+drift and invalid recorded verification windows. No new Docker run is claimed;
+the exact previously qualified evidence and current owner approval were reverified.
