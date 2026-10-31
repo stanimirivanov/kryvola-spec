@@ -1,0 +1,38 @@
+{
+  "version": 2,
+  "governance": "SOLO_OWNER_AGENTIC_V1",
+  "status": "RATIFIED_FOR_M0_NONPRODUCTION",
+  "scope": "M0_CONTRACT_FEASIBILITY_AND_NONPRODUCTION_COMPOSITION",
+  "contract_revision": "1a5b57a590487ba116913050af8041f5e5f1fb52",
+  "predecessor_sha256": "3d99409aea8208d4c7a1c190bff1909aaaa9ef7bef17e26d1e91f98e8d90058d",
+  "proposal_sha256": "c6f7d90b710cd6d63647b44224821b569337f95a203901b0371bd92746a48671",
+  "governance_adr_sha256": "0dd5245db0c1795a93b418a12f0382491eec3d63ebb32d98323f8fdc6d69f42f",
+  "subject_sha256": "348f32c09322ee0da99fd7cf941f98778ccd0e8bbdb3bbb33f6ebc8d11917fce",
+  "agentic_review_sha256": "d9028c74a69c50f9fd74f76e2a870810211da45547901051a72d697d1e9d00eb",
+  "candidate_sha256": "bbfafdfc85f0bf41f90b6cd520f0fac5fb44eabcbf59507e411db1fb5f9fbf01",
+  "composition_sha256": "3085d512c596513c29f701ad1f90543e3114ee65eae6c7e588d05ce37cc6a909",
+  "selection_sha256": "d9d8eaee801d4424e585b1a73a772857d65807c753986b4efca86864f2c0a39c",
+  "intended_use": "M0 public synthetic fake-engine non-production qualification; approvals pending",
+  "reviewed_revision": "597e09474381c2b66f1c091f751c25458fe724e8",
+  "approval_sha256": "7217a065cf03fa849f430e180759a309cfca81bdaf5cd3ef4bf9fcc71342a4dc",
+  "verification_sha256": "e7d606f77ca9d3b7a0b0c938f9296dca2cbb7832790757869741499a1786bc02",
+  "verification": {
+    "verifier_revision": "4d302833b5b013c3aaf171ccd91b116af102eb05",
+    "verified_at": "2026-10-31T18:37:01Z",
+    "operator_policy_sha256": "f6b6ca1b1aab7e25ebfc8b6adf5cd2af22bcb385136ea889e1c7ffb0bb2e3082",
+    "policy_valid_until": "2026-11-07T23:59:59Z"
+  },
+  "exclusions": [
+    "Real owner-to-owner transport/cache latency and durable inference remain M1 work; warm p95 <=5 s and cold p95 <=15 s remain unmeasured objectives.",
+    "GPU/PBS statistics, alternate proof exports and private-witness claims remain disabled/unavailable; public SP1 Core research is not zero knowledge.",
+    "Synthetic integer fixture arithmetic is not general model accuracy or actual cryptographic service performance.",
+    "Production isolation/security qualification and deployment authorization remain later gates.",
+    "TFHE/SP1 distribution and commercial service permissions remain DENY; proposed scope is non-production fake-only composition."
+  ],
+  "m0_ratified": true,
+  "m0_accepted": false,
+  "m1_admitted": false,
+  "production_ready": false,
+  "profile_enabled": false,
+  "deployment_authorized": false
+}

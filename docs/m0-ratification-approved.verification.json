@@ -1,0 +1,13 @@
+{
+  "agentic_review_sha256": "d9028c74a69c50f9fd74f76e2a870810211da45547901051a72d697d1e9d00eb",
+  "deployment_authorized": false,
+  "eligible_for_m0_ratification": true,
+  "governance": "SOLO_OWNER_AGENTIC_V1",
+  "kind": "QUALIFIED_SOLO_OWNER_REVIEW",
+  "m0_accepted": false,
+  "m1_admitted": false,
+  "owner_approved": true,
+  "production_ready": false,
+  "profile_enabled": false,
+  "subject_sha256": "348f32c09322ee0da99fd7cf941f98778ccd0e8bbdb3bbb33f6ebc8d11917fce"
+}

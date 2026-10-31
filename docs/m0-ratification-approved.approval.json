@@ -1,0 +1,7 @@
+{
+  "id": 6547394306,
+  "owner_login": "stanimirivanov",
+  "url": "https://github.com/stanimirivanov/kryvola-spec/pull/54#issuecomment-6547394306",
+  "updated_at": "2026-10-31T18:24:08Z",
+  "body": "KRYVOLA_SOLO_OWNER_APPROVAL_V1\r\nsubject_sha256=348f32c09322ee0da99fd7cf941f98778ccd0e8bbdb3bbb33f6ebc8d11917fce\r\nagentic_review_sha256=d9028c74a69c50f9fd74f76e2a870810211da45547901051a72d697d1e9d00eb\r\nintended_use=M0 public synthetic fake-engine non-production qualification; approvals pending\r\nreviewed_revision=597e09474381c2b66f1c091f751c25458fe724e8"
+}

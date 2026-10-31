@@ -7,9 +7,11 @@
 5. [Harness](harness.md) maps requirements to code and checks.
 6. [Progress](progress.md) records evidence and remaining work. File timestamps do not establish authority.
 
-[M0 ratification candidate](m0-ratification.md) pins the tested contract/profile
-bytes and cross-repository evidence. It remains blocked pending named sign-offs;
-record consistency and merged implementation PRs do not approve M0 or M1 admission.
+[Current M0 non-production ratification](m0-ratification-approved.md) records the
+actual solo-owner decision for the qualified five-component set. The historical
+[M0 ratification candidate](m0-ratification.md) and its pending sign-offs remain
+preserved; their frozen status is not the current solo-governance decision.
+Production, deployment and acceptance publication remain separately disabled.
 
 [FHE-Q1 assurance and consent](assurance.md) describes the M0-PR2 preview schemas, reference policy checks, evidence modes and residual threat boundaries. Its baseline fixture remains disabled and unreviewed.
 
