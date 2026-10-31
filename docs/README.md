@@ -68,3 +68,7 @@ all eight reviewer decisions remain pending.
 one consolidated agentic review and one explicit owner decision for the new
 fake-only M0 route. Historical eight-role records remain preserved; actual owner
 approval is pending.
+
+[The actual solo-owner review package](m0-solo-review/README.md) contains the
+qualified subject, consolidated agentic findings and deliberately pending owner
+policy. Review the limits before posting any approval; a merge is not approval.

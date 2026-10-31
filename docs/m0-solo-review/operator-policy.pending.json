@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "governance": "SOLO_OWNER_AGENTIC_V1",
+  "subject_sha256": "348f32c09322ee0da99fd7cf941f98778ccd0e8bbdb3bbb33f6ebc8d11917fce",
+  "agentic_review_sha256": "d9028c74a69c50f9fd74f76e2a870810211da45547901051a72d697d1e9d00eb",
+  "composition_sha256": "3085d512c596513c29f701ad1f90543e3114ee65eae6c7e588d05ce37cc6a909",
+  "selection_sha256": "d9d8eaee801d4424e585b1a73a772857d65807c753986b4efca86864f2c0a39c",
+  "intended_use": "M0 public synthetic fake-engine non-production qualification; approvals pending",
+  "owner_login": "stanimirivanov",
+  "repository": "stanimirivanov/kryvola-spec",
+  "pull_request": null,
+  "approval_comment_id": null,
+  "reviewed_revision": null,
+  "valid_until": "2026-11-07T23:59:59Z",
+  "revoked_comment_ids": []
+}
