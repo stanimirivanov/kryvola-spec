@@ -63,3 +63,8 @@ approving them. Actual approvals remain pending.
 [Qualified M0 ratification proposal](m0-ratification-proposal.md) freezes the tested
 composition and proposed exclusions for review. It is not actual ratification;
 all eight reviewer decisions remain pending.
+
+[ADR 0004: solo-owner agentic review](adr/0004-solo-owner-agentic-review.md) adopts
+one consolidated agentic review and one explicit owner decision for the new
+fake-only M0 route. Historical eight-role records remain preserved; actual owner
+approval is pending.
