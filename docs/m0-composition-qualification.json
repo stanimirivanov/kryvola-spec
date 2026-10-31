@@ -1,12 +1,46 @@
 {
   "version": 1,
-  "status": "PENDING_QUALIFICATION",
-  "components": null,
-  "candidate_sha256": null,
-  "input_lock_sha256": null,
-  "report_sha256": null,
-  "evidence": null,
-  "cleanup_verified": null,
+  "status": "RECORDED_NONPRODUCTION_QUALIFICATION",
+  "components": {
+    "engines": {
+      "artifact_sha256": "f4c524cb03e9ab8a14642bf607b9e8216c516e4922a93765bbaecd097462d704",
+      "name": "kryvola-engines",
+      "source_revision": "f8023959081fa6a1e8169b41ef427630a5da72f3",
+      "version": "0.1.0-dev0.gf8023959081fa6a1e8169b41ef427630a5da72f3"
+    },
+    "fabric": {
+      "artifact_sha256": "1181a6557b18fbf55933451fff8d616a6b5cbe3c019f4e56e3a0523623b0f0ec",
+      "name": "kryvola-fabric",
+      "source_revision": "f02281ffa78decb6acd032c102359bf758f92a3a",
+      "version": "0.1.0-dev0.gf02281ffa78decb6acd032c102359bf758f92a3a"
+    },
+    "ml": {
+      "artifact_sha256": "22211761d9894ccb5eb1bdfd4c6b75d3ff08ab005333230e578b1516de7a7930",
+      "name": "kryvola-ml",
+      "source_revision": "68f949516b450a77eb30229ac2d1f92e6e4ad740",
+      "version": "0.1.0-dev0.g68f949516b450a77eb30229ac2d1f92e6e4ad740"
+    },
+    "platform": {
+      "artifact_sha256": "8b95d9b1a295a87e07fed8c93a05871538aebd54f94086217fbfb4f5cb0c53a7",
+      "name": "kryvola-platform",
+      "source_revision": "b9993e98ef534039f8f8bbdd5346aa6363a9d7ed",
+      "version": "0.1.0-dev0.gb9993e98ef534039f8f8bbdd5346aa6363a9d7ed"
+    },
+    "spec": {
+      "artifact_sha256": "baab54a091782d588785c9f5ce905f3e962f2e8b5220e73a75b7a877eba6a19a",
+      "name": "kryvola-spec",
+      "source_revision": "1a5b57a590487ba116913050af8041f5e5f1fb52",
+      "version": "0.1.0-preview.10"
+    }
+  },
+  "candidate_sha256": "bbfafdfc85f0bf41f90b6cd520f0fac5fb44eabcbf59507e411db1fb5f9fbf01",
+  "input_lock_sha256": "94d35fa0b400ce0260a75dbaece455194af81d2fcd3ad73b81aeef8f8af62299",
+  "report_sha256": "3085d512c596513c29f701ad1f90543e3114ee65eae6c7e588d05ce37cc6a909",
+  "evidence": {
+    "reference": "https://raw.githubusercontent.com/stanimirivanov/kryvola-spec/fddabb4ef31715fcdb9d94854a79f867e894383d/evidence/m0/composition/3085d512c596513c29f701ad1f90543e3114ee65eae6c7e588d05ce37cc6a909/evidence.tar#sha256=e78910cc4c43bff31ac2ce6ff6834859b676e12d1e0596433ecc6f16ddde83c4",
+    "archive_sha256": "e78910cc4c43bff31ac2ce6ff6834859b676e12d1e0596433ecc6f16ddde83c4"
+  },
+  "cleanup_verified": true,
   "production_ready": false,
   "m0_accepted": false,
   "m1_admitted": false

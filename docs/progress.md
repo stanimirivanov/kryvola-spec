@@ -205,3 +205,26 @@ existing generated/native manifests, type, state, Protobuf and OpenAPI gates.
 Five new test groups use synthetic evidence and opaque non-signature bundles;
 actual qualification and reviews remain pending. No release/acceptance artifact,
 workflow dispatch, signing, public contract change or dependency was introduced.
+
+## M0-REL-PR4.3: actual qualified proposal freeze, approvals pending
+
+Issue #49 retains the exact public qualification archive in an initial immutable
+commit and populates the ledger using its commit-addressed URL. The proposed
+ratification payload binds the actual tested candidate/report and five-component
+identities while explicitly preserving pending decisions and historical records.
+The payload's evaluator-required ratified status is proposed future content,
+not actual approval. No final packet, admitted candidate, legal approval summary,
+signature, recorded successor or acceptance artifact is supplied.
+
+Actual Platform qualification passed service, replay, network, isolation and
+admission controls, cleanup and post-run binding checks at source
+b9993e98ef534039f8f8bbdd5346aa6363a9d7ed. Synthetic measurement/model inputs remain
+explicitly fake research fixtures. Tests check the exact archive and actual ledger,
+proposal bindings and retained evidence drift; synthetic pending tests remain
+independent of the now-populated ledger. Final review/authentication is still
+blocked on actual legal/security/operational decisions and reviewer inputs.
+
+Verification: formatter/lint and full `pnpm check` passed, including all 84 tests,
+generated/native manifests, types, state, Protobuf and OpenAPI checks. The ledger
+checker also passed against the original retained composition directory. Merge
+with a merge commit to preserve the initial evidence commit referenced by the URL.

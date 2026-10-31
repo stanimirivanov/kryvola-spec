@@ -1,15 +1,32 @@
 import assert from "node:assert/strict";
-import { spawnSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { execFileSync, spawnSync } from "node:child_process";
+import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import test from "node:test";
+import { fileURLToPath } from "node:url";
 import { checkSuccessor } from "../tools/check-approved-ratification.mjs";
 import { roles, scope } from "../tools/check-closure-record.mjs";
-import { components } from "../tools/check-composition-qualification.mjs";
+import {
+  checkLedger,
+  components,
+  evidenceReader,
+} from "../tools/check-composition-qualification.mjs";
 import { sha256 } from "../tools/provenance.mjs";
 
-const pending = JSON.parse(
-  readFileSync(new URL("../docs/m0-composition-qualification.json", import.meta.url)),
-);
+const pending = {
+  version: 1,
+  status: "PENDING_QUALIFICATION",
+  components: null,
+  candidate_sha256: null,
+  input_lock_sha256: null,
+  report_sha256: null,
+  evidence: null,
+  cleanup_verified: null,
+  production_ready: false,
+  m0_accepted: false,
+  m1_admitted: false,
+};
 const bytes = (value) => Buffer.from(JSON.stringify(value));
 // Deliberately fabricated observations; not a live qualification or signed fixture.
 function baseFixture(change = () => {}) {
@@ -297,4 +314,78 @@ test("CLI without explicit inputs fails safely and writes no record", () => {
   assert.equal(result.status, 1);
   assert.equal(result.stdout, "");
   assert.equal(result.stderr.trim(), "SUCCESSOR_RECORD_REJECTED");
+});
+
+test("actual proposal binds the retained qualified composition without approving it", () => {
+  const ledger = JSON.parse(history("docs/m0-composition-qualification.json"));
+  const proposal = JSON.parse(history("docs/m0-ratification-proposal.json"));
+  const archive = fileURLToPath(
+    new URL(
+      "../evidence/m0/composition/3085d512c596513c29f701ad1f90543e3114ee65eae6c7e588d05ce37cc6a909/evidence.tar",
+      import.meta.url,
+    ),
+  );
+  assert.equal(
+    sha256(readFileSync(archive)),
+    "e78910cc4c43bff31ac2ce6ff6834859b676e12d1e0596433ecc6f16ddde83c4",
+  );
+  const expected = [
+    "candidate/candidate.json",
+    "candidate/lock.json",
+    "candidate/selection.json",
+    "candidate/model.json",
+    "candidate/measurement.json",
+    "live/network-report.json",
+    "live/fake-workflow-report.json",
+    "live/release-conformance-report.json",
+    "live/isolation-report.json",
+    "live/network-observations.jsonl",
+    "report.json",
+  ];
+  assert.deepEqual(
+    execFileSync("tar", ["-tf", archive], { encoding: "utf8" }).trim().split("\n").sort(),
+    expected.sort(),
+  );
+  const root = mkdtempSync(join(tmpdir(), "actual-qualified-proposal-"));
+  try {
+    // Extract only the independently hash-pinned, reviewed regular-file archive.
+    execFileSync("tar", ["--no-same-owner", "--no-same-permissions", "-xf", archive, "-C", root]);
+    const read = evidenceReader(root);
+    assert.equal(
+      checkLedger(ledger, (name) => (name === "evidence.tar" ? readFileSync(archive) : read(name)))
+        .evidence_checked,
+      true,
+    );
+    assert.equal(proposal.version, 1);
+    assert.equal(proposal.status, "RATIFIED_FOR_M0_NONPRODUCTION");
+    assert.equal(proposal.scope, scope);
+    assert.equal(proposal.contract_revision, ledger.components.spec.source_revision);
+    assert.equal(proposal.candidate_sha256, ledger.candidate_sha256);
+    assert.equal(proposal.composition_sha256, ledger.report_sha256);
+    assert.deepEqual(proposal.conditions, []);
+    assert.equal(proposal.exclusions.length, 5);
+    assert.equal(ledger.m0_accepted, false);
+    assert.equal(ledger.m1_admitted, false);
+    assert.equal(
+      sha256(read("report.json")),
+      "3085d512c596513c29f701ad1f90543e3114ee65eae6c7e588d05ce37cc6a909",
+    );
+    assert.throws(() => checkLedger({ ...ledger, candidate_sha256: "0".repeat(64) }, read));
+    assert.throws(() =>
+      checkLedger(ledger, (name) =>
+        name === "live/isolation-report.json"
+          ? Buffer.from("changed")
+          : name === "evidence.tar"
+            ? readFileSync(archive)
+            : read(name),
+      ),
+    );
+    const report = JSON.parse(read("report.json"));
+    assert.equal(report.cleanup_verified, true);
+    assert.ok(
+      history("docs/m0-ratification-proposal.md").toString().includes("PROPOSED, NOT RATIFIED"),
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
 });

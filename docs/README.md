@@ -59,3 +59,7 @@ checker. It cannot replace Platform qualification or authenticate approvals.
 [Successor ratification record checks](m0-ratification-record.md) bind proposed
 administrative records to retained composition evidence without authenticating or
 approving them. Actual approvals remain pending.
+
+[Qualified M0 ratification proposal](m0-ratification-proposal.md) freezes the tested
+composition and proposed exclusions for review. It is not actual ratification;
+all eight reviewer decisions remain pending.

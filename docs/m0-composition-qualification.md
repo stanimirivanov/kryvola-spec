@@ -1,17 +1,16 @@
 # M0 composition qualification ledger — pending
 
-Status: **PENDING_QUALIFICATION**. No actual five-component set or successful live
-composition report has been supplied. Spec, ML and Platform publications remain
-missing from the inspected release inventory. Existing Fabric/Engines publications
-match Platform's embedded pins, so M0-REL-PR2 was skipped. This record supplies no
-approval, ratification, acceptance or M1 admission.
+Status: **RECORDED_NONPRODUCTION_QUALIFICATION**. The exact five-component
+composition passed live controls and cleanup. The populated ledger binds its
+candidate, report, archive and component hashes. [The pending ratification
+proposal](m0-ratification-proposal.md) explains the scope and remaining decisions.
 
-M0-REL-PR3 provides the administrative ledger/checker and synthetic test coverage.
-Recording actual qualification remains blocked on independently selected published
-artifacts, operator inputs, a successful live run and durable evidence retention.
-The null fields in m0-composition-qualification.json deliberately avoid invented
-sources, hashes, measurements or cleanup outcomes. A passing pending consistency
-check does not close this operational blocker.
+Evidence is retained in the content-addressed archive committed at
+fddabb4ef31715fcdb9d94854a79f867e894383d; the ledger's URL pins those immutable
+bytes. This repository copy does not guarantee indefinite hosting or backup.
+Publisher binaries/signatures remain separate independently pinned inputs.
+M0 acceptance, M1 admission and all specialist approvals remain pending. The
+historical pending ratification files are preserved unchanged.
 
 ## Procedure and boundaries
 
@@ -38,16 +37,14 @@ not embed them. Do not store credentials or confidential review material here.
 From the Spec repository root:
 
 ```sh
-# Checked-in pending ledger consistency only; no evidence is read:
-node tools/check-composition-qualification.mjs
-# Populated ledger requires the original extracted composition directory:
+# The populated ledger requires the original extracted composition directory:
 node tools/check-composition-qualification.mjs LEDGER_JSON RETAINED_EVIDENCE_DIRECTORY
 pnpm test:unit
 pnpm check
 ```
 
-Uppercase arguments are explicit local paths. No command downloads, extracts,
-executes artifacts, signs, uploads or publishes. The checker verifies report,
+Uppercase arguments are explicit local paths. The checker downloads, extracts,
+signs, uploads and publishes nothing. It verifies report,
 archive, candidate, lock and all retained subject hashes; component/source and
 cleanup claims must agree. It rejects symlinks in the evidence tree, unsafe paths,
 missing files and oversized inputs. A nonzero result is failure. Pending records
@@ -59,7 +56,9 @@ member-by-member to the directory. HTTPS locations are not fetched. JSON fields
 are administrative consistency inputs, not a canonical signing protocol. This
 checker does not authenticate publishers/reviewers, rerun live controls or prove
 host observations trustworthy. Platform's independent re-verification and final
-review/evaluation remain mandatory. Tests use fabricated temporary evidence only.
+review/evaluation remain mandatory. Tests use synthetic negative fixtures and
+extract the independently hash-pinned actual archive in temporary storage to
+check its ledger and proposal bindings.
 
 Changes to the selected composition require new qualification and a new ledger
 revision; never edit historical evidence bytes to fit it. Final authenticated
