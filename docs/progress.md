@@ -1,5 +1,15 @@
 # Foundation progress
 
+## Current milestone status — 31 October 2026
+
+**M0 is closed for the ratified non-production baseline.** See the
+[close-out and KRY-001–010 disposition](m0-closeout.md) and the
+[actual owner ratification](m0-ratification-approved.md). The original roadmap
+criteria are not all claimed implemented: exclusions and feature prerequisites
+are carried forward explicitly. Runtime admission, production and acceptance
+publication remain disabled. Entries below are historical observations at their
+recorded time; their pending/BLOCKED wording does not revoke the current decision.
+
 ## M0-PR36: ratification review candidate
 
 30 October 2026, issue #35: the [M0 review record](m0-ratification.md) binds the
@@ -285,3 +295,19 @@ types, state, Protobuf and OpenAPI. Four new tests cover actual record consisten
 CLI behavior, altered identity/subject/status/activation claims, historical evidence
 drift and invalid recorded verification windows. No new Docker run is claimed;
 the exact previously qualified evidence and current owner approval were reverified.
+
+## Final M0 close-out — issue #57
+
+Add the authoritative current-scope/roadmap addendum with explicit evidence and
+remaining boundaries for every original KRY-001–010 item. No excluded original
+criterion is relabelled implemented; follow-up runtime, crypto-permission and
+production gates remain explicit. The actual owner approval, qualification and
+ratification close this non-production milestone without another signing ceremony
+or acceptance publication. Historical plan/records, qualified bytes, generated
+contracts and all runtime/activation flags remain unchanged.
+
+Verification: `pnpm format`, `pnpm lint` and full `pnpm check` passed, including
+all 89 existing tests, generated/native manifests, type/state, Protobuf and OpenAPI
+checks. Local documentation links and diff whitespace checks passed. This prose
+close-out adds no tests mirroring documentation and changes no implementation or
+frozen evidence; no release or acceptance artifact was published.
