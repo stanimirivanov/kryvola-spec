@@ -34,6 +34,7 @@ import {
   PublicResultStatus,
   ReleaseCandidate,
 } from "../dist/index.js";
+import { RUNTIME_SCHEMAS } from "../dist/runtime.js";
 import { profileFixtureFiles } from "./profile-fixtures.mjs";
 import {
   describeArtifactRef,
@@ -48,6 +49,9 @@ const root = resolve(import.meta.dirname, "..");
 const json = (value) => `${JSON.stringify(value, null, 2)}\n`;
 const descriptor = describeArtifactRef(ArtifactRef, ARTIFACT_REF_FIELD_NUMBERS);
 const generated = new Map();
+for (const [name, schema] of Object.entries(RUNTIME_SCHEMAS)) {
+  generated.set(`runtime/${name}.schema.json`, json(toJsonSchema(schema)));
+}
 for (const [name, schema] of Object.entries({
   ModelDescriptor,
   MeasurementReport,
@@ -125,6 +129,7 @@ const sources = new Map(
     "src/validation.ts",
     "src/measurement.ts",
     "src/release.ts",
+    "src/runtime.ts",
     "fixtures/canonical/corpus.json",
     "fixtures/canonical/negative.json",
     "fixtures/canonical/modular-v2.json",

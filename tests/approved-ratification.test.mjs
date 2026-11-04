@@ -12,6 +12,7 @@ import {
   components,
   evidenceReader,
 } from "../tools/check-composition-qualification.mjs";
+import { readRatificationHistory } from "../tools/check-ratification.mjs";
 import { sha256 } from "../tools/provenance.mjs";
 
 const pending = {
@@ -118,7 +119,7 @@ function baseFixture(change = () => {}) {
   };
 }
 
-const history = (name) => readFileSync(new URL(`../${name}`, import.meta.url));
+const history = readRatificationHistory;
 function fixture(recorded = false, mutate = () => {}) {
   const f = baseFixture(({ selected }) => {
     selected.spec.source_revision = "1a5b57a590487ba116913050af8041f5e5f1fb52";

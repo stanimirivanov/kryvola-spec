@@ -1,6 +1,8 @@
 apis:
   status@v1:
     root: openapi/status.yaml
+  runtime@v1:
+    root: openapi/runtime.yaml
 extends:
   - recommended-strict
 rules:

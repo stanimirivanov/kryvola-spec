@@ -311,3 +311,8 @@ all 89 existing tests, generated/native manifests, type/state, Protobuf and Open
 checks. Local documentation links and diff whitespace checks passed. This prose
 close-out adds no tests mirroring documentation and changes no implementation or
 frozen evidence; no release or acceptance artifact was published.
+
+M1-PR2 adds a separate [Fabric runtime OpenAPI preview](../openapi/runtime.yaml)
+and generated JSON schemas for reference-only metadata. The HTTP contract separates
+private upload bytes from control bodies and distinguishes committed cancellation
+from a pending request. Existing Engine and status contracts remain independent.
