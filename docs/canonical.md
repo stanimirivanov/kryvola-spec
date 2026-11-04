@@ -72,3 +72,27 @@ Run `pnpm generate`, `pnpm native:generate` (native provenance covers spec input
 References: [RFC 8785](https://www.rfc-editor.org/rfc/rfc8785), [RFC 8032](https://www.rfc-editor.org/rfc/rfc8032), [canonicalize](https://github.com/erdtman/canonicalize), [noble-hashes scope/license](https://github.com/paulmillr/noble-hashes), [BLAKE3 specification](https://github.com/BLAKE3-team/BLAKE3-specs).
 
 [Python conformance and Rust differential gate](canonical-python.md) adds M0-PR9 fixture compatibility evidence; [M0-PR10](canonical-cpp.md) extends comparison to C++.
+
+## M1 disclosure authorization (v3)
+
+Select format `3` explicitly for `approval`, `receipt`,
+`release-authorization`, and their Ed25519 envelopes. The format reuses the
+existing JCS and little-endian length framing with a separate `/v3` domain.
+A release binds one recipient and output manifest to the selected execution,
+operation, workflow/attempt/session/policy epochs and fence. It also binds the
+plan, model, program, key context, policy, evidence policy, consent, v3 approval
+and v3 receipt commitments, and a half-open validity window. The
+`CONFIDENTIALITY_ONLY` claim describes the baseline assurance limit.
+
+Use the v1 `DisclosureIdentity` tuple as input to `disclosureId`. It commits to
+tenant, logical job, output stage, recipient and baseline index zero under
+`kryvola/disclosure-identity/v3\0`. Derive this key independently of the
+signed release epochs and output digest. A recovery retry for the same output
+must reuse the ledger record, and a different output under the same key conflicts.
+
+The coordinator must atomically enforce selection, current authorization,
+revocation, cancellation and uniqueness before committing a release. An owner
+must verify the trusted signer and compare the signed fields to the intended
+disclosure and current state before opening the output. Canonical decoding
+and preimage generation perform structural checks only. The v3 golden vector
+is in [disclosure-v3.json](../fixtures/canonical/disclosure-v3.json).
