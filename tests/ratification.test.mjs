@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
-import { checkRatification, pins } from "../tools/check-ratification.mjs";
+import { checkRatification, pins, readRatificationHistory } from "../tools/check-ratification.mjs";
 
 const record = readFileSync(new URL("../docs/m0-ratification.md", import.meta.url), "utf8");
 test("frozen ratification record stays blocked and matches the tested candidate", () => {
@@ -21,9 +21,7 @@ test("stale candidate bytes and enabled profiles reject independently of prose",
   for (const path of Object.keys(pins)) {
     assert.throws(() =>
       checkRatification(record, (name) =>
-        name === path
-          ? Buffer.from("changed")
-          : readFileSync(new URL(`../${name}`, import.meta.url)),
+        name === path ? Buffer.from("changed") : readRatificationHistory(name),
       ),
     );
   }

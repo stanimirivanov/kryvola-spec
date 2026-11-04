@@ -24,7 +24,7 @@
     "architecture:check": "node tools/check-architecture.mjs",
     "proto:check": "buf format generated/proto --diff --exit-code && buf lint",
     "openapi:check": "redocly lint --max-problems 100",
-    "openapi:build": "redocly bundle status@v1 --output dist/openapi.yaml && redocly build-docs status@v1 --output dist/openapi.html",
+    "openapi:build": "redocly bundle status@v1 --output dist/openapi.yaml && redocly build-docs status@v1 --output dist/openapi.html && redocly bundle runtime@v1 --output dist/runtime-openapi.yaml",
     "test": "pnpm build && pnpm test:unit",
     "check:fast": "pnpm lint && pnpm typecheck && pnpm architecture:check",
     "check": "pnpm lint && pnpm architecture:check && pnpm build && pnpm test:types && node tools/generate.mjs --check && node tools/native.mjs manifest-check && pnpm test:unit && node tools/check-release.mjs && pnpm check:state && pnpm proto:check && pnpm openapi:check && pnpm openapi:build",

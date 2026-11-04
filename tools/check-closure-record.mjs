@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { checkRatification, pins } from "./check-ratification.mjs";
+import { checkRatification, pins, readRatificationHistory } from "./check-ratification.mjs";
 import { sha256 } from "./provenance.mjs";
 
 export const roles = Object.freeze([
@@ -29,7 +29,10 @@ function text(value) {
 }
 
 // Repository-local administrative consistency only. Never authenticates a reviewer.
-export function checkClosureRecord(record, { read = localRead, previousBytes = null } = {}) {
+export function checkClosureRecord(
+  record,
+  { read = readRatificationHistory, previousBytes = null } = {},
+) {
   keys(record, [
     "version",
     "status",

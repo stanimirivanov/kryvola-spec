@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { checkClosureRecord, readClosureRecord, roles, scope } from "./check-closure-record.mjs";
-import { checkRatification, pins } from "./check-ratification.mjs";
+import { checkRatification, pins, readRatificationHistory } from "./check-ratification.mjs";
 import { sha256 } from "./provenance.mjs";
 
 export const predecessors = Object.freeze({
@@ -26,7 +26,7 @@ export function blockBytes(markdown, name) {
   return Buffer.from(blocks[0][1]);
 }
 
-export function checkDecision(markdown, read = localRead) {
+export function checkDecision(markdown, read = readRatificationHistory) {
   for (const [name, expected] of Object.entries(predecessors))
     assert.equal(sha256(read(name)), expected, `Historical record changed: ${name}`);
   checkRatification(read("docs/m0-ratification.md").toString(), read);

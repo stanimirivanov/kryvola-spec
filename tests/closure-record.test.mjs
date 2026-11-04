@@ -3,6 +3,7 @@ import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import { checkClosureRecord, readClosureRecord } from "../tools/check-closure-record.mjs";
+import { readRatificationHistory } from "../tools/check-ratification.mjs";
 import { sha256 } from "../tools/provenance.mjs";
 
 const markdown = readFileSync(new URL("../docs/m0-closure.md", import.meta.url), "utf8");
@@ -60,10 +61,7 @@ test("candidate files are independently hashed", () => {
   for (const path of Object.keys(record.candidate_digests)) {
     assert.throws(() =>
       checkClosureRecord(record, {
-        read: (name) =>
-          name === path
-            ? Buffer.from("changed")
-            : readFileSync(new URL(`../${name}`, import.meta.url)),
+        read: (name) => (name === path ? Buffer.from("changed") : readRatificationHistory(name)),
       }),
     );
   }

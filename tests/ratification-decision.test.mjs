@@ -1,11 +1,11 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { readFileSync } from "node:fs";
 import test from "node:test";
 import { readClosureRecord } from "../tools/check-closure-record.mjs";
+import { readRatificationHistory } from "../tools/check-ratification.mjs";
 import { blockBytes, checkDecision, predecessors } from "../tools/check-ratification-decision.mjs";
 
-const read = (name) => readFileSync(new URL(`../${name}`, import.meta.url));
+const read = readRatificationHistory;
 const markdown = read("docs/m0-ratification-decision.md").toString();
 function changeRecord(mutate) {
   const record = readClosureRecord(markdown);

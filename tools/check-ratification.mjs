@@ -12,10 +12,15 @@ export const pins = Object.freeze({
     "267dee8330668952adf11fe00cd96d0c5a45217d17b714e4266485dfb6c48eb0",
   "docs/ownership.md": "b62be8e8f41fea699990e8dcae305197577f0702a3e0befaa73248d8eeb85128",
 });
-export function checkRatification(
-  text,
-  read = (path) => readFileSync(new URL(`../${path}`, import.meta.url)),
-) {
+// Use the exact reviewed bytes even as the live contract manifests evolve.
+const frozen = new Map([
+  ["generated/manifest.json", "fixtures/m0-ratification/generated-manifest.json"],
+  ["bindings/manifest.json", "fixtures/m0-ratification/bindings-manifest.json"],
+]);
+export const readRatificationHistory = (path) =>
+  readFileSync(new URL(`../${frozen.get(path) ?? path}`, import.meta.url));
+
+export function checkRatification(text, read = readRatificationHistory) {
   assert.ok(
     text.includes("M0 decision: **BLOCKED_PENDING_SIGNOFFS**."),
     "Ratification is not approved",

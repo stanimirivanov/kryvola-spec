@@ -1,0 +1,311 @@
+openapi: 3.1.0
+info:
+  title: Kryvola Fabric runtime API
+  version: "1.0.0"
+  description: |
+    UTF-8 JSON control bodies are limited to 65536 bytes after decompression.
+    Bulk parts and manifests use separate binary endpoints. Every route requires
+    workload and tenant authorization. Digests and upload IDs confer no access.
+  license:
+    name: Apache-2.0
+    identifier: Apache-2.0
+servers:
+  - url: https://runtime.kryvola.invalid
+    description: Reserved documentation host.
+security:
+  - workload: []
+tags:
+  - name: Runtime
+    description: Artifact staging and durable execution.
+paths:
+  /v1/uploads:
+    post:
+      operationId: createUpload
+      summary: Reserve quota and create a private staged upload.
+      tags: [Runtime]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../generated/runtime/CreateUploadRequest.schema.json"
+      responses:
+        "201":
+          description: Request completed.
+          content:
+            application/json:
+              schema:
+                $ref: "../generated/runtime/CreateUploadResponse.schema.json"
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+        default:
+          $ref: "#/components/responses/Rejected"
+  /v1/uploads/{upload_id}/parts/{part_index}:
+    put:
+      operationId: putUploadPart
+      summary: Stage one indexed part of at most 4194304 bytes.
+      tags: [Runtime]
+      parameters:
+        - $ref: "#/components/parameters/upload_id"
+        - $ref: "#/components/parameters/part_index"
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        "204":
+          description: Request completed.
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+        default:
+          $ref: "#/components/responses/Rejected"
+  /v1/uploads/{upload_id}/manifest:
+    put:
+      operationId: putUploadManifest
+      summary: Stage a canonical manifest of at most 65536 bytes.
+      tags: [Runtime]
+      parameters:
+        - $ref: "#/components/parameters/upload_id"
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        "204":
+          description: Request completed.
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+        default:
+          $ref: "#/components/responses/Rejected"
+  /v1/uploads/{upload_id}/finalize:
+    post:
+      operationId: finalizeUpload
+      summary: Verify staged bytes and the manifest commitment before publishing an immutable reference.
+      tags: [Runtime]
+      parameters:
+        - $ref: "#/components/parameters/upload_id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../generated/runtime/FinalizeUploadRequest.schema.json"
+      responses:
+        "200":
+          description: Request completed.
+          content:
+            application/json:
+              schema:
+                $ref: "../generated/runtime/FinalizeUploadResponse.schema.json"
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+        default:
+          $ref: "#/components/responses/Rejected"
+  /v1/operations:
+    post:
+      operationId: createOperation
+      summary: Return the recorded operation on an identical retry.
+      tags: [Runtime]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../generated/runtime/CreateOperationRequest.schema.json"
+      responses:
+        "200":
+          description: Request completed.
+          content:
+            application/json:
+              schema:
+                $ref: "../generated/runtime/OperationResponse.schema.json"
+        "409":
+          description: IDEMPOTENCY_CONFLICT for changed intent.
+          content:
+            application/json:
+              schema:
+                $ref: "../generated/runtime/RuntimeError.schema.json"
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+        default:
+          $ref: "#/components/responses/Rejected"
+  /v1/operations/{operation_id}:
+    get:
+      operationId: getOperation
+      summary: Read authorized operation metadata. Selection does not grant disclosure.
+      tags: [Runtime]
+      parameters:
+        - $ref: "#/components/parameters/operation_id"
+      responses:
+        "200":
+          description: Request completed.
+          content:
+            application/json:
+              schema:
+                $ref: "../generated/runtime/OperationResponse.schema.json"
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+        default:
+          $ref: "#/components/responses/Rejected"
+  /v1/attempts/ensure:
+    post:
+      operationId: ensureAttempt
+      summary: Return an attempt with a coordinator-assigned fence. Retired epochs cannot reacquire leases.
+      tags: [Runtime]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../generated/runtime/EnsureAttemptRequest.schema.json"
+      responses:
+        "200":
+          description: Request completed.
+          content:
+            application/json:
+              schema:
+                $ref: "../generated/runtime/EnsureAttemptResponse.schema.json"
+        "409":
+          description: ATTEMPT_EXPIRED for a retired epoch.
+          content:
+            application/json:
+              schema:
+                $ref: "../generated/runtime/RuntimeError.schema.json"
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+        default:
+          $ref: "#/components/responses/Rejected"
+  /v1/results/select:
+    post:
+      operationId: selectResult
+      summary: Select one matching result under a live fence without granting disclosure.
+      tags: [Runtime]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../generated/runtime/SelectResultRequest.schema.json"
+      responses:
+        "200":
+          description: Request completed.
+          content:
+            application/json:
+              schema:
+                $ref: "../generated/runtime/SelectResultResponse.schema.json"
+        "409":
+          description: STALE_FENCE or ATTEMPT_EXPIRED.
+          content:
+            application/json:
+              schema:
+                $ref: "../generated/runtime/RuntimeError.schema.json"
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+        default:
+          $ref: "#/components/responses/Rejected"
+  /v1/operations/cancel:
+    post:
+      operationId: cancelOperation
+      summary: Acknowledge cancellation only after the tombstone and fence commit.
+      tags: [Runtime]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../generated/runtime/CancelOperationRequest.schema.json"
+      responses:
+        "200":
+          description: Cancellation fence committed.
+          content:
+            application/json:
+              schema:
+                $ref: "../generated/runtime/Cancelled.schema.json"
+        "202":
+          description: Cancellation barrier is unconfirmed. Retry with the same idempotency key.
+          content:
+            application/json:
+              schema:
+                $ref: "../generated/runtime/CancellationPending.schema.json"
+        "409":
+          description: IDEMPOTENCY_CONFLICT for changed intent.
+          content:
+            application/json:
+              schema:
+                $ref: "../generated/runtime/RuntimeError.schema.json"
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+        default:
+          $ref: "#/components/responses/Rejected"
+  /v1/artifact-access/authorize:
+    post:
+      operationId: authorizeArtifact
+      summary: Scope access to the authenticated caller, attempt, manifest and purpose. Carry any credential only in transport metadata.
+      tags: [Runtime]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../generated/runtime/AuthorizeArtifactRequest.schema.json"
+      responses:
+        "200":
+          description: Request completed.
+          content:
+            application/json:
+              schema:
+                $ref: "../generated/runtime/AuthorizeArtifactResponse.schema.json"
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+        default:
+          $ref: "#/components/responses/Rejected"
+components:
+  securitySchemes:
+    workload:
+      type: mutualTLS
+      description: Verified client workload identity.
+  responses:
+    InvalidRequest:
+      description: Invalid runtime request.
+      content:
+        application/json:
+          schema:
+            $ref: "../generated/runtime/RuntimeError.schema.json"
+    Rejected:
+      description: Bounded rejection code.
+      content:
+        application/json:
+          schema:
+            $ref: "../generated/runtime/RuntimeError.schema.json"
+  parameters:
+    upload_id:
+      name: upload_id
+      in: path
+      required: true
+      description: Runtime upload id.
+      schema:
+        type: string
+        pattern: '^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,127}(?![\s\S])'
+    part_index:
+      name: part_index
+      in: path
+      required: true
+      description: Runtime part index.
+      schema:
+        type: integer
+        minimum: 0
+        maximum: 1023
+    operation_id:
+      name: operation_id
+      in: path
+      required: true
+      description: Runtime operation id.
+      schema:
+        type: string
+        pattern: '^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,127}(?![\s\S])'

@@ -1,21 +1,20 @@
 /** Administrative consistency only. Authentication remains a Platform gate. */
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { readClosureRecord, roles, scope } from "./check-closure-record.mjs";
 import { checkLedger, evidenceReader } from "./check-composition-qualification.mjs";
+import { readRatificationHistory } from "./check-ratification.mjs";
 import { checkDecision } from "./check-ratification-decision.mjs";
 import { sha256 } from "./provenance.mjs";
 
-const localRead = (name) => readFileSync(new URL(`../${name}`, import.meta.url));
 const keys = (value, names) => {
   assert.ok(value && typeof value === "object" && !Array.isArray(value));
   assert.deepEqual(Object.keys(value).sort(), [...names].sort());
 };
 const digest = (value) => assert.match(value, /^[a-f0-9]{64}$/);
 const text = (value) => assert.ok(typeof value === "string" && value.trim().length > 0);
-export function checkSuccessor(record, read, history = localRead) {
+export function checkSuccessor(record, read, history = readRatificationHistory) {
   keys(record, [
     "version",
     "status",
