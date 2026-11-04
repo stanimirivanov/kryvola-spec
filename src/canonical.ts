@@ -2,7 +2,7 @@ import { blake3 } from "@noble/hashes/blake3.js";
 import { bytesToHex } from "@noble/hashes/utils.js";
 import canonicalize from "canonicalize";
 import { Schema } from "effect";
-import { Uint64Decimal } from "./control.js";
+import { DisclosureIdentity, Uint64Decimal } from "./control.js";
 import { FheQ1Arithmetic, FheQ1Operator, FheQ1Precision } from "./fhe-q1.js";
 
 const Id = Schema.String.check(Schema.isPattern(/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,127}(?![\s\S])/u));
@@ -86,7 +86,7 @@ export const CANONICAL_V2_SCHEMAS = Object.freeze({
   }),
 });
 /** CanonicalVersion is selected explicitly by the caller; existing APIs default to v1. */
-export type CanonicalVersion = "1" | "2";
+export type CanonicalVersion = "1" | "2" | "3";
 const Approval = Schema.Struct({
   ...base,
   object_type: Schema.Literal("approval"),
@@ -176,13 +176,68 @@ export const CANONICAL_SCHEMAS = Object.freeze({
   receipt: Receipt,
   "operation-identity": OperationIdentity,
 });
-export type CanonicalKind = keyof typeof CANONICAL_SCHEMAS;
+const v3 = { schema_version: Schema.Literal("3") };
+const policyBinding = {
+  workflow_epoch: U64,
+  policy_epoch: U64,
+  policy_digest: Digest,
+  consent_digest: Digest,
+  model_digest: Digest,
+};
+const disclosure = {
+  output_stage: Id,
+  recipient: Id,
+  disclosure_index: Schema.Literal("0"),
+};
+const ReleaseAuthorization = Schema.Struct({
+  ...base,
+  ...v3,
+  object_type: Schema.Literal("release-authorization"),
+  ...context,
+  ...policyBinding,
+  ...disclosure,
+  operation_id: Id,
+  session_epoch: U64,
+  attempt_epoch: U64,
+  fence: U64,
+  execution_id: Id,
+  program_digest: Digest,
+  evidence_policy_digest: Digest,
+  output_manifest_digest: Digest,
+  approval_digest: Digest,
+  receipt_digest: Digest,
+  assurance: Schema.Literal("CONFIDENTIALITY_ONLY"),
+  valid_from_unix_ms: U64,
+  expires_unix_ms: U64,
+});
+export const CANONICAL_V3_SCHEMAS = Object.freeze({
+  "release-authorization": ReleaseAuthorization,
+  approval: Schema.Struct({
+    ...Approval.fields,
+    ...v3,
+    ...policyBinding,
+    ...disclosure,
+    operation_id: Id,
+    session_epoch: U64,
+    program_digest: Digest,
+    evidence_policy_digest: Digest,
+  }),
+  receipt: Schema.Struct({
+    ...Receipt.fields,
+    ...v3,
+    ...policyBinding,
+    assurance: Schema.Literal("CONFIDENTIALITY_ONLY"),
+  }),
+});
+type LegacyKind = keyof typeof CANONICAL_SCHEMAS;
+export type CanonicalKind = LegacyKind | keyof typeof CANONICAL_V3_SCHEMAS;
 type CanonicalValue =
   | {
-      [K in CanonicalKind]: (typeof CANONICAL_SCHEMAS)[K]["Type"];
-    }[CanonicalKind]
+      [K in LegacyKind]: (typeof CANONICAL_SCHEMAS)[K]["Type"];
+    }[LegacyKind]
   | typeof CANONICAL_V2_SCHEMAS.plan.Type
-  | typeof CANONICAL_V2_SCHEMAS.manifest.Type;
+  | typeof CANONICAL_V2_SCHEMAS.manifest.Type
+  | (typeof CANONICAL_V3_SCHEMAS)[keyof typeof CANONICAL_V3_SCHEMAS]["Type"];
 export const SignedKind = Schema.Literals([
   "manifest",
   "plan",
@@ -217,6 +272,26 @@ export const SignatureEnvelopeV2 = Schema.Struct({
   ...HeaderV2,
   signature: SignatureEnvelope.fields.signature,
 });
+const HeaderV3 = {
+  ...Header,
+  ...v3,
+  payload_kind: Schema.Literals(["approval", "receipt", "release-authorization"]),
+};
+export const SignatureHeaderV3 = Schema.Struct(HeaderV3);
+export const SignatureEnvelopeV3 = Schema.Struct({
+  ...HeaderV3,
+  signature: SignatureEnvelope.fields.signature,
+});
+const formats = {
+  "1": { ...CANONICAL_SCHEMAS, signature: SignatureEnvelope },
+  "2": { ...CANONICAL_V2_SCHEMAS, signature: SignatureEnvelopeV2 },
+  "3": { ...CANONICAL_V3_SCHEMAS, signature: SignatureEnvelopeV3 },
+} as const;
+const signatureHeaders = {
+  "1": SignatureHeader,
+  "2": SignatureHeaderV2,
+  "3": SignatureHeaderV3,
+} as const;
 /** CANONICAL_LIMITS cannot be changed by consumers to relax validation. */
 export const CANONICAL_LIMITS = Object.freeze({
   document_bytes: 1048576,
@@ -317,17 +392,11 @@ export function canonicalBytes(
   version: CanonicalVersion = "1",
 ): Uint8Array {
   jsonValues(input);
-  if (version !== "1" && version !== "2") fail("unsupported canonical version");
-  const schema =
-    kind === "signature"
-      ? version === "1"
-        ? SignatureEnvelope
-        : SignatureEnvelopeV2
-      : version === "1"
-        ? CANONICAL_SCHEMAS[kind]
-        : kind === "plan" || kind === "manifest"
-          ? CANONICAL_V2_SCHEMAS[kind]
-          : undefined;
+  if (!Object.hasOwn(formats, version)) fail("unsupported canonical version");
+  const format: Partial<
+    Record<CanonicalKind | "signature", Schema.ConstraintDecoder<unknown, never>>
+  > = formats[version];
+  const schema = Object.hasOwn(format, kind) ? format[kind] : undefined;
   if (!schema) throw new Error("unsupported kind/version");
   const value = Schema.decodeUnknownSync(schema, { onExcessProperty: "error" })(input);
   if (kind !== "signature") semantics(kind, value);
@@ -399,13 +468,23 @@ export function blobDigest(bytes: Uint8Array): string {
 export function operationId(input: unknown): string {
   return commitment("operation-identity", input);
 }
+/** Stable baseline ledger key. The input contains only the v1 disclosure tuple. */
+export function disclosureId(input: unknown): string {
+  jsonValues(input);
+  const identity = Schema.decodeUnknownSync(DisclosureIdentity, { onExcessProperty: "error" })(
+    input,
+  );
+  if (identity.disclosure_index !== "0") fail("baseline disclosure index");
+  return hash(domain("disclosure-identity", "3"), utf8.encode(canonicalize(identity)));
+}
 export function signaturePreimage(
   header: unknown,
   payload: Uint8Array,
   version: CanonicalVersion = "1",
 ): Uint8Array {
   jsonValues(header);
-  const h = Schema.decodeUnknownSync(version === "1" ? SignatureHeader : SignatureHeaderV2, {
+  if (!Object.hasOwn(signatureHeaders, version)) fail("unsupported canonical version");
+  const h = Schema.decodeUnknownSync(signatureHeaders[version], {
     onExcessProperty: "error",
   })(header);
   const value = decodeCanonical(h.payload_kind, payload, version);

@@ -2,11 +2,13 @@ import { Brand, Data, Effect } from "effect";
 import {
   type CANONICAL_SCHEMAS,
   type CANONICAL_V2_SCHEMAS,
+  type CANONICAL_V3_SCHEMAS,
   type CanonicalKind,
   type CanonicalVersion,
   decodeCanonical,
   type SignatureEnvelope,
   type SignatureEnvelopeV2,
+  type SignatureEnvelopeV3,
 } from "./canonical.js";
 import { decodeOperation, type Operation } from "./control.js";
 
@@ -17,6 +19,7 @@ const validatedOperation = Brand.nominal<ValidatedOperation>();
 type Formats = {
   "1": typeof CANONICAL_SCHEMAS & { signature: typeof SignatureEnvelope };
   "2": typeof CANONICAL_V2_SCHEMAS & { signature: typeof SignatureEnvelopeV2 };
+  "3": typeof CANONICAL_V3_SCHEMAS & { signature: typeof SignatureEnvelopeV3 };
 };
 /** CanonicalKindFor restricts object kinds to those supported by the selected format. */
 export type CanonicalKindFor<V extends CanonicalVersion> = keyof Formats[V] &
