@@ -138,6 +138,8 @@ const sources = new Map(
     "src/measurement.ts",
     "src/release.ts",
     "src/runtime.ts",
+    "openapi/runtime.yaml",
+    "openapi/runtime.schemas.json",
     "fixtures/canonical/corpus.json",
     "fixtures/canonical/negative.json",
     "fixtures/canonical/modular-v2.json",

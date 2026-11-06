@@ -9,12 +9,12 @@
     "node": ">=24.18.0 <25"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "node tools/projection.mjs --check-runtime && tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test:types": "tsc -p tsconfig.type-tests.json",
     "format": "biome format --write .",
     "lint": "biome check .",
-    "generate": "pnpm build && node tools/generate.mjs",
+    "generate": "node tools/projection.mjs --write-runtime && pnpm build && node tools/generate.mjs",
     "generated:check": "pnpm build && node tools/generate.mjs --check",
     "native:generate": "pnpm generated:check && node tools/native.mjs generate",
     "native:check": "pnpm generated:check && node tools/native.mjs check",

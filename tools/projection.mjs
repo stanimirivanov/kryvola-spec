@@ -1,3 +1,6 @@
+import { readFileSync, writeFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { Schema } from "effect";
 import { checkProjection } from "./check-architecture.mjs";
 
@@ -137,4 +140,103 @@ export function renderControl(
         .join("\n")}\n}`
     : "";
   return `// Generated structural preview; validate presence, constraints and context in application decoders.\nsyntax = "proto3";\n\npackage kryvola.spec.v1;\n\n${dependencies}${messages.join("\n\n")}${service}\n`;
+}
+
+/** Generate the typed Effect facade from OpenAPI-owned HTTP components, not vice versa. */
+export function renderRuntime(schemas) {
+  const declarations = [],
+    complete = new Set(),
+    active = new Set();
+  const fail = () => {
+    throw new Error("Unsupported runtime OpenAPI schema");
+  };
+  function expression(s) {
+    const allowed = s.$ref
+      ? ["$ref"]
+      : s.anyOf
+        ? ["anyOf"]
+        : {
+            object: ["type", "properties", "required", "additionalProperties"],
+            integer: ["type", "minimum", "maximum"],
+            array: ["type", "items", "minItems", "maxItems"],
+            string: ["type", "enum"],
+            null: ["type"],
+          }[s.type];
+    if (!allowed || Object.keys(s).some((k) => !allowed.includes(k))) return fail();
+    if (s.$ref) {
+      const local = s.$ref.match(/^#\/components\/schemas\/([A-Za-z][A-Za-z0-9]*)$/);
+      if (local) {
+        visit(local[1]);
+        return local[1];
+      }
+      const external = s.$ref.match(
+        /^\.\.\/generated\/control\/(Operation|Attempt|PublicResultStatus)\.schema\.json(?:#\/properties\/([a-z_]+))?$/,
+      );
+      if (!external || (external[1] === "PublicResultStatus" && external[2])) return fail();
+      return external[1] + (external[2] ? `.fields.${external[2]}` : "");
+    }
+    if (s.anyOf) {
+      if (!Array.isArray(s.anyOf) || s.anyOf.length < 2) return fail();
+      return `Schema.Union([${s.anyOf.map(expression).join(", ")}])`;
+    }
+    if (s.type === "null") return "Schema.Null";
+    if (s.type === "string") {
+      if (!Array.isArray(s.enum) || !s.enum.length || s.enum.some((v) => typeof v !== "string"))
+        return fail();
+      return s.enum.length === 1
+        ? `Schema.Literal(${JSON.stringify(s.enum[0])})`
+        : `Schema.Literals(${JSON.stringify(s.enum)})`;
+    }
+    if (s.type === "object") {
+      const keys = Object.keys(s.properties ?? {});
+      if (
+        s.additionalProperties !== false ||
+        !Array.isArray(s.required) ||
+        s.required.length !== keys.length ||
+        keys.some((k) => !s.required.includes(k) || k === "__proto__")
+      )
+        return fail();
+      return `Schema.Struct({${keys.map((k) => `${JSON.stringify(k)}: ${expression(s.properties[k])}`).join(", ")}})`;
+    }
+    const [minimum, maximum] =
+      s.type === "integer" ? [s.minimum, s.maximum] : [s.minItems, s.maxItems];
+    if (![minimum, maximum].every(Number.isSafeInteger) || minimum < 0 || maximum < minimum)
+      return fail();
+    if (s.type === "integer")
+      return `Schema.Int.check(Schema.isBetween({ minimum: ${minimum}, maximum: ${maximum} }))`;
+    return `Schema.Array(${expression(s.items)}).check(Schema.isMinLength(${minimum}), Schema.isMaxLength(${maximum}))`;
+  }
+  function visit(name) {
+    if (active.has(name) || !Object.hasOwn(schemas, name) || !/^[A-Z][A-Za-z0-9]*$/.test(name))
+      return fail();
+    if (complete.has(name)) return;
+    active.add(name);
+    const value = expression(schemas[name]);
+    declarations.push(`const ${name} = ${value};`);
+    active.delete(name);
+    complete.add(name);
+  }
+  for (const name of Object.keys(schemas)) visit(name);
+  return `// Generated from openapi/runtime.schemas.json; run pnpm generate. Do not edit.\nimport { Schema } from "effect";\nimport { Attempt, Operation, PublicResultStatus } from "./control.js";\nimport { assertControlBytes } from "./transport.js";\n${declarations.join("\n")}\nexport const RUNTIME_SCHEMAS = Object.freeze({${Object.keys(schemas).join(", ")}});\nconst utf8 = new TextDecoder("utf-8", { fatal: true });
+
+/** Decode a complete UTF-8 runtime JSON body. Authorization is a service responsibility. */
+export function decodeRuntime<K extends keyof typeof RUNTIME_SCHEMAS>(
+  name: K,
+  bytes: Uint8Array,
+): (typeof RUNTIME_SCHEMAS)[K]["Type"] {
+  assertControlBytes(bytes);
+  const input: unknown = JSON.parse(utf8.decode(bytes));
+  return Schema.decodeUnknownSync(RUNTIME_SCHEMAS[name])(input, { onExcessProperty: "error" });
+}
+`;
+}
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const source = new URL("../openapi/runtime.schemas.json", import.meta.url);
+  const target = new URL("../src/runtime.ts", import.meta.url);
+  // OpenAPI accepts JSON components; no additional parser dependency is required.
+  const output = renderRuntime(JSON.parse(readFileSync(source, "utf8")).components.schemas);
+  if (process.argv.includes("--write-runtime")) writeFileSync(target, output);
+  else if (!process.argv.includes("--check-runtime") || readFileSync(target, "utf8") !== output)
+    throw new Error("Runtime facade drift; run pnpm generate");
 }

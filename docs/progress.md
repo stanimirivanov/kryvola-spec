@@ -316,3 +316,23 @@ M1-PR2 adds a separate [Fabric runtime OpenAPI preview](../openapi/runtime.yaml)
 and generated JSON schemas for reference-only metadata. The HTTP contract separates
 private upload bytes from control bodies and distinguishes committed cancellation
 from a pending request. Existing Engine and status contracts remain independent.
+
+## M1-PR2-R1 — Restore HTTP schema ownership (issue #63)
+
+OpenAPI owns runtime HTTP bodies in `openapi/runtime.schemas.json`; its references
+to generated non-HTTP control schemas retain Effect ownership of those objects.
+`pnpm generate` now generates the typed `src/runtime.ts` facade before compiling
+and exporting JSON Schema. `pnpm build` fails on facade drift. The generated facade
+is excluded from independent formatting, like other generator-owned outputs.
+The component JSON uses compact formatting; it adds no parser dependency.
+
+The runtime baseline freezes all 17 pre-remediation schema byte hashes. Tests cover
+OpenAPI-driven decoder changes, unsupported constructs, strict decoding and public
+inferred types. No fields, routes, signed formats or permission decisions change.
+The earlier M0 manifest-freezing adaptation is preserved, not reapproved here;
+historical ratification data and existing Engine/status contract bytes stay intact.
+The previous oversized PR is a recorded process deviation; this follow-up keeps
+schema migration, generator, compatibility checks and provenance in one slice.
+
+Verification: focused runtime and inferred-type checks, Docker-backed native
+generation, and complete `pnpm check` passed. No publication occurred.

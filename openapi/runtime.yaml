@@ -28,14 +28,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "../generated/runtime/CreateUploadRequest.schema.json"
+              $ref: "./runtime.schemas.json#/components/schemas/CreateUploadRequest"
       responses:
         "201":
           description: Request completed.
           content:
             application/json:
               schema:
-                $ref: "../generated/runtime/CreateUploadResponse.schema.json"
+                $ref: "./runtime.schemas.json#/components/schemas/CreateUploadResponse"
         "400":
           $ref: "#/components/responses/InvalidRequest"
         default:
@@ -95,14 +95,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "../generated/runtime/FinalizeUploadRequest.schema.json"
+              $ref: "./runtime.schemas.json#/components/schemas/FinalizeUploadRequest"
       responses:
         "200":
           description: Request completed.
           content:
             application/json:
               schema:
-                $ref: "../generated/runtime/FinalizeUploadResponse.schema.json"
+                $ref: "./runtime.schemas.json#/components/schemas/FinalizeUploadResponse"
         "400":
           $ref: "#/components/responses/InvalidRequest"
         default:
@@ -117,20 +117,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "../generated/runtime/CreateOperationRequest.schema.json"
+              $ref: "./runtime.schemas.json#/components/schemas/CreateOperationRequest"
       responses:
         "200":
           description: Request completed.
           content:
             application/json:
               schema:
-                $ref: "../generated/runtime/OperationResponse.schema.json"
+                $ref: "./runtime.schemas.json#/components/schemas/OperationResponse"
         "409":
           description: IDEMPOTENCY_CONFLICT for changed intent.
           content:
             application/json:
               schema:
-                $ref: "../generated/runtime/RuntimeError.schema.json"
+                $ref: "./runtime.schemas.json#/components/schemas/RuntimeError"
         "400":
           $ref: "#/components/responses/InvalidRequest"
         default:
@@ -148,7 +148,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "../generated/runtime/OperationResponse.schema.json"
+                $ref: "./runtime.schemas.json#/components/schemas/OperationResponse"
         "400":
           $ref: "#/components/responses/InvalidRequest"
         default:
@@ -163,20 +163,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "../generated/runtime/EnsureAttemptRequest.schema.json"
+              $ref: "./runtime.schemas.json#/components/schemas/EnsureAttemptRequest"
       responses:
         "200":
           description: Request completed.
           content:
             application/json:
               schema:
-                $ref: "../generated/runtime/EnsureAttemptResponse.schema.json"
+                $ref: "./runtime.schemas.json#/components/schemas/EnsureAttemptResponse"
         "409":
           description: ATTEMPT_EXPIRED for a retired epoch.
           content:
             application/json:
               schema:
-                $ref: "../generated/runtime/RuntimeError.schema.json"
+                $ref: "./runtime.schemas.json#/components/schemas/RuntimeError"
         "400":
           $ref: "#/components/responses/InvalidRequest"
         default:
@@ -191,20 +191,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "../generated/runtime/SelectResultRequest.schema.json"
+              $ref: "./runtime.schemas.json#/components/schemas/SelectResultRequest"
       responses:
         "200":
           description: Request completed.
           content:
             application/json:
               schema:
-                $ref: "../generated/runtime/SelectResultResponse.schema.json"
+                $ref: "./runtime.schemas.json#/components/schemas/SelectResultResponse"
         "409":
           description: STALE_FENCE or ATTEMPT_EXPIRED.
           content:
             application/json:
               schema:
-                $ref: "../generated/runtime/RuntimeError.schema.json"
+                $ref: "./runtime.schemas.json#/components/schemas/RuntimeError"
         "400":
           $ref: "#/components/responses/InvalidRequest"
         default:
@@ -219,26 +219,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "../generated/runtime/CancelOperationRequest.schema.json"
+              $ref: "./runtime.schemas.json#/components/schemas/CancelOperationRequest"
       responses:
         "200":
           description: Cancellation fence committed.
           content:
             application/json:
               schema:
-                $ref: "../generated/runtime/Cancelled.schema.json"
+                $ref: "./runtime.schemas.json#/components/schemas/Cancelled"
         "202":
           description: Cancellation barrier is unconfirmed. Retry with the same idempotency key.
           content:
             application/json:
               schema:
-                $ref: "../generated/runtime/CancellationPending.schema.json"
+                $ref: "./runtime.schemas.json#/components/schemas/CancellationPending"
         "409":
           description: IDEMPOTENCY_CONFLICT for changed intent.
           content:
             application/json:
               schema:
-                $ref: "../generated/runtime/RuntimeError.schema.json"
+                $ref: "./runtime.schemas.json#/components/schemas/RuntimeError"
         "400":
           $ref: "#/components/responses/InvalidRequest"
         default:
@@ -253,14 +253,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "../generated/runtime/AuthorizeArtifactRequest.schema.json"
+              $ref: "./runtime.schemas.json#/components/schemas/AuthorizeArtifactRequest"
       responses:
         "200":
           description: Request completed.
           content:
             application/json:
               schema:
-                $ref: "../generated/runtime/AuthorizeArtifactResponse.schema.json"
+                $ref: "./runtime.schemas.json#/components/schemas/AuthorizeArtifactResponse"
         "400":
           $ref: "#/components/responses/InvalidRequest"
         default:
@@ -276,13 +276,13 @@ components:
       content:
         application/json:
           schema:
-            $ref: "../generated/runtime/RuntimeError.schema.json"
+            $ref: "./runtime.schemas.json#/components/schemas/RuntimeError"
     Rejected:
       description: Bounded rejection code.
       content:
         application/json:
           schema:
-            $ref: "../generated/runtime/RuntimeError.schema.json"
+            $ref: "./runtime.schemas.json#/components/schemas/RuntimeError"
   parameters:
     upload_id:
       name: upload_id

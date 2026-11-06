@@ -8,6 +8,7 @@ import {
   type ValidatedCanonical,
   type ValidatedOperation,
 } from "../dist/index.js";
+import { decodeRuntime } from "../dist/runtime.js";
 
 const raw = Schema.decodeUnknownSync(Operation)(controlFixtures.Operation);
 // @ts-expect-error structural decoding does not grant semantic validation
@@ -42,3 +43,15 @@ declare const valid: ValidatedCanonical<"2", "plan">;
 const version: "2" = valid.schema_version;
 const name: string = valid.display_name;
 void [unchecked, uncheckedPlan, operation, wrongFormat, wrongKind, version, name];
+
+// HTTP ownership migration retains the public decoder's precise inferred wire types.
+const runtimeUpload: {
+  readonly schema_version: "1";
+  readonly tenant_scope: string;
+  readonly byte_length: number;
+} = decodeRuntime("CreateUploadRequest", new Uint8Array());
+// @ts-expect-error selection outcome remains a literal, not an unconstrained string
+const wrongRuntimeOutcome: "RELEASED" = decodeRuntime(
+  "SelectResultResponse",
+  new Uint8Array(),
+).outcome;

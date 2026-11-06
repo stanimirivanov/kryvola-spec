@@ -1,0 +1,19 @@
+{
+  "AuthorizeArtifactRequest.schema.json": "57d47f3af11becfa20b3aecb577b14b169bf49fccb2a7da28fe6e8057694bb07",
+  "AuthorizeArtifactResponse.schema.json": "2ef588682ffa81f23043c6b565368c5d7c756526dacdd22349c0212153aefdfd",
+  "CancelOperationRequest.schema.json": "2b5a23f3a7ac555def307961a5b024f0e6f9ce7078a7fb7d1d7ab2fff3a60b21",
+  "CancelOperationResponse.schema.json": "63c02d32f94898456e9b6af8ce66905c0ee23d0671c2386f343646121cba96e5",
+  "CancellationPending.schema.json": "bf988998b58999b62cce3995e2c3ce6b80c8ba421752b67b6c683233aae7eafc",
+  "Cancelled.schema.json": "b1297751c984e8189bb657070d2f279865199a5b2425f848739673bf818ed17e",
+  "CreateOperationRequest.schema.json": "1a061d7dd5a8a93ca368421996186dbf65557284fbac15b0a3f6c8f00cced9f3",
+  "CreateUploadRequest.schema.json": "477993f60a8737099af2b2e3810ef912389724809387002c29c77c5be427c605",
+  "CreateUploadResponse.schema.json": "24bed4018de4c1b1e99ac36a8c2f6a44e808606d6364e634f4fd485e2181b1ce",
+  "EnsureAttemptRequest.schema.json": "f46fe9ada798daaaee74d20807489324cd9d5b01399b9a1e6e430d85992c0ab1",
+  "EnsureAttemptResponse.schema.json": "8584fcda62ca1a87023eaed5878aa1f824909d0642881f7e06bbe2f5dab382d9",
+  "FinalizeUploadRequest.schema.json": "3fbece3bfc8c6914f68bbbcb1cd13e8db41db9b64f708128d9f8fb12b59ac485",
+  "FinalizeUploadResponse.schema.json": "aff9fb6d6f49a312f7bb7f6ae3f28a061ec3e56bd4c292399171597ec001fa55",
+  "OperationResponse.schema.json": "e624d8fe6ef0af6eb757d9c46aca29223e3925c4b09de33e32c918af275ce0b0",
+  "RuntimeError.schema.json": "50c7343a1db866931d61c022e929adabfc32672dbe33dd9cebd3f636f3070b18",
+  "SelectResultRequest.schema.json": "5c7c8d71ccdcbe25658ade2e0a87b9c1e8de75edc7296c3d01d55934130fd54b",
+  "SelectResultResponse.schema.json": "ef7800ec8d05a465a075cca44c99172c4631b587675d9444a2f8be3263783bd0"
+}
