@@ -336,3 +336,25 @@ schema migration, generator, compatibility checks and provenance in one slice.
 
 Verification: focused runtime and inferred-type checks, Docker-backed native
 generation, and complete `pnpm check` passed. No publication occurred.
+
+## M1-PR2-R2 — Complete runtime execution contracts (issue #65)
+
+OpenAPI 1.1.0 adds scoped upload abort, physical-execution registration,
+administrative cancellation and recovery fencing. Four new operation body schemas
+and four status-specific error schemas are OpenAPI-owned and use existing non-HTTP control references. Administrative cancel
+reuses public cancellation's committed/pending bodies while requiring separate
+ADMIN_CANCEL authority. Recovery acknowledges committed quarantine only; it does
+not admit a successor or resume work. Operation descriptions specify authority,
+retry/commit semantics, uint64 overflow and HTTP error mappings. Purpose extensions
+are normative policy requirements, not implemented authentication or authorization.
+
+The frozen runtime baseline remains an immutable 17-schema subset; additive exports
+are checked separately. Tests compare resolved OpenAPI route bodies with generated
+schemas, reject malformed/credential/bulk inputs, and retain precise public types.
+No existing signed/Engine/status contracts or historical records change. Fabric
+handler/policy enforcement, workflow actions and publication remain separate work.
+
+
+Verification: the missing-route and status-code checks failed before implementation;
+all 11 focused runtime tests and public type checks now pass. Docker-backed native
+generation and full `pnpm check` passed, including 105 tests. No publication occurred.

@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Kryvola Fabric runtime API
-  version: "1.0.0"
+  version: "1.1.0"
   description: |
     UTF-8 JSON control bodies are limited to 65536 bytes after decompression.
     Bulk parts and manifests use separate binary endpoints. Every route requires
@@ -214,13 +214,13 @@ paths:
       operationId: cancelOperation
       summary: Acknowledge cancellation only after the tombstone and fence commit.
       tags: [Runtime]
-      requestBody:
+      requestBody: &cancelRequest
         required: true
         content:
           application/json:
             schema:
               $ref: "./runtime.schemas.json#/components/schemas/CancelOperationRequest"
-      responses:
+      responses: &cancelResponses
         "200":
           description: Cancellation fence committed.
           content:
@@ -265,12 +265,160 @@ paths:
           $ref: "#/components/responses/InvalidRequest"
         default:
           $ref: "#/components/responses/Rejected"
+  /v1/uploads/{upload_id}/abort:
+    post:
+      operationId: abortUpload
+      summary: Commit abort of a private staged upload.
+      description: |
+        Requires the authenticated workload's COMPUTE_WRITE authority for the
+        exact attempt and upload. Cross-tenant or mismatched upload scope is denied.
+        Retry the same scoped request after interruption. 204 confirms committed
+        staging unreachability; physical cleanup may be retried. 404 means absent
+        or already reclaimed, never permission to access another tenant's data.
+      x-kryvola-purpose: COMPUTE_WRITE
+      tags: [Runtime]
+      parameters:
+        - $ref: "#/components/parameters/upload_id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./runtime.schemas.json#/components/schemas/AbortUploadRequest"
+      responses:
+        "204":
+          description: Abort committed; upload cannot be finalized or read.
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+        "403":
+          $ref: "#/components/responses/RuntimeForbidden"
+        "404":
+          $ref: "#/components/responses/RuntimeNotFound"
+        "409":
+          $ref: "#/components/responses/RuntimeConflict"
+        "503":
+          $ref: "#/components/responses/RuntimeUnavailable"
+        default:
+          $ref: "#/components/responses/Rejected"
+  /v1/executions/register:
+    post:
+      operationId: registerExecution
+      summary: Register a physical execution against one live attempt.
+      description: |
+        Requires coordinator EXECUTION_REGISTER authority for the request's tenant,
+        operation, workflow epoch, attempt epoch and fence. The server compares plan
+        and policy digests with authoritative operation metadata. Identical retries
+        succeed only while the attempt remains live and the operation remains open;
+        reusing an execution id for a different attempt is rejected. Registration
+        grants neither result selection nor artifact read or disclosure authority.
+      x-kryvola-purpose: EXECUTION_REGISTER
+      tags: [Runtime]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./runtime.schemas.json#/components/schemas/RegisterExecutionRequest"
+      responses:
+        "204":
+          description: Registration committed for this live attempt.
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+        "403":
+          $ref: "#/components/responses/RuntimeForbidden"
+        "404":
+          $ref: "#/components/responses/RuntimeNotFound"
+        "409":
+          $ref: "#/components/responses/RuntimeConflict"
+        "503":
+          $ref: "#/components/responses/RuntimeUnavailable"
+        default:
+          $ref: "#/components/responses/Rejected"
+  /v1/admin/operations/cancel:
+    post:
+      operationId: adminCancelOperation
+      summary: Fence an operation before administrative termination.
+      description: |
+        Requires separate ADMIN_CANCEL authority for the authenticated administrator,
+        tenant and operation; public cancellation authority is insufficient. Uses
+        the same committed barrier and idempotency semantics as public cancellation.
+        Registry unavailability returns 202 CANCELLATION_PENDING, never CANCELLED.
+        Temporal termination must wait for the committed 200 response.
+      x-kryvola-purpose: ADMIN_CANCEL
+      tags: [Runtime]
+      requestBody: *cancelRequest
+      responses: *cancelResponses
+  /v1/admin/operations/fence-recovery:
+    post:
+      operationId: fenceRecovery
+      summary: Commit recovery quarantine without admitting a successor.
+      description: |
+        Requires ADMIN_RECOVERY authority for the authenticated administrator, tenant,
+        operation and current workflow epoch. The server allocates the barrier fence
+        and successor epoch; callers cannot supply them. First fencing advances the
+        stored fence and sets successor_epoch to workflow_epoch + 1; overflow rejects
+        with 409 STALE_FENCE. A 200 response follows
+        transaction commit only. Identical retries return the same barrier; stale,
+        cancelled or exhausted epochs reject. 503 UNAVAILABLE is not acknowledgement
+        of fencing and the same request may be retried. RECOVERY_FENCED is quarantine,
+        never recovery admission, workflow resumption or disclosure authorization.
+      x-kryvola-purpose: ADMIN_RECOVERY
+      tags: [Runtime]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./runtime.schemas.json#/components/schemas/FenceRecoveryRequest"
+      responses:
+        "200":
+          description: Barrier committed; successor_epoch is a recovery target only.
+          content:
+            application/json:
+              schema:
+                $ref: "./runtime.schemas.json#/components/schemas/RecoveryFenceResponse"
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+        "403":
+          $ref: "#/components/responses/RuntimeForbidden"
+        "404":
+          $ref: "#/components/responses/RuntimeNotFound"
+        "409":
+          $ref: "#/components/responses/RuntimeConflict"
+        "503":
+          $ref: "#/components/responses/RuntimeUnavailable"
+        default:
+          $ref: "#/components/responses/Rejected"
 components:
   securitySchemes:
     workload:
       type: mutualTLS
       description: Verified client workload identity.
   responses:
+    RuntimeForbidden:
+      description: "FORBIDDEN: workload/purpose, tenant or context/plan/policy binding denied."
+      content:
+        application/json:
+          schema:
+            $ref: "./runtime.schemas.json#/components/schemas/RuntimeForbiddenError"
+    RuntimeNotFound:
+      description: "NOT_FOUND: no visible operation or upload in the authorized scope."
+      content:
+        application/json:
+          schema:
+            $ref: "./runtime.schemas.json#/components/schemas/RuntimeNotFoundError"
+    RuntimeConflict:
+      description: "ATTEMPT_EXPIRED for dead leases; STALE_FENCE for stale/closed/cancelled or exhausted epochs, or an execution id bound to another attempt; IDEMPOTENCY_CONFLICT for changed retry intent."
+      content:
+        application/json:
+          schema:
+            $ref: "./runtime.schemas.json#/components/schemas/RuntimeConflictError"
+    RuntimeUnavailable:
+      description: "UNAVAILABLE: dependency failure; no durable success is acknowledged. Retry the same scoped request."
+      content:
+        application/json:
+          schema:
+            $ref: "./runtime.schemas.json#/components/schemas/RuntimeUnavailableError"
     InvalidRequest:
       description: Invalid runtime request.
       content:
