@@ -358,3 +358,19 @@ handler/policy enforcement, workflow actions and publication remain separate wor
 Verification: the missing-route and status-code checks failed before implementation;
 all 11 focused runtime tests and public type checks now pass. Docker-backed native
 generation and full `pnpm check` passed, including 105 tests. No publication occurred.
+
+## M1-PR3-R1 — Approval and receipt golden vectors (issue #67)
+
+Add independently authored, fixed v3 approval/receipt canonical bytes, commitments,
+preimages and public RFC-test-key signatures. Tests cover every declared payload
+and header field: omissions, schema-valid substitutions, digest rebinding,
+signature tampering, list order and ambiguous/noncanonical encodings. Existing
+schemas and all prior signed vectors stay unchanged; no ambiguous receipt binding
+is invented. The new fixture is exported with source provenance through the owning
+generator. Public test signatures do not establish trust or permission.
+
+
+Verification: the missing-fixture RED test and corrupted-vector negative control
+failed as expected. All 15 focused disclosure/canonical tests, Docker-backed native
+generation and full `pnpm check` passed (109 tests, including state models).
+No publication or native-v3 differential-conformance claim is made.
