@@ -1,0 +1,194 @@
+{
+  "components": {
+    "schemas": {
+      "CreateUploadRequest": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "tenant_scope": { "$ref": "../generated/control/Operation.schema.json#/properties/tenant_scope" },
+          "byte_length": { "type": "integer", "minimum": 1, "maximum": 1073741824 }
+        },
+        "required": ["schema_version", "tenant_scope", "byte_length"],
+        "additionalProperties": false
+      },
+      "CreateUploadResponse": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "upload_id": { "$ref": "../generated/control/Operation.schema.json#/properties/operation_id" }
+        },
+        "required": ["schema_version", "upload_id"],
+        "additionalProperties": false
+      },
+      "FinalizeUploadRequest": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "tenant_scope": { "$ref": "../generated/control/Operation.schema.json#/properties/tenant_scope" },
+          "manifest_digest": { "$ref": "../generated/control/Operation.schema.json#/properties/policy_digest" }
+        },
+        "required": ["schema_version", "tenant_scope", "manifest_digest"],
+        "additionalProperties": false
+      },
+      "FinalizeUploadResponse": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "manifest_digest": { "$ref": "../generated/control/Operation.schema.json#/properties/policy_digest" }
+        },
+        "required": ["schema_version", "manifest_digest"],
+        "additionalProperties": false
+      },
+      "CreateOperationRequest": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "operation": { "$ref": "../generated/control/Operation.schema.json" },
+          "input_manifest_digests": {
+            "type": "array",
+            "items": { "$ref": "../generated/control/Operation.schema.json#/properties/policy_digest" },
+            "minItems": 1,
+            "maxItems": 128
+          }
+        },
+        "required": ["schema_version", "operation", "input_manifest_digests"],
+        "additionalProperties": false
+      },
+      "OperationResponse": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "operation": { "$ref": "../generated/control/Operation.schema.json" },
+          "public_status": { "anyOf": [{ "$ref": "../generated/control/PublicResultStatus.schema.json" }, { "type": "null" }] }
+        },
+        "required": ["schema_version", "operation", "public_status"],
+        "additionalProperties": false
+      },
+      "EnsureAttemptRequest": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "attempt": {
+            "type": "object",
+            "properties": {
+              "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+              "tenant_scope": { "$ref": "../generated/control/Operation.schema.json#/properties/tenant_scope" },
+              "operation_id": { "$ref": "../generated/control/Operation.schema.json#/properties/operation_id" },
+              "workflow_epoch": { "$ref": "../generated/control/Attempt.schema.json#/properties/workflow_epoch" },
+              "attempt_epoch": { "$ref": "../generated/control/Attempt.schema.json#/properties/attempt_epoch" }
+            },
+            "required": ["schema_version", "tenant_scope", "operation_id", "workflow_epoch", "attempt_epoch"],
+            "additionalProperties": false
+          }
+        },
+        "required": ["schema_version", "attempt"],
+        "additionalProperties": false
+      },
+      "EnsureAttemptResponse": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "attempt": { "$ref": "../generated/control/Attempt.schema.json" },
+          "lease_expires_unix_ms": { "$ref": "../generated/control/Operation.schema.json#/properties/deadline_unix_ms" }
+        },
+        "required": ["schema_version", "attempt", "lease_expires_unix_ms"],
+        "additionalProperties": false
+      },
+      "SelectResultRequest": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "attempt": { "$ref": "../generated/control/Attempt.schema.json" },
+          "execution_id": { "$ref": "../generated/control/Operation.schema.json#/properties/operation_id" },
+          "output_manifest_digest": { "$ref": "../generated/control/Operation.schema.json#/properties/policy_digest" }
+        },
+        "required": ["schema_version", "attempt", "execution_id", "output_manifest_digest"],
+        "additionalProperties": false
+      },
+      "SelectResultResponse": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "outcome": { "type": "string", "enum": ["COMPUTE_SELECTED"] },
+          "execution_id": { "$ref": "../generated/control/Operation.schema.json#/properties/operation_id" },
+          "output_manifest_digest": { "$ref": "../generated/control/Operation.schema.json#/properties/policy_digest" }
+        },
+        "required": ["schema_version", "outcome", "execution_id", "output_manifest_digest"],
+        "additionalProperties": false
+      },
+      "CancelOperationRequest": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "tenant_scope": { "$ref": "../generated/control/Operation.schema.json#/properties/tenant_scope" },
+          "operation_id": { "$ref": "../generated/control/Operation.schema.json#/properties/operation_id" },
+          "idempotency_key": { "$ref": "../generated/control/Operation.schema.json#/properties/idempotency_key" }
+        },
+        "required": ["schema_version", "tenant_scope", "operation_id", "idempotency_key"],
+        "additionalProperties": false
+      },
+      "CancellationPending": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "outcome": { "type": "string", "enum": ["CANCELLATION_PENDING"] }
+        },
+        "required": ["schema_version", "outcome"],
+        "additionalProperties": false
+      },
+      "Cancelled": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "outcome": { "type": "string", "enum": ["CANCELLED"] },
+          "fence": { "$ref": "../generated/control/Attempt.schema.json#/properties/fence" }
+        },
+        "required": ["schema_version", "outcome", "fence"],
+        "additionalProperties": false
+      },
+      "CancelOperationResponse": { "anyOf": [{ "$ref": "#/components/schemas/CancellationPending" }, { "$ref": "#/components/schemas/Cancelled" }] },
+      "AuthorizeArtifactRequest": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "attempt": { "$ref": "../generated/control/Attempt.schema.json" },
+          "manifest_digest": { "$ref": "../generated/control/Operation.schema.json#/properties/policy_digest" },
+          "purpose": { "type": "string", "enum": ["COMPUTE_READ", "COMPUTE_WRITE", "EVIDENCE_READ"] }
+        },
+        "required": ["schema_version", "attempt", "manifest_digest", "purpose"],
+        "additionalProperties": false
+      },
+      "AuthorizeArtifactResponse": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "expires_unix_ms": { "$ref": "../generated/control/Operation.schema.json#/properties/deadline_unix_ms" }
+        },
+        "required": ["schema_version", "expires_unix_ms"],
+        "additionalProperties": false
+      },
+      "RuntimeError": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "code": {
+            "type": "string",
+            "enum": [
+              "INVALID_REQUEST",
+              "FORBIDDEN",
+              "NOT_FOUND",
+              "PAYLOAD_TOO_LARGE",
+              "QUOTA_EXCEEDED",
+              "ATTEMPT_EXPIRED",
+              "STALE_FENCE",
+              "IDEMPOTENCY_CONFLICT",
+              "UNAVAILABLE"
+            ]
+          }
+        },
+        "required": ["schema_version", "code"],
+        "additionalProperties": false
+      }
+    }
+  }
+}
