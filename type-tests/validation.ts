@@ -55,3 +55,11 @@ const wrongRuntimeOutcome: "RELEASED" = decodeRuntime(
   "SelectResultResponse",
   new Uint8Array(),
 ).outcome;
+
+const recoveryFence: {
+  readonly outcome: "RECOVERY_FENCED";
+  readonly fence: string;
+  readonly successor_epoch: string;
+} = decodeRuntime("RecoveryFenceResponse", new Uint8Array());
+// @ts-expect-error recovery quarantine is not a resumption/admission outcome
+const resumed: "RECOVERED" = recoveryFence.outcome;

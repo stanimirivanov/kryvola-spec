@@ -188,6 +188,85 @@
         },
         "required": ["schema_version", "code"],
         "additionalProperties": false
+      },
+      "AbortUploadRequest": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "attempt": { "$ref": "../generated/control/Attempt.schema.json" }
+        },
+        "required": ["schema_version", "attempt"],
+        "additionalProperties": false
+      },
+      "RegisterExecutionRequest": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "attempt": { "$ref": "../generated/control/Attempt.schema.json" },
+          "execution_id": { "$ref": "../generated/control/Operation.schema.json#/properties/operation_id" },
+          "plan_digest": { "$ref": "../generated/control/Operation.schema.json#/properties/policy_digest" },
+          "policy_digest": { "$ref": "../generated/control/Operation.schema.json#/properties/policy_digest" }
+        },
+        "required": ["schema_version", "attempt", "execution_id", "plan_digest", "policy_digest"],
+        "additionalProperties": false
+      },
+      "FenceRecoveryRequest": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "tenant_scope": { "$ref": "../generated/control/Operation.schema.json#/properties/tenant_scope" },
+          "operation_id": { "$ref": "../generated/control/Operation.schema.json#/properties/operation_id" },
+          "workflow_epoch": { "$ref": "../generated/control/Attempt.schema.json#/properties/workflow_epoch" }
+        },
+        "required": ["schema_version", "tenant_scope", "operation_id", "workflow_epoch"],
+        "additionalProperties": false
+      },
+      "RecoveryFenceResponse": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "outcome": { "type": "string", "enum": ["RECOVERY_FENCED"] },
+          "fence": { "$ref": "../generated/control/Attempt.schema.json#/properties/fence" },
+          "successor_epoch": { "$ref": "../generated/control/Attempt.schema.json#/properties/workflow_epoch" }
+        },
+        "required": ["schema_version", "outcome", "fence", "successor_epoch"],
+        "additionalProperties": false
+      },
+      "RuntimeForbiddenError": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "code": { "type": "string", "enum": ["FORBIDDEN"] }
+        },
+        "required": ["schema_version", "code"],
+        "additionalProperties": false
+      },
+      "RuntimeNotFoundError": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "code": { "type": "string", "enum": ["NOT_FOUND"] }
+        },
+        "required": ["schema_version", "code"],
+        "additionalProperties": false
+      },
+      "RuntimeConflictError": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "code": { "type": "string", "enum": ["ATTEMPT_EXPIRED", "STALE_FENCE", "IDEMPOTENCY_CONFLICT"] }
+        },
+        "required": ["schema_version", "code"],
+        "additionalProperties": false
+      },
+      "RuntimeUnavailableError": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "code": { "type": "string", "enum": ["UNAVAILABLE"] }
+        },
+        "required": ["schema_version", "code"],
+        "additionalProperties": false
       }
     }
   }
