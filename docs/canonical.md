@@ -96,3 +96,20 @@ must verify the trusted signer and compare the signed fields to the intended
 disclosure and current state before opening the output. Canonical decoding
 and preimage generation perform structural checks only. The v3 golden vector
 is in [disclosure-v3.json](../fixtures/canonical/disclosure-v3.json).
+
+### Approval and receipt signature vectors
+
+[approval-receipt-v3.json](../fixtures/canonical/approval-receipt-v3.json) fixes
+canonical payload bytes, domain-separated commitments, complete signature
+preimages and Ed25519 envelopes for both declared v3 artifacts. It uses the public
+RFC 8032 section 7.1 test-1 key and is marked UNRATIFIED_TEST_ONLY. Fixture authoring
+used JCS/BLAKE3 and Node Ed25519 directly with the documented framing, without
+calling the production canonical wrapper. Tests and normal generation never
+recompute expected values; generation only copies the committed fixture.
+
+Disclosure tests check every declared payload/header field, signature tampering,
+wrong kind/version, reordered lists, duplicate/escaped keys and noncanonical bytes.
+Schema-valid substitutions are rejected under the original digest and fail real
+signature verification even after digest rebinding. These are structural and
+cryptographic binding checks, not signer trust, current policy, proof verification
+or release permission. No schema fields or existing v1/v2/v3 meanings change.
