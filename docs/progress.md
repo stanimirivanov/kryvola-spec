@@ -374,3 +374,13 @@ Verification: the missing-fixture RED test and corrupted-vector negative control
 failed as expected. All 15 focused disclosure/canonical tests, Docker-backed native
 generation and full `pnpm check` passed (109 tests, including state models).
 No publication or native-v3 differential-conformance claim is made.
+
+## M1-PR9-R1 — versioned state-model oracle
+
+The generated v1 attempts/release graphs derive all reachable transitions directly
+from the existing models and carry source hashes, structural schemas and positive
+trace samples. A generic checker rejects corrupted state/fence, outcome/order,
+version, empty evidence and artifact bindings. Full edge-to-model and budget tests
+join the existing safety/mutation and provenance gates. No runtime dependency,
+model-rule change, publication, consumer pin update or historical signed-byte change
+is introduced. [Consumption and limits](state-oracle.md); [proposed ADR](adr/0005-state-model-oracle.md).

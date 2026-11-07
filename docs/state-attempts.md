@@ -1,8 +1,9 @@
 # Bounded attempt and fence model
 
 M0-PR11 models design v2 §5.2 in `models/attempts/model.mjs`. Run `pnpm check:state`
-(also in `pnpm check` and CI's `verify` job). It uses only Node built-ins: no new
-runtime dependency, SDK, service, database or model-checker installation.
+(also in `pnpm check` and CI's `verify` job). The original model checker uses only Node built-ins: no new
+runtime dependency, SDK, service, database or model-checker installation. The gate
+also qualifies the [generated oracle](state-oracle.md) using the existing Spec build.
 
 The breadth-first checker in `tools/check-state.mjs` exhausts every reachable state
 and enabled/rejected action at these explicit bounds: one tenant/operation, two
