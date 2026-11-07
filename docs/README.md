@@ -79,3 +79,6 @@ approval is pending.
 [The actual solo-owner review package](m0-solo-review/README.md) contains the
 qualified subject, consolidated agentic findings and deliberately pending owner
 policy. Review the limits before posting any approval; a merge is not approval.
+
+[Versioned state-model test oracle](state-oracle.md) documents additive M1 transition
+graphs, sample traces, source provenance and consumer normalization responsibilities.

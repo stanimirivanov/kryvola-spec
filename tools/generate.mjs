@@ -37,6 +37,7 @@ import {
   ReleaseCandidate,
 } from "../dist/index.js";
 import { RUNTIME_SCHEMAS } from "../dist/runtime.js";
+import { StateOracle, StateTrace } from "../dist/state-oracle.js";
 import { profileFixtureFiles } from "./profile-fixtures.mjs";
 import {
   describeArtifactRef,
@@ -46,11 +47,14 @@ import {
   toJsonSchema,
 } from "./projection.mjs";
 import { buildManifest } from "./provenance.mjs";
+import { oracleFiles } from "./state-oracle.mjs";
 
 const root = resolve(import.meta.dirname, "..");
 const json = (value) => `${JSON.stringify(value, null, 2)}\n`;
 const descriptor = describeArtifactRef(ArtifactRef, ARTIFACT_REF_FIELD_NUMBERS);
-const generated = new Map();
+const generated = new Map(oracleFiles());
+for (const [name, schema] of Object.entries({ StateOracle, StateTrace }))
+  generated.set(`state/v1/${name}.schema.json`, json(toJsonSchema(schema)));
 for (const [name, schema] of Object.entries(RUNTIME_SCHEMAS)) {
   generated.set(`runtime/${name}.schema.json`, json(toJsonSchema(schema)));
 }
@@ -128,6 +132,12 @@ generated.set(
 const sources = new Map(
   [
     "src/index.ts",
+    "src/state-oracle.ts",
+    "models/attempts/model.mjs",
+    "models/release/model.mjs",
+    "fixtures/state/attempts.json",
+    "fixtures/state/release.json",
+    "tools/state-oracle.mjs",
     "src/assurance.ts",
     "src/control.ts",
     "src/engine.ts",

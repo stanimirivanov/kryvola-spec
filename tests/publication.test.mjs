@@ -20,6 +20,44 @@ test("two committed bundle builds match and carry complete projection manifests"
   ])
     assert.ok(names.includes(name));
   assert.ok(!names.some((name) => name.startsWith("node_modules/") || name.startsWith(".git/")));
+  const generated = JSON.parse(
+    execFileSync("tar", ["-xOf", "-", "generated/manifest.json"], {
+      input: first,
+      encoding: "utf8",
+    }),
+  );
+  for (const model of ["attempts", "release"]) {
+    const path = `state/v1/${model}.oracle.json`;
+    const raw = execFileSync("tar", ["-xOf", "-", `generated/${path}`], {
+      input: first,
+      encoding: "utf8",
+      maxBuffer: 16 << 20,
+    });
+    assert.equal(sha256(raw), generated.files[path]);
+    const oracle = JSON.parse(raw);
+    const samples = JSON.parse(
+      execFileSync("tar", ["-xOf", "-", `generated/state/v1/${model}.traces.json`], {
+        input: first,
+        encoding: "utf8",
+        maxBuffer: 16 << 20,
+      }),
+    );
+    // An isolated bundle consumer needs JSON/hash/traversal, not model or TypeScript imports.
+    for (const trace of samples) {
+      assert.equal(trace.oracle_sha256, sha256(raw));
+      let at = oracle.initial;
+      for (const event of trace.steps) {
+        const edge = oracle.nodes[at].edges.find(
+          ([action]) => oracle.actions[action] === event.action,
+        );
+        assert.ok(edge);
+        assert.equal(oracle.outcomes[edge[1]], event.outcome);
+        assert.deepEqual(oracle.nodes[edge[2]].state, event.state);
+        at = edge[2];
+      }
+    }
+  }
+  assert.ok(!names.some((name) => name.startsWith("models/") || name.startsWith("src/")));
   assert.throws(() => bundle("main"));
 });
 test("downloaded asset verification rejects drift, missing files, identity and provenance mismatch", () => {
