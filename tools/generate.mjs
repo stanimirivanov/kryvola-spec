@@ -36,6 +36,7 @@ import {
   PublicResultStatus,
   ReleaseCandidate,
 } from "../dist/index.js";
+import { Notification } from "../dist/notification.js";
 import { RUNTIME_SCHEMAS } from "../dist/runtime.js";
 import { StateOracle, StateTrace } from "../dist/state-oracle.js";
 import { profileFixtureFiles } from "./profile-fixtures.mjs";
@@ -55,6 +56,11 @@ const descriptor = describeArtifactRef(ArtifactRef, ARTIFACT_REF_FIELD_NUMBERS);
 const generated = new Map(oracleFiles());
 for (const [name, schema] of Object.entries({ StateOracle, StateTrace }))
   generated.set(`state/v1/${name}.schema.json`, json(toJsonSchema(schema)));
+generated.set("notifications/v2/Notification.schema.json", json(toJsonSchema(Notification)));
+generated.set(
+  "notifications/v2/vector.json",
+  readFileSync(join(root, "fixtures/notifications/v2.json"), "utf8"),
+);
 for (const [name, schema] of Object.entries(RUNTIME_SCHEMAS)) {
   generated.set(`runtime/${name}.schema.json`, json(toJsonSchema(schema)));
 }
@@ -148,6 +154,8 @@ const sources = new Map(
     "src/measurement.ts",
     "src/release.ts",
     "src/runtime.ts",
+    "src/notification.ts",
+    "fixtures/notifications/v2.json",
     "openapi/runtime.yaml",
     "openapi/runtime.schemas.json",
     "fixtures/canonical/corpus.json",
