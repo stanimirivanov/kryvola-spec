@@ -384,3 +384,12 @@ version, empty evidence and artifact bindings. Full edge-to-model and budget tes
 join the existing safety/mutation and provenance gates. No runtime dependency,
 model-rule change, publication, consumer pin update or historical signed-byte change
 is introduced. [Consumption and limits](state-oracle.md); [proposed ADR](adr/0005-state-model-oracle.md).
+
+## M1-PR12-R1 — Versioned notification contract
+
+The [notification contract](notifications.md) defines the Spec-owned outbox
+wakeup, its partition key and byte limits, and the mapping from Fabric's
+private v1. Generation publishes the structural schema and a byte-exact
+interoperability vector. The Spec tests exercise the encoder, strict decoder,
+projection, and malformed records. Fabric adoption and broker crash/replay
+qualification belong to subsequent slices.
