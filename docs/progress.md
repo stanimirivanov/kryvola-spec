@@ -408,3 +408,10 @@ uses existing canonical v3 receipt and signature bytes. It specifies workload
 and signing authority, immutable upload and execution binding, and fenced
 retries. The runtime contract tests cover schema projection, byte limits, and
 the existing signed receipt fixture. Fabric adoption is a separate change.
+
+## M1-PR18 scoped output grant prerequisite
+
+The [scoped output grant contract](output-grants.md) defines how a worker
+obtains single-use upload authorization once it knows the output digest.
+It binds each grant to one execution and action, and keeps the bearer in
+transport metadata. Fabric adoption follows separately.
