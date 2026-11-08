@@ -400,3 +400,11 @@ The [compute-input contract](compute-input-reads.md) defines bounded finalized
 manifest and part reads for an approved operation under a fresh compute-read
 grant. OpenAPI owns the routes and the projected control schema. Fabric adoption
 and live authorization tests follow the Spec merge.
+
+## M1-PR18 signed execution receipt prerequisite
+
+The [signed execution receipt persistence contract](execution-receipts.md)
+uses existing canonical v3 receipt and signature bytes. It specifies workload
+and signing authority, immutable upload and execution binding, and fenced
+retries. The runtime contract tests cover schema projection, byte limits, and
+the existing signed receipt fixture. Fabric adoption is a separate change.

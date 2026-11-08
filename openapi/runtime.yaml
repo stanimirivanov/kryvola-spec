@@ -408,6 +408,46 @@ paths:
           $ref: "#/components/responses/RuntimeUnavailable"
         default:
           $ref: "#/components/responses/Rejected"
+  /v1/executions/receipt:
+    post:
+      operationId: persistExecutionReceipt
+      summary: Commit a signed provenance receipt for one physical execution.
+      description: |
+        Requires EXECUTION_RECEIPT_WRITE authority for the verified workload and
+        exact live execution. Verify the canonical v3 receipt and signature, and
+        bind them to the registered execution and its finalized output upload
+        before acknowledging a durable commit. Identical authorized retries return
+        the same digest. A changed binding conflicts. See the signed execution
+        receipt contract for trust, fencing and replay rules.
+      x-kryvola-purpose: EXECUTION_RECEIPT_WRITE
+      tags: [Runtime]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./runtime.schemas.json#/components/schemas/PersistExecutionReceiptRequest"
+      responses:
+        "200":
+          description: Receipt is durably bound to the execution and output.
+          content:
+            application/json:
+              schema:
+                $ref: "./runtime.schemas.json#/components/schemas/PersistExecutionReceiptResponse"
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+        "403":
+          $ref: "#/components/responses/RuntimeForbidden"
+        "404":
+          $ref: "#/components/responses/RuntimeNotFound"
+        "409":
+          $ref: "#/components/responses/RuntimeConflict"
+        "413":
+          $ref: "#/components/responses/Rejected"
+        "503":
+          $ref: "#/components/responses/RuntimeUnavailable"
+        default:
+          $ref: "#/components/responses/Rejected"
   /v1/executions/register:
     post:
       operationId: registerExecution

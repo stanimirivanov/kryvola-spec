@@ -159,7 +159,7 @@ export function renderRuntime(schemas) {
             object: ["type", "properties", "required", "additionalProperties"],
             integer: ["type", "minimum", "maximum"],
             array: ["type", "items", "minItems", "maxItems"],
-            string: ["type", "enum"],
+            string: ["type", "enum", "pattern"],
             null: ["type"],
           }[s.type];
     if (!allowed || Object.keys(s).some((k) => !allowed.includes(k))) return fail();
@@ -181,6 +181,9 @@ export function renderRuntime(schemas) {
     }
     if (s.type === "null") return "Schema.Null";
     if (s.type === "string") {
+      if (typeof s.pattern === "string" && !Object.hasOwn(s, "enum")) {
+        return `Schema.String.check(Schema.isPattern(new RegExp(${JSON.stringify(s.pattern)}, "u")))`;
+      }
       if (!Array.isArray(s.enum) || !s.enum.length || s.enum.some((v) => typeof v !== "string"))
         return fail();
       return s.enum.length === 1

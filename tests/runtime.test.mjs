@@ -1,9 +1,11 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
+import { createPublicKey, verify } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 import { Schema } from "effect";
+import { canonicalBytes, decodeCanonical, signaturePreimage } from "../dist/canonical.js";
 import { decodeRuntime, RUNTIME_SCHEMAS } from "../dist/runtime.js";
 import * as projection from "../tools/projection.mjs";
 import { sha256 } from "../tools/provenance.mjs";
@@ -231,6 +233,7 @@ test("new runtime routes bind resolved schemas and distinct authenticated author
   for (const [path, name, authority] of [
     ["/v1/uploads/{upload_id}/abort", "AbortUploadRequest", "COMPUTE_WRITE"],
     ["/v1/executions/register", "RegisterExecutionRequest", "EXECUTION_REGISTER"],
+    ["/v1/executions/receipt", "PersistExecutionReceiptRequest", "EXECUTION_RECEIPT_WRITE"],
     ["/v1/admin/operations/cancel", "CancelOperationRequest", "ADMIN_CANCEL"],
     ["/v1/admin/operations/fence-recovery", "FenceRecoveryRequest", "ADMIN_RECOVERY"],
   ]) {
@@ -276,6 +279,12 @@ test("new runtime routes bind resolved schemas and distinct authenticated author
       );
     }
   }
+  const receipt = api.paths["/v1/executions/receipt"].post.responses;
+  assert.deepEqual(
+    normalize(receipt["200"].content["application/json"].schema),
+    normalize(projection.toJsonSchema(RUNTIME_SCHEMAS.PersistExecutionReceiptResponse)),
+  );
+  assert.ok(receipt["413"]);
   const uploadId = api.paths["/v1/uploads/{upload_id}/abort"].post.parameters[0];
   assert.equal(uploadId.name, "upload_id");
   assert.equal(uploadId.required, true);
@@ -331,4 +340,66 @@ test("compute-input requests bind an exact attempt and manifest without credenti
   const schema = JSON.parse(read("generated/runtime/ReadComputeInputRequest.schema.json"));
   assert.equal(schema.additionalProperties, false);
   assert.equal(schema.properties.attempt.additionalProperties, false);
+});
+
+test("signed execution receipts use the canonical v3 fixture and a bounded runtime envelope", () => {
+  const corpus = JSON.parse(read("fixtures/canonical/approval-receipt-v3.json"));
+  const receipt = corpus.objects.find((object) => object.kind === "receipt");
+  const attempt = {
+    ...version,
+    tenant_scope: receipt.value.tenant_scope,
+    operation_id: receipt.value.operation_id,
+    workflow_epoch: receipt.value.workflow_epoch,
+    attempt_epoch: receipt.value.attempt_epoch,
+    fence: receipt.value.fence,
+  };
+  const request = {
+    ...version,
+    attempt,
+    execution_id: receipt.value.execution_id,
+    output_upload_id: "upload-1",
+    receipt_base64url: Buffer.from(receipt.canonical_hex, "hex").toString("base64url"),
+    signature_base64url: Buffer.from(canonicalBytes("signature", receipt.envelope, "3")).toString(
+      "base64url",
+    ),
+  };
+  assert.deepEqual(decode("PersistExecutionReceiptRequest", request), request);
+  const payload = Buffer.from(request.receipt_base64url, "base64url");
+  const envelope = decodeCanonical(
+    "signature",
+    Buffer.from(request.signature_base64url, "base64url"),
+    "3",
+  );
+  const { signature, ...header } = envelope;
+  assert.equal(header.payload_kind, "receipt");
+  const key = createPublicKey({
+    key: Buffer.from(`302a300506032b6570032100${corpus.public_key_hex}`, "hex"),
+    format: "der",
+    type: "spki",
+  });
+  assert.ok(
+    verify(null, signaturePreimage(header, payload, "3"), key, Buffer.from(signature, "base64url")),
+  );
+
+  for (const invalid of [
+    { execution_id: undefined },
+    { output_upload_id: "../path" },
+    { attempt: { ...attempt, fence: 5 } },
+    { receipt_base64url: "" },
+    { receipt_base64url: "A".repeat(43692) },
+    { signature_base64url: "A".repeat(2732) },
+    { signature_base64url: "YWJj\n" },
+    { signature_base64url: "YQ==" },
+    { signer_key: "caller-supplied" },
+    { receipt_digest: digest },
+  ]) {
+    assert.throws(() => decode("PersistExecutionReceiptRequest", { ...request, ...invalid }));
+  }
+  assert.throws(
+    () => decodeRuntime("PersistExecutionReceiptRequest", new Uint8Array(65537)),
+    /64 KiB/,
+  );
+  const response = { ...version, receipt_digest: receipt.digest };
+  assert.deepEqual(decode("PersistExecutionReceiptResponse", response), response);
+  assert.throws(() => decode("PersistExecutionReceiptResponse", { ...response, output_refs: [] }));
 });
