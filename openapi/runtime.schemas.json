@@ -147,6 +147,16 @@
         "additionalProperties": false
       },
       "CancelOperationResponse": { "anyOf": [{ "$ref": "#/components/schemas/CancellationPending" }, { "$ref": "#/components/schemas/Cancelled" }] },
+      "ReadComputeInputRequest": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "attempt": { "$ref": "../generated/control/Attempt.schema.json" },
+          "manifest_digest": { "$ref": "../generated/control/Operation.schema.json#/properties/policy_digest" }
+        },
+        "required": ["schema_version", "attempt", "manifest_digest"],
+        "additionalProperties": false
+      },
       "AuthorizeArtifactRequest": {
         "type": "object",
         "properties": {

@@ -393,3 +393,10 @@ private v1. Generation publishes the structural schema and a byte-exact
 interoperability vector. The Spec tests exercise the encoder, strict decoder,
 projection, and malformed records. Fabric adoption and broker crash/replay
 qualification belong to subsequent slices.
+
+## M1-PR18 prerequisite — fenced compute-input reads
+
+The [compute-input contract](compute-input-reads.md) defines bounded finalized
+manifest and part reads for an approved operation under a fresh compute-read
+grant. OpenAPI owns the routes and the projected control schema. Fabric adoption
+and live authorization tests follow the Spec merge.

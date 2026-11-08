@@ -16,6 +16,7 @@ const CancelOperationRequest = Schema.Struct({"schema_version": Operation.fields
 const CancellationPending = Schema.Struct({"schema_version": Operation.fields.schema_version, "outcome": Schema.Literal("CANCELLATION_PENDING")});
 const Cancelled = Schema.Struct({"schema_version": Operation.fields.schema_version, "outcome": Schema.Literal("CANCELLED"), "fence": Attempt.fields.fence});
 const CancelOperationResponse = Schema.Union([CancellationPending, Cancelled]);
+const ReadComputeInputRequest = Schema.Struct({"schema_version": Operation.fields.schema_version, "attempt": Attempt, "manifest_digest": Operation.fields.policy_digest});
 const AuthorizeArtifactRequest = Schema.Struct({"schema_version": Operation.fields.schema_version, "attempt": Attempt, "manifest_digest": Operation.fields.policy_digest, "purpose": Schema.Literals(["COMPUTE_READ","COMPUTE_WRITE","EVIDENCE_READ"])});
 const AuthorizeArtifactResponse = Schema.Struct({"schema_version": Operation.fields.schema_version, "expires_unix_ms": Operation.fields.deadline_unix_ms});
 const RuntimeError = Schema.Struct({"schema_version": Operation.fields.schema_version, "code": Schema.Literals(["INVALID_REQUEST","FORBIDDEN","NOT_FOUND","PAYLOAD_TOO_LARGE","QUOTA_EXCEEDED","ATTEMPT_EXPIRED","STALE_FENCE","IDEMPOTENCY_CONFLICT","UNAVAILABLE"])});
@@ -27,7 +28,7 @@ const RuntimeForbiddenError = Schema.Struct({"schema_version": Operation.fields.
 const RuntimeNotFoundError = Schema.Struct({"schema_version": Operation.fields.schema_version, "code": Schema.Literal("NOT_FOUND")});
 const RuntimeConflictError = Schema.Struct({"schema_version": Operation.fields.schema_version, "code": Schema.Literals(["ATTEMPT_EXPIRED","STALE_FENCE","IDEMPOTENCY_CONFLICT"])});
 const RuntimeUnavailableError = Schema.Struct({"schema_version": Operation.fields.schema_version, "code": Schema.Literal("UNAVAILABLE")});
-export const RUNTIME_SCHEMAS = Object.freeze({CreateUploadRequest, CreateUploadResponse, FinalizeUploadRequest, FinalizeUploadResponse, CreateOperationRequest, OperationResponse, EnsureAttemptRequest, EnsureAttemptResponse, SelectResultRequest, SelectResultResponse, CancelOperationRequest, CancellationPending, Cancelled, CancelOperationResponse, AuthorizeArtifactRequest, AuthorizeArtifactResponse, RuntimeError, AbortUploadRequest, RegisterExecutionRequest, FenceRecoveryRequest, RecoveryFenceResponse, RuntimeForbiddenError, RuntimeNotFoundError, RuntimeConflictError, RuntimeUnavailableError});
+export const RUNTIME_SCHEMAS = Object.freeze({CreateUploadRequest, CreateUploadResponse, FinalizeUploadRequest, FinalizeUploadResponse, CreateOperationRequest, OperationResponse, EnsureAttemptRequest, EnsureAttemptResponse, SelectResultRequest, SelectResultResponse, CancelOperationRequest, CancellationPending, Cancelled, CancelOperationResponse, ReadComputeInputRequest, AuthorizeArtifactRequest, AuthorizeArtifactResponse, RuntimeError, AbortUploadRequest, RegisterExecutionRequest, FenceRecoveryRequest, RecoveryFenceResponse, RuntimeForbiddenError, RuntimeNotFoundError, RuntimeConflictError, RuntimeUnavailableError});
 const utf8 = new TextDecoder("utf-8", { fatal: true });
 
 /** Decode a complete UTF-8 runtime JSON body. Authorization is a service responsibility. */

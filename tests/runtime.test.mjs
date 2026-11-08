@@ -251,6 +251,31 @@ test("new runtime routes bind resolved schemas and distinct authenticated author
           normalize(projection.toJsonSchema(RUNTIME_SCHEMAS[errorsByStatus[status][0]])),
         );
   }
+  for (const [path, limit] of [
+    ["/v1/compute-inputs/manifest", 65536],
+    ["/v1/compute-inputs/parts/{part_index}", 4194304],
+  ]) {
+    const operation = api.paths[path]?.post;
+    assert.ok(operation, path);
+    assert.equal(operation["x-kryvola-purpose"], "COMPUTE_READ");
+    assert.deepEqual(operation.security, [{ workload: [], computeReadGrant: [] }]);
+    assert.deepEqual(
+      normalize(operation.requestBody.content["application/json"].schema),
+      normalize(projection.toJsonSchema(RUNTIME_SCHEMAS.ReadComputeInputRequest)),
+    );
+    const response = operation.responses["200"];
+    assert.equal(response.content["application/octet-stream"].schema.format, "binary");
+    assert.equal(response.headers["Content-Length"].required, true);
+    assert.equal(response.headers["Content-Length"].schema.maximum, limit);
+    assert.equal(response.headers["Cache-Control"].schema.const, "no-store");
+    assert.ok(operation.responses["400"]);
+    for (const status of ["403", "404", "409", "503"]) {
+      assert.deepEqual(
+        normalize(operation.responses[status].content["application/json"].schema),
+        normalize(projection.toJsonSchema(RUNTIME_SCHEMAS[errorsByStatus[status][0]])),
+      );
+    }
+  }
   const uploadId = api.paths["/v1/uploads/{upload_id}/abort"].post.parameters[0];
   assert.equal(uploadId.name, "upload_id");
   assert.equal(uploadId.required, true);
@@ -277,4 +302,33 @@ test("new HTTP error statuses constrain their existing wire codes", () => {
     assert.throws(() => decode(name, { code: codes[0] }));
     assert.throws(() => decode(name, { ...version, code: codes[0], credentials: "secret" }));
   }
+});
+
+test("compute-input requests bind an exact attempt and manifest without credentials or bulk", () => {
+  const attempt = {
+    ...version,
+    tenant_scope: "tenant-1",
+    operation_id: "operation-1",
+    workflow_epoch: "3",
+    attempt_epoch: "4",
+    fence: "5",
+  };
+  const input = { ...version, attempt, manifest_digest: digest };
+  assert.deepEqual(decode("ReadComputeInputRequest", input), input);
+  for (const patch of [
+    { manifest_digest: digest.toUpperCase() },
+    { attempt: undefined },
+    { attempt: { ...attempt, fence: 5 } },
+    { attempt: { ...attempt, credential: "secret" } },
+    { purpose: "EVIDENCE_READ" },
+    { token: "secret" },
+    { ciphertext: "inline" },
+    { part_index: 0 },
+  ]) {
+    assert.throws(() => decode("ReadComputeInputRequest", { ...input, ...patch }));
+  }
+  assert.throws(() => decodeRuntime("ReadComputeInputRequest", new Uint8Array(65537)), /64 KiB/);
+  const schema = JSON.parse(read("generated/runtime/ReadComputeInputRequest.schema.json"));
+  assert.equal(schema.additionalProperties, false);
+  assert.equal(schema.properties.attempt.additionalProperties, false);
 });
