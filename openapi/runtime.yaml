@@ -408,6 +408,63 @@ paths:
           $ref: "#/components/responses/RuntimeUnavailable"
         default:
           $ref: "#/components/responses/Rejected"
+  /v1/executions/output-grants:
+    post:
+      operationId: issueOutputGrant
+      summary: Issue one single-use grant for an exact execution output action.
+      description: |
+        Requires an EXECUTION_OUTPUT_GRANT capability for the authenticated
+        workload and registered execution on the current live attempt. Returns
+        the newly minted COMPUTE_WRITE bearer only in Kryvola-Output-Grant.
+        The grant is restricted to the exact output manifest and requested
+        upload action. See the scoped output grant contract for reservation,
+        fencing, retries and credential handling.
+      x-kryvola-purpose: EXECUTION_OUTPUT_GRANT
+      tags: [Runtime]
+      security:
+        - workload: []
+          outputGrantAuthority: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./runtime.schemas.json#/components/schemas/IssueOutputGrantRequest"
+      responses:
+        "200":
+          description: Single-use upload authorization issued.
+          headers:
+            Kryvola-Output-Grant:
+              required: true
+              description: Use as the bearer token on the matching upload request.
+              schema:
+                type: string
+                pattern: '^[0-9a-f]{64}(?![\s\S])'
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                const: no-store
+          content:
+            application/json:
+              schema:
+                $ref: "./runtime.schemas.json#/components/schemas/IssueOutputGrantResponse"
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+        "403":
+          $ref: "#/components/responses/RuntimeForbidden"
+        "404":
+          $ref: "#/components/responses/RuntimeNotFound"
+        "409":
+          $ref: "#/components/responses/RuntimeConflict"
+        "413":
+          $ref: "#/components/responses/Rejected"
+        "429":
+          $ref: "#/components/responses/Rejected"
+        "503":
+          $ref: "#/components/responses/RuntimeUnavailable"
+        default:
+          $ref: "#/components/responses/Rejected"
   /v1/executions/receipt:
     post:
       operationId: persistExecutionReceipt
@@ -546,6 +603,10 @@ components:
       type: http
       scheme: bearer
       description: Fresh single-use COMPUTE_READ grant bound to the verified workload and exact request scope.
+    outputGrantAuthority:
+      type: http
+      scheme: bearer
+      description: Separate issuance capability bound to the verified workload and exact execution.
   responses:
     RuntimeForbidden:
       description: "FORBIDDEN: workload/purpose, tenant or context/plan/policy binding denied."

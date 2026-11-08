@@ -147,6 +147,55 @@
         "additionalProperties": false
       },
       "CancelOperationResponse": { "anyOf": [{ "$ref": "#/components/schemas/CancellationPending" }, { "$ref": "#/components/schemas/Cancelled" }] },
+      "IssueOutputGrantRequest": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "attempt": { "$ref": "../generated/control/Attempt.schema.json" },
+          "execution_id": { "$ref": "../generated/control/Operation.schema.json#/properties/operation_id" },
+          "manifest_digest": { "$ref": "../generated/control/Operation.schema.json#/properties/policy_digest" },
+          "target": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": { "action": { "type": "string", "enum": ["RESERVE"] } },
+                "required": ["action"],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "action": { "type": "string", "enum": ["PUT_PART"] },
+                  "upload_id": { "$ref": "../generated/control/Operation.schema.json#/properties/operation_id" },
+                  "part_index": { "type": "integer", "minimum": 0, "maximum": 1023 }
+                },
+                "required": ["action", "upload_id", "part_index"],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "action": { "type": "string", "enum": ["PUT_MANIFEST", "FINALIZE", "ABORT"] },
+                  "upload_id": { "$ref": "../generated/control/Operation.schema.json#/properties/operation_id" }
+                },
+                "required": ["action", "upload_id"],
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "required": ["schema_version", "attempt", "execution_id", "manifest_digest", "target"],
+        "additionalProperties": false
+      },
+      "IssueOutputGrantResponse": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "expires_unix_ms": { "$ref": "../generated/control/Operation.schema.json#/properties/deadline_unix_ms" }
+        },
+        "required": ["schema_version", "expires_unix_ms"],
+        "additionalProperties": false
+      },
       "PersistExecutionReceiptRequest": {
         "type": "object",
         "properties": {

@@ -279,6 +279,32 @@ test("new runtime routes bind resolved schemas and distinct authenticated author
       );
     }
   }
+  const issueGrant = api.paths["/v1/executions/output-grants"].post;
+  assert.equal(issueGrant["x-kryvola-purpose"], "EXECUTION_OUTPUT_GRANT");
+  assert.deepEqual(issueGrant.security, [{ workload: [], outputGrantAuthority: [] }]);
+  assert.equal(api.components.securitySchemes.outputGrantAuthority.scheme, "bearer");
+  assert.deepEqual(
+    normalize(issueGrant.requestBody.content["application/json"].schema),
+    normalize(projection.toJsonSchema(RUNTIME_SCHEMAS.IssueOutputGrantRequest)),
+  );
+  const grantResponse = issueGrant.responses["200"];
+  assert.deepEqual(
+    normalize(grantResponse.content["application/json"].schema),
+    normalize(projection.toJsonSchema(RUNTIME_SCHEMAS.IssueOutputGrantResponse)),
+  );
+  const grantHeader = grantResponse.headers["Kryvola-Output-Grant"];
+  assert.equal(grantHeader.required, true);
+  const grantPattern = new RegExp(grantHeader.schema.pattern, "u");
+  assert.ok(grantPattern.test("a".repeat(64)));
+  for (const invalid of ["a".repeat(63), "A".repeat(64), `${"a".repeat(64)}\n`]) {
+    assert.equal(grantPattern.test(invalid), false);
+  }
+  assert.equal(grantResponse.headers["Cache-Control"].required, true);
+  assert.equal(grantResponse.headers["Cache-Control"].schema.const, "no-store");
+  for (const status of ["400", "403", "404", "409", "413", "429", "503", "default"]) {
+    assert.ok(issueGrant.responses[status].content["application/json"]);
+    assert.equal(issueGrant.responses[status].headers?.["Kryvola-Output-Grant"], undefined);
+  }
   const receipt = api.paths["/v1/executions/receipt"].post.responses;
   assert.deepEqual(
     normalize(receipt["200"].content["application/json"].schema),
@@ -402,4 +428,50 @@ test("signed execution receipts use the canonical v3 fixture and a bounded runti
   const response = { ...version, receipt_digest: receipt.digest };
   assert.deepEqual(decode("PersistExecutionReceiptResponse", response), response);
   assert.throws(() => decode("PersistExecutionReceiptResponse", { ...response, output_refs: [] }));
+});
+
+test("output grant issuance binds one exact execution, digest and upload action", () => {
+  const attempt = {
+    ...version,
+    tenant_scope: "tenant-1",
+    operation_id: "operation-1",
+    workflow_epoch: "3",
+    attempt_epoch: "4",
+    fence: "5",
+  };
+  const common = { ...version, attempt, execution_id: "execution-1", manifest_digest: digest };
+  const request = { ...common, target: { action: "RESERVE" } };
+  assert.deepEqual(decode("IssueOutputGrantRequest", request), request);
+  for (const target of [
+    { action: "PUT_PART", upload_id: "upload-1", part_index: 0 },
+    { action: "PUT_PART", upload_id: "upload-1", part_index: 1023 },
+    ...["PUT_MANIFEST", "FINALIZE", "ABORT"].map((action) => ({ action, upload_id: "upload-1" })),
+  ]) {
+    const body = { ...common, target };
+    assert.deepEqual(decode("IssueOutputGrantRequest", body), body);
+  }
+  for (const target of [
+    { action: "RESERVE", upload_id: "upload-1" },
+    { action: "PUT_PART", upload_id: "upload-1" },
+    { action: "PUT_PART", upload_id: "upload-1", part_index: 1024 },
+    { action: "PUT_PART", upload_id: "upload-1", part_index: "0" },
+    { action: "FINALIZE", upload_id: "../path" },
+    { action: "ABORT", upload_id: "upload-1", part_index: 0 },
+    { action: "COMPUTE_READ" },
+  ]) {
+    assert.throws(() => decode("IssueOutputGrantRequest", { ...common, target }));
+  }
+  for (const patch of [
+    { execution_id: undefined },
+    { manifest_digest: digest.toUpperCase() },
+    { attempt: { ...attempt, fence: 5 } },
+    { token: "secret" },
+    { purpose: "COMPUTE_WRITE" },
+  ]) {
+    assert.throws(() => decode("IssueOutputGrantRequest", { ...request, ...patch }));
+  }
+  assert.throws(() => decodeRuntime("IssueOutputGrantRequest", new Uint8Array(65537)), /64 KiB/);
+  const response = { ...version, expires_unix_ms: "10" };
+  assert.deepEqual(decode("IssueOutputGrantResponse", response), response);
+  assert.throws(() => decode("IssueOutputGrantResponse", { ...response, grant: "secret" }));
 });
