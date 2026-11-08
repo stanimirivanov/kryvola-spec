@@ -265,6 +265,114 @@ paths:
           $ref: "#/components/responses/InvalidRequest"
         default:
           $ref: "#/components/responses/Rejected"
+  /v1/compute-inputs/manifest:
+    post:
+      operationId: readComputeInputManifest
+      x-kryvola-purpose: COMPUTE_READ
+      summary: Read a finalized canonical compute-input manifest.
+      description: |
+        Returns the exact canonical v2 manifest bytes for the requested digest, up to 65536 bytes.
+        Redeem a fresh single-use COMPUTE_READ grant in Authorization metadata.
+        Admission requires the exact current attempt and an immutable input listed in
+        the operation's approved input digests for the same tenant and key context.
+        See the runtime compute-input read contract for fencing and integrity rules.
+      tags: [Runtime]
+      security:
+        - workload: []
+          computeReadGrant: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./runtime.schemas.json#/components/schemas/ReadComputeInputRequest"
+      responses:
+        "200":
+          description: Complete verified bytes. The body is uncompressed.
+          headers:
+            Content-Length:
+              required: true
+              schema:
+                type: integer
+                minimum: 1
+                maximum: 65536
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                const: no-store
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+        "403":
+          $ref: "#/components/responses/RuntimeForbidden"
+        "404":
+          $ref: "#/components/responses/ComputeInputNotFound"
+        "409":
+          $ref: "#/components/responses/RuntimeConflict"
+        "503":
+          $ref: "#/components/responses/RuntimeUnavailable"
+        default:
+          $ref: "#/components/responses/Rejected"
+  /v1/compute-inputs/parts/{part_index}:
+    post:
+      operationId: readComputeInputPart
+      x-kryvola-purpose: COMPUTE_READ
+      summary: Read one verified compute-input part.
+      description: |
+        Returns the complete indexed part, up to 4194304 bytes. Range and partial responses are forbidden.
+        Redeem a fresh single-use COMPUTE_READ grant in Authorization metadata.
+        Admission requires the exact current attempt and an immutable input listed in
+        the operation's approved input digests for the same tenant and key context.
+        See the runtime compute-input read contract for fencing and integrity rules.
+      tags: [Runtime]
+      security:
+        - workload: []
+          computeReadGrant: []
+      parameters:
+        - $ref: "#/components/parameters/part_index"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./runtime.schemas.json#/components/schemas/ReadComputeInputRequest"
+      responses:
+        "200":
+          description: Complete verified bytes. The body is uncompressed.
+          headers:
+            Content-Length:
+              required: true
+              schema:
+                type: integer
+                minimum: 1
+                maximum: 4194304
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                const: no-store
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+        "403":
+          $ref: "#/components/responses/RuntimeForbidden"
+        "404":
+          $ref: "#/components/responses/ComputeInputNotFound"
+        "409":
+          $ref: "#/components/responses/RuntimeConflict"
+        "503":
+          $ref: "#/components/responses/RuntimeUnavailable"
+        default:
+          $ref: "#/components/responses/Rejected"
   /v1/uploads/{upload_id}/abort:
     post:
       operationId: abortUpload
@@ -394,6 +502,10 @@ components:
     workload:
       type: mutualTLS
       description: Verified client workload identity.
+    computeReadGrant:
+      type: http
+      scheme: bearer
+      description: Fresh single-use COMPUTE_READ grant bound to the verified workload and exact request scope.
   responses:
     RuntimeForbidden:
       description: "FORBIDDEN: workload/purpose, tenant or context/plan/policy binding denied."
@@ -401,6 +513,12 @@ components:
         application/json:
           schema:
             $ref: "./runtime.schemas.json#/components/schemas/RuntimeForbiddenError"
+    ComputeInputNotFound:
+      description: "NOT_FOUND: no visible finalized input or indexed part in the authorized scope."
+      content:
+        application/json:
+          schema:
+            $ref: "./runtime.schemas.json#/components/schemas/RuntimeNotFoundError"
     RuntimeNotFound:
       description: "NOT_FOUND: no visible operation or upload in the authorized scope."
       content:
