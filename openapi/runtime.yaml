@@ -373,6 +373,110 @@ paths:
           $ref: "#/components/responses/RuntimeUnavailable"
         default:
           $ref: "#/components/responses/Rejected"
+  /v1/released-outputs/manifest:
+    post:
+      operationId: readReleasedOutputManifest
+      x-kryvola-purpose: CONSUMER_READ
+      summary: Read the canonical manifest of an exact committed release.
+      description: |
+        Returns the exact canonical v2 manifest bytes for the requested digest, up to 65536 bytes.
+        Redeem a fresh single-use CONSUMER_READ grant in Authorization metadata.
+        Bind the grant and verified recipient workload to the exact request and route target.
+        Revalidate the committed release, its current policy and barriers on every read.
+        Serve only verified bytes from the immutable upload recorded in that release.
+        Range, query parameters, partial responses and storage redirects are forbidden.
+      tags: [Runtime]
+      security:
+        - workload: []
+          consumerReadGrant: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./runtime.schemas.json#/components/schemas/ReadReleasedOutputRequest"
+      responses:
+        "200":
+          description: Complete verified bytes. The body is uncompressed.
+          headers:
+            Content-Length:
+              required: true
+              schema:
+                type: integer
+                minimum: 1
+                maximum: 65536
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                const: no-store
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+        "403":
+          $ref: "#/components/responses/ReleasedOutputForbidden"
+        "503":
+          $ref: "#/components/responses/RuntimeUnavailable"
+        default:
+          $ref: "#/components/responses/Rejected"
+  /v1/released-outputs/parts/{part_index}:
+    post:
+      operationId: readReleasedOutputPart
+      x-kryvola-purpose: CONSUMER_READ
+      summary: Read one verified part of an exact committed release.
+      description: |
+        Returns the complete indexed part, up to 4194304 bytes. Range and partial responses are forbidden.
+        Redeem a fresh single-use CONSUMER_READ grant in Authorization metadata.
+        Bind the grant and verified recipient workload to the exact request and route target.
+        Revalidate the committed release, its current policy and barriers on every read.
+        Serve only verified bytes from the immutable upload recorded in that release.
+        Range, query parameters, partial responses and storage redirects are forbidden.
+      tags: [Runtime]
+      security:
+        - workload: []
+          consumerReadGrant: []
+      parameters:
+        - $ref: "#/components/parameters/part_index"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./runtime.schemas.json#/components/schemas/ReadReleasedOutputRequest"
+      responses:
+        "200":
+          description: Complete verified bytes. The body is uncompressed.
+          headers:
+            Content-Length:
+              required: true
+              schema:
+                type: integer
+                minimum: 1
+                maximum: 4194304
+            Cache-Control:
+              required: true
+              schema:
+                type: string
+                const: no-store
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+        "403":
+          $ref: "#/components/responses/ReleasedOutputForbidden"
+        "404":
+          $ref: "#/components/responses/ReleasedOutputPartNotFound"
+        "503":
+          $ref: "#/components/responses/RuntimeUnavailable"
+        default:
+          $ref: "#/components/responses/Rejected"
   /v1/uploads/{upload_id}/abort:
     post:
       operationId: abortUpload
@@ -603,6 +707,10 @@ components:
       type: http
       scheme: bearer
       description: Fresh single-use COMPUTE_READ grant bound to the verified workload and exact request scope.
+    consumerReadGrant:
+      type: http
+      scheme: bearer
+      description: Fresh single-use CONSUMER_READ grant for the verified recipient workload, exact release and manifest or indexed part target.
     outputGrantAuthority:
       type: http
       scheme: bearer
@@ -614,6 +722,18 @@ components:
         application/json:
           schema:
             $ref: "./runtime.schemas.json#/components/schemas/RuntimeForbiddenError"
+    ReleasedOutputForbidden:
+      description: "FORBIDDEN: missing or ineligible release, or denied workload, credential, recipient or output binding."
+      content:
+        application/json:
+          schema:
+            $ref: "./runtime.schemas.json#/components/schemas/RuntimeForbiddenError"
+    ReleasedOutputPartNotFound:
+      description: "NOT_FOUND: index absent from an authorized released manifest."
+      content:
+        application/json:
+          schema:
+            $ref: "./runtime.schemas.json#/components/schemas/RuntimeNotFoundError"
     ComputeInputNotFound:
       description: "NOT_FOUND: no visible finalized input or indexed part in the authorized scope."
       content:

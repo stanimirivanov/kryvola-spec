@@ -228,6 +228,18 @@
         "required": ["schema_version", "attempt", "manifest_digest"],
         "additionalProperties": false
       },
+      "ReadReleasedOutputRequest": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "tenant_scope": { "$ref": "../generated/control/Operation.schema.json#/properties/tenant_scope" },
+          "disclosure_id": { "$ref": "../generated/control/Operation.schema.json#/properties/policy_digest" },
+          "recipient": { "$ref": "../generated/control/Operation.schema.json#/properties/operation_id" },
+          "output_manifest_digest": { "$ref": "../generated/control/Operation.schema.json#/properties/policy_digest" }
+        },
+        "required": ["schema_version", "tenant_scope", "disclosure_id", "recipient", "output_manifest_digest"],
+        "additionalProperties": false
+      },
       "AuthorizeArtifactRequest": {
         "type": "object",
         "properties": {

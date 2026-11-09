@@ -415,3 +415,11 @@ The [scoped output grant contract](output-grants.md) defines how a worker
 obtains single-use upload authorization once it knows the output digest.
 It binds each grant to one execution and action, and keeps the bearer in
 transport metadata. Fabric adoption follows separately.
+
+## M1-PR25 consumer-read prerequisite
+
+The [release-bound consumer read contract](consumer-reads.md) adds bounded
+manifest and part reads under a distinct single-use consumer credential. The
+runtime checks cover closed schemas, credential purpose separation in OpenAPI,
+and exact binary response bounds. Fabric adoption and live authorization tests
+follow the Spec merge.

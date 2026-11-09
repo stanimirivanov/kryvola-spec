@@ -279,6 +279,47 @@ test("new runtime routes bind resolved schemas and distinct authenticated author
       );
     }
   }
+  for (const [path, limit, statuses] of [
+    ["/v1/released-outputs/manifest", 65536, ["403", "503"]],
+    ["/v1/released-outputs/parts/{part_index}", 4194304, ["403", "404", "503"]],
+  ]) {
+    const operation = api.paths[path]?.post;
+    assert.ok(operation, path);
+    assert.equal(operation["x-kryvola-purpose"], "CONSUMER_READ");
+    assert.deepEqual(operation.security, [{ workload: [], consumerReadGrant: [] }]);
+    assert.deepEqual(
+      normalize(operation.requestBody.content["application/json"].schema),
+      normalize(projection.toJsonSchema(RUNTIME_SCHEMAS.ReadReleasedOutputRequest)),
+    );
+    const response = operation.responses["200"];
+    assert.equal(response.content["application/octet-stream"].schema.format, "binary");
+    assert.equal(response.headers["Content-Length"].required, true);
+    assert.equal(response.headers["Content-Length"].schema.maximum, limit);
+    assert.equal(response.headers["Cache-Control"].required, true);
+    assert.equal(response.headers["Cache-Control"].schema.const, "no-store");
+    assert.ok(operation.responses["400"]);
+    assert.deepEqual(Object.keys(operation.responses).sort(), [
+      "200",
+      "400",
+      ...statuses,
+      "default",
+    ]);
+    for (const status of statuses) {
+      assert.deepEqual(
+        normalize(operation.responses[status].content["application/json"].schema),
+        normalize(projection.toJsonSchema(RUNTIME_SCHEMAS[errorsByStatus[status][0]])),
+      );
+    }
+    if (limit === 4194304) {
+      const [index] = operation.parameters;
+      assert.equal(index.name, "part_index");
+      assert.equal(index.in, "path");
+      assert.equal(index.required, true);
+      assert.equal(index.schema.minimum, 0);
+      assert.equal(index.schema.maximum, 1023);
+    }
+  }
+  assert.equal(api.components.securitySchemes.consumerReadGrant.scheme, "bearer");
   const issueGrant = api.paths["/v1/executions/output-grants"].post;
   assert.equal(issueGrant["x-kryvola-purpose"], "EXECUTION_OUTPUT_GRANT");
   assert.deepEqual(issueGrant.security, [{ workload: [], outputGrantAuthority: [] }]);
@@ -474,4 +515,33 @@ test("output grant issuance binds one exact execution, digest and upload action"
   const response = { ...version, expires_unix_ms: "10" };
   assert.deepEqual(decode("IssueOutputGrantResponse", response), response);
   assert.throws(() => decode("IssueOutputGrantResponse", { ...response, grant: "secret" }));
+});
+
+test("consumer reads carry exact disclosure context without attempt authority or bulk", () => {
+  const input = {
+    ...version,
+    tenant_scope: "tenant-1",
+    disclosure_id: "b".repeat(64),
+    recipient: "owner-1",
+    output_manifest_digest: digest,
+  };
+  assert.deepEqual(decode("ReadReleasedOutputRequest", input), input);
+  for (const patch of [
+    { disclosure_id: undefined },
+    { disclosure_id: "b".repeat(63) },
+    { recipient: "" },
+    { recipient: "a".repeat(129) },
+    { output_manifest_digest: digest.toUpperCase() },
+    { tenant_scope: "tenant-1\n" },
+    { attempt: {} },
+    { purpose: "EVIDENCE_READ" },
+    { part_index: 0 },
+    { token: "secret" },
+    { ciphertext: "inline" },
+    { storage_url: "https://example.invalid" },
+  ]) {
+    assert.throws(() => decode("ReadReleasedOutputRequest", { ...input, ...patch }));
+  }
+  assert.throws(() => decode("AuthorizeArtifactRequest", { ...input, purpose: "CONSUMER_READ" }));
+  assert.throws(() => decodeRuntime("ReadReleasedOutputRequest", new Uint8Array(65537)), /64 KiB/);
 });
