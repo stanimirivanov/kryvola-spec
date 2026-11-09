@@ -39,6 +39,69 @@
         "required": ["schema_version", "manifest_digest"],
         "additionalProperties": false
       },
+      "RegisterKeyContextRequest": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "key_context_ref": { "$ref": "../generated/control/KeyContextRef.schema.json" },
+          "key_context_base64url": { "type": "string", "pattern": "^[A-Za-z0-9_-]{1,21846}(?![\\s\\S])" }
+        },
+        "required": ["schema_version", "key_context_ref", "key_context_base64url"],
+        "additionalProperties": false
+      },
+      "CreateInputUploadRequest": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "key_context_ref": { "$ref": "../generated/control/KeyContextRef.schema.json" },
+          "idempotency_key": { "$ref": "../generated/control/Operation.schema.json#/properties/idempotency_key" },
+          "manifest_digest": { "$ref": "../generated/control/Operation.schema.json#/properties/policy_digest" },
+          "artifact_kind": { "type": "string", "enum": ["EVALUATION_KEY", "CIPHERTEXT"] },
+          "byte_length": { "type": "integer", "minimum": 1, "maximum": 1073741824 }
+        },
+        "required": ["schema_version", "key_context_ref", "idempotency_key", "manifest_digest", "artifact_kind", "byte_length"],
+        "additionalProperties": false
+      },
+      "RegisterComputeApprovalRequest": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "plan_ref": { "$ref": "../generated/control/PlanRef.schema.json" },
+          "approval_digest": { "$ref": "../generated/control/Operation.schema.json#/properties/policy_digest" },
+          "plan_base64url": { "type": "string", "pattern": "^[A-Za-z0-9_-]{1,43691}(?![\\s\\S])" },
+          "consent_base64url": { "type": "string", "pattern": "^[A-Za-z0-9_-]{1,10923}(?![\\s\\S])" },
+          "approval_base64url": { "type": "string", "pattern": "^[A-Za-z0-9_-]{1,10923}(?![\\s\\S])" },
+          "signature_base64url": { "type": "string", "pattern": "^[A-Za-z0-9_-]{1,2731}(?![\\s\\S])" }
+        },
+        "required": ["schema_version", "plan_ref", "approval_digest", "plan_base64url", "consent_base64url", "approval_base64url", "signature_base64url"],
+        "additionalProperties": false
+      },
+      "RegisterComputeApprovalResponse": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "approval_digest": { "$ref": "../generated/control/Operation.schema.json#/properties/policy_digest" }
+        },
+        "required": ["schema_version", "approval_digest"],
+        "additionalProperties": false
+      },
+      "AdmitApprovedOperationRequest": {
+        "type": "object",
+        "properties": {
+          "schema_version": { "$ref": "../generated/control/Operation.schema.json#/properties/schema_version" },
+          "operation": { "$ref": "../generated/control/Operation.schema.json" },
+          "approval_digest": { "$ref": "../generated/control/Operation.schema.json#/properties/policy_digest" },
+          "evaluation_key_manifest_digest": { "$ref": "../generated/control/Operation.schema.json#/properties/policy_digest" },
+          "input_manifest_digests": {
+            "type": "array",
+            "items": { "$ref": "../generated/control/Operation.schema.json#/properties/policy_digest" },
+            "minItems": 1,
+            "maxItems": 127
+          }
+        },
+        "required": ["schema_version", "operation", "approval_digest", "evaluation_key_manifest_digest", "input_manifest_digests"],
+        "additionalProperties": false
+      },
       "CreateOperationRequest": {
         "type": "object",
         "properties": {

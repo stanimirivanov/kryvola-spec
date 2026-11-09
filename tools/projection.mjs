@@ -170,7 +170,7 @@ export function renderRuntime(schemas) {
         return local[1];
       }
       const external = s.$ref.match(
-        /^\.\.\/generated\/control\/(Operation|Attempt|PublicResultStatus)\.schema\.json(?:#\/properties\/([a-z_]+))?$/,
+        /^\.\.\/generated\/control\/(Operation|Attempt|KeyContextRef|PlanRef|PublicResultStatus)\.schema\.json(?:#\/properties\/([a-z_]+))?$/,
       );
       if (!external || (external[1] === "PublicResultStatus" && external[2])) return fail();
       return external[1] + (external[2] ? `.fields.${external[2]}` : "");
@@ -220,7 +220,7 @@ export function renderRuntime(schemas) {
     complete.add(name);
   }
   for (const name of Object.keys(schemas)) visit(name);
-  return `// Generated from openapi/runtime.schemas.json; run pnpm generate. Do not edit.\nimport { Schema } from "effect";\nimport { Attempt, Operation, PublicResultStatus } from "./control.js";\nimport { assertControlBytes } from "./transport.js";\n${declarations.join("\n")}\nexport const RUNTIME_SCHEMAS = Object.freeze({${Object.keys(schemas).join(", ")}});\nconst utf8 = new TextDecoder("utf-8", { fatal: true });
+  return `// Generated from openapi/runtime.schemas.json; run pnpm generate. Do not edit.\nimport { Schema } from "effect";\nimport { Attempt, KeyContextRef, Operation, PlanRef, PublicResultStatus } from "./control.js";\nimport { assertControlBytes } from "./transport.js";\n${declarations.join("\n")}\nexport const RUNTIME_SCHEMAS = Object.freeze({${Object.keys(schemas).join(", ")}});\nconst utf8 = new TextDecoder("utf-8", { fatal: true });
 
 /** Decode a complete UTF-8 runtime JSON body. Authorization is a service responsibility. */
 export function decodeRuntime<K extends keyof typeof RUNTIME_SCHEMAS>(
