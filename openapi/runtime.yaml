@@ -18,6 +18,266 @@ tags:
   - name: Runtime
     description: Artifact staging and durable execution.
 paths:
+  /v1/key-contexts:
+    post:
+      operationId: registerKeyContext
+      x-kryvola-purpose: KEY_CONTEXT_REGISTER
+      summary: Register an exact owner-authorized immutable key context.
+      description: |
+        Accept bounded canonical v1 public key-context metadata. An identical registration returns the recorded reference.
+        See the approved encrypted submission contract for exact bindings and retry rules.
+      tags: [Runtime]
+      security:
+        - workload: []
+          ownerSubmissionGrant: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./runtime.schemas.json#/components/schemas/RegisterKeyContextRequest"
+      responses:
+        "200":
+          description: Exact request completed.
+          content:
+            application/json:
+              schema:
+                $ref: "../generated/control/KeyContextRef.schema.json"
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+        "403":
+          $ref: "#/components/responses/RuntimeForbidden"
+        "409":
+          $ref: "#/components/responses/RuntimeConflict"
+        "429":
+          $ref: "#/components/responses/OwnerSubmissionLimited"
+        "503":
+          $ref: "#/components/responses/RuntimeUnavailable"
+        default:
+          $ref: "#/components/responses/Rejected"
+  /v1/input-uploads:
+    post:
+      operationId: createInputUpload
+      x-kryvola-purpose: INPUT_UPLOAD_RESERVE
+      summary: Reserve a private input upload before operation admission.
+      description: |
+        Reserve by registered key context and idempotency key. An identical retry returns the same upload ID.
+        See the approved encrypted submission contract for exact bindings and retry rules.
+      tags: [Runtime]
+      security:
+        - workload: []
+          ownerSubmissionGrant: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./runtime.schemas.json#/components/schemas/CreateInputUploadRequest"
+      responses:
+        "201":
+          description: Exact request completed.
+          content:
+            application/json:
+              schema:
+                $ref: "./runtime.schemas.json#/components/schemas/CreateUploadResponse"
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+        "403":
+          $ref: "#/components/responses/RuntimeForbidden"
+        "409":
+          $ref: "#/components/responses/RuntimeConflict"
+        "429":
+          $ref: "#/components/responses/OwnerSubmissionLimited"
+        "503":
+          $ref: "#/components/responses/RuntimeUnavailable"
+        default:
+          $ref: "#/components/responses/Rejected"
+  /v1/input-uploads/{upload_id}/parts/{part_index}:
+    put:
+      operationId: putInputUploadPart
+      x-kryvola-purpose: INPUT_UPLOAD_PART
+      summary: Stage one indexed encrypted input or evaluation-key part.
+      description: |
+        Upload the complete part of at most 4194304 bytes. An identical retry succeeds and changed bytes conflict.
+        See the approved encrypted submission contract for exact bindings and retry rules.
+      tags: [Runtime]
+      security:
+        - workload: []
+          ownerSubmissionGrant: []
+      parameters:
+        - $ref: "#/components/parameters/upload_id"
+        - $ref: "#/components/parameters/part_index"
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        "204":
+          description: Exact request completed.
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+        "403":
+          $ref: "#/components/responses/RuntimeForbidden"
+        "409":
+          $ref: "#/components/responses/RuntimeConflict"
+        "429":
+          $ref: "#/components/responses/OwnerSubmissionLimited"
+        "503":
+          $ref: "#/components/responses/RuntimeUnavailable"
+        default:
+          $ref: "#/components/responses/Rejected"
+  /v1/input-uploads/{upload_id}/manifest:
+    put:
+      operationId: putInputUploadManifest
+      x-kryvola-purpose: INPUT_UPLOAD_MANIFEST
+      summary: Stage the exact canonical v2 input manifest.
+      description: |
+        Upload at most 65536 bytes. The manifest must match the reserved kind, context and digest.
+        See the approved encrypted submission contract for exact bindings and retry rules.
+      tags: [Runtime]
+      security:
+        - workload: []
+          ownerSubmissionGrant: []
+      parameters:
+        - $ref: "#/components/parameters/upload_id"
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        "204":
+          description: Exact request completed.
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+        "403":
+          $ref: "#/components/responses/RuntimeForbidden"
+        "409":
+          $ref: "#/components/responses/RuntimeConflict"
+        "429":
+          $ref: "#/components/responses/OwnerSubmissionLimited"
+        "503":
+          $ref: "#/components/responses/RuntimeUnavailable"
+        default:
+          $ref: "#/components/responses/Rejected"
+  /v1/input-uploads/{upload_id}/finalize:
+    post:
+      operationId: finalizeInputUpload
+      x-kryvola-purpose: INPUT_UPLOAD_FINALIZE
+      summary: Finalize verified immutable input bytes.
+      description: |
+        Verify the manifest and all indexed parts before publishing. An identical retry returns the same digest.
+        See the approved encrypted submission contract for exact bindings and retry rules.
+      tags: [Runtime]
+      security:
+        - workload: []
+          ownerSubmissionGrant: []
+      parameters:
+        - $ref: "#/components/parameters/upload_id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./runtime.schemas.json#/components/schemas/FinalizeUploadRequest"
+      responses:
+        "200":
+          description: Exact request completed.
+          content:
+            application/json:
+              schema:
+                $ref: "./runtime.schemas.json#/components/schemas/FinalizeUploadResponse"
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+        "403":
+          $ref: "#/components/responses/RuntimeForbidden"
+        "409":
+          $ref: "#/components/responses/RuntimeConflict"
+        "429":
+          $ref: "#/components/responses/OwnerSubmissionLimited"
+        "503":
+          $ref: "#/components/responses/RuntimeUnavailable"
+        default:
+          $ref: "#/components/responses/Rejected"
+  /v1/compute-approvals:
+    post:
+      operationId: registerComputeApproval
+      x-kryvola-purpose: COMPUTE_APPROVAL_REGISTER
+      summary: Record an exact signed owner compute approval.
+      description: |
+        Verify canonical metadata, current policy, signer and approval validity. This route does not admit an operation.
+        See the approved encrypted submission contract for exact bindings and retry rules.
+      tags: [Runtime]
+      security:
+        - workload: []
+          ownerSubmissionGrant: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./runtime.schemas.json#/components/schemas/RegisterComputeApprovalRequest"
+      responses:
+        "200":
+          description: Exact request completed.
+          content:
+            application/json:
+              schema:
+                $ref: "./runtime.schemas.json#/components/schemas/RegisterComputeApprovalResponse"
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+        "403":
+          $ref: "#/components/responses/RuntimeForbidden"
+        "409":
+          $ref: "#/components/responses/RuntimeConflict"
+        "429":
+          $ref: "#/components/responses/OwnerSubmissionLimited"
+        "503":
+          $ref: "#/components/responses/RuntimeUnavailable"
+        default:
+          $ref: "#/components/responses/Rejected"
+  /v1/operations/admit:
+    post:
+      operationId: admitApprovedOperation
+      x-kryvola-purpose: APPROVED_OPERATION_ADMIT
+      summary: Admit an exact approved operation using immutable references.
+      description: |
+        Atomically verify and pin the registered key context, signed approval and finalized inputs before enqueueing. An identical authorized retry returns the recorded operation.
+        See the approved encrypted submission contract for exact bindings and retry rules.
+      tags: [Runtime]
+      security:
+        - workload: []
+          ownerSubmissionGrant: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./runtime.schemas.json#/components/schemas/AdmitApprovedOperationRequest"
+      responses:
+        "200":
+          description: Exact request completed.
+          content:
+            application/json:
+              schema:
+                $ref: "./runtime.schemas.json#/components/schemas/OperationResponse"
+        "400":
+          $ref: "#/components/responses/InvalidRequest"
+        "403":
+          $ref: "#/components/responses/RuntimeForbidden"
+        "409":
+          $ref: "#/components/responses/RuntimeConflict"
+        "429":
+          $ref: "#/components/responses/OwnerSubmissionLimited"
+        "503":
+          $ref: "#/components/responses/RuntimeUnavailable"
+        default:
+          $ref: "#/components/responses/Rejected"
   /v1/uploads:
     post:
       operationId: createUpload
@@ -703,6 +963,10 @@ components:
     workload:
       type: mutualTLS
       description: Verified client workload identity.
+    ownerSubmissionGrant:
+      type: http
+      scheme: bearer
+      description: Owner submission authority bound to the verified workload, exact tenant, action and target. Separate from execution and consumer grants.
     computeReadGrant:
       type: http
       scheme: bearer
@@ -716,6 +980,12 @@ components:
       scheme: bearer
       description: Separate issuance capability bound to the verified workload and exact execution.
   responses:
+    OwnerSubmissionLimited:
+      description: "QUOTA_EXCEEDED: submission rate or quota limit reached. Retry with the original identity."
+      content:
+        application/json:
+          schema:
+            $ref: "./runtime.schemas.json#/components/schemas/RuntimeError"
     RuntimeForbidden:
       description: "FORBIDDEN: workload/purpose, tenant or context/plan/policy binding denied."
       content:

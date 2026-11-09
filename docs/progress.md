@@ -423,3 +423,12 @@ manifest and part reads under a distinct single-use consumer credential. The
 runtime checks cover closed schemas, credential purpose separation in OpenAPI,
 and exact binary response bounds. Fabric adoption and live authorization tests
 follow the Spec merge.
+
+## M1-PR27 approved submission prerequisite
+
+The [approved submission contract](approved-submission.md) defines immutable
+owner key-context registration, encrypted input staging before admission, and
+reference-only admission tied to a current signed compute approval. The
+runtime checks cover the closed projections, binary upload boundaries and
+separate owner submission authority. Fabric implementation follows the Spec
+merge.

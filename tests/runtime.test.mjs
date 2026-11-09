@@ -320,6 +320,59 @@ test("new runtime routes bind resolved schemas and distinct authenticated author
     }
   }
   assert.equal(api.components.securitySchemes.consumerReadGrant.scheme, "bearer");
+  for (const [method, path, purpose, request, status] of [
+    ["post", "/v1/key-contexts", "KEY_CONTEXT_REGISTER", "RegisterKeyContextRequest", "200"],
+    ["post", "/v1/input-uploads", "INPUT_UPLOAD_RESERVE", "CreateInputUploadRequest", "201"],
+    ["put", "/v1/input-uploads/{upload_id}/parts/{part_index}", "INPUT_UPLOAD_PART", null, "204"],
+    ["put", "/v1/input-uploads/{upload_id}/manifest", "INPUT_UPLOAD_MANIFEST", null, "204"],
+    [
+      "post",
+      "/v1/input-uploads/{upload_id}/finalize",
+      "INPUT_UPLOAD_FINALIZE",
+      "FinalizeUploadRequest",
+      "200",
+    ],
+    [
+      "post",
+      "/v1/compute-approvals",
+      "COMPUTE_APPROVAL_REGISTER",
+      "RegisterComputeApprovalRequest",
+      "200",
+    ],
+    [
+      "post",
+      "/v1/operations/admit",
+      "APPROVED_OPERATION_ADMIT",
+      "AdmitApprovedOperationRequest",
+      "200",
+    ],
+  ]) {
+    const operation = api.paths[path]?.[method];
+    assert.ok(operation, path);
+    assert.equal(operation["x-kryvola-purpose"], purpose);
+    assert.deepEqual(operation.security, [{ workload: [], ownerSubmissionGrant: [] }]);
+    assert.equal(operation.requestBody.required, true);
+    if (request) {
+      assert.deepEqual(
+        normalize(operation.requestBody.content["application/json"].schema),
+        normalize(projection.toJsonSchema(RUNTIME_SCHEMAS[request])),
+      );
+    } else {
+      assert.deepEqual(Object.keys(operation.requestBody.content), ["application/octet-stream"]);
+      assert.equal(
+        operation.requestBody.content["application/octet-stream"].schema.format,
+        "binary",
+      );
+    }
+    for (const code of [status, "400", "403", "409", "429", "503"]) {
+      assert.ok(operation.responses[code], code);
+    }
+    assert.deepEqual(
+      normalize(operation.responses["429"].content["application/json"].schema),
+      normalize(projection.toJsonSchema(RUNTIME_SCHEMAS.RuntimeError)),
+    );
+  }
+  assert.equal(api.components.securitySchemes.ownerSubmissionGrant.scheme, "bearer");
   const issueGrant = api.paths["/v1/executions/output-grants"].post;
   assert.equal(issueGrant["x-kryvola-purpose"], "EXECUTION_OUTPUT_GRANT");
   assert.deepEqual(issueGrant.security, [{ workload: [], outputGrantAuthority: [] }]);
@@ -544,4 +597,94 @@ test("consumer reads carry exact disclosure context without attempt authority or
   }
   assert.throws(() => decode("AuthorizeArtifactRequest", { ...input, purpose: "CONSUMER_READ" }));
   assert.throws(() => decodeRuntime("ReadReleasedOutputRequest", new Uint8Array(65537)), /64 KiB/);
+});
+
+test("approved admission accepts only exact immutable references", () => {
+  const operation = JSON.parse(read("generated/fixtures/control.json"));
+  const input = {
+    ...version,
+    operation: operation.Operation,
+    approval_digest: digest,
+    evaluation_key_manifest_digest: "b".repeat(64),
+    input_manifest_digests: ["c".repeat(64)],
+  };
+  assert.deepEqual(decode("AdmitApprovedOperationRequest", input), input);
+  for (const patch of [
+    { approval_digest: undefined },
+    { evaluation_key_manifest_digest: undefined },
+    { input_manifest_digests: [] },
+    { input_manifest_digests: [digest.toUpperCase()] },
+    { ciphertext: "inline" },
+    { token: "secret" },
+    { signed_approval: {} },
+  ]) {
+    assert.throws(() => decode("AdmitApprovedOperationRequest", { ...input, ...patch }));
+  }
+});
+
+test("owner metadata registration and reservation are closed and bounded", () => {
+  const { KeyContextRef: keyContext, PlanRef: plan } = JSON.parse(
+    read("generated/fixtures/control.json"),
+  );
+  const registration = { ...version, key_context_ref: keyContext, key_context_base64url: "e30" };
+  const upload = {
+    ...version,
+    key_context_ref: keyContext,
+    idempotency_key: "input-1",
+    artifact_kind: "CIPHERTEXT",
+    manifest_digest: digest,
+    byte_length: 4,
+  };
+  const approval = {
+    ...version,
+    plan_ref: plan,
+    approval_digest: digest,
+    plan_base64url: "e30",
+    consent_base64url: "e30",
+    approval_base64url: "e30",
+    signature_base64url: "e30",
+  };
+  for (const [name, body, cases] of [
+    [
+      "RegisterKeyContextRequest",
+      registration,
+      [
+        { key_context_base64url: "e30=" },
+        { key_context_base64url: "a".repeat(21847) },
+        { key_context_ref: { ...keyContext, key_epoch: 1 } },
+      ],
+    ],
+    [
+      "CreateInputUploadRequest",
+      upload,
+      [
+        { artifact_kind: "PRIVATE_KEY" },
+        { byte_length: 0 },
+        { byte_length: 1073741825 },
+        { idempotency_key: undefined },
+        { manifest_digest: digest.toUpperCase() },
+      ],
+    ],
+    [
+      "RegisterComputeApprovalRequest",
+      approval,
+      [
+        { plan_base64url: undefined },
+        { consent_base64url: "e30=" },
+        { approval_base64url: "a".repeat(10924) },
+        { signature_base64url: "a".repeat(2732) },
+      ],
+    ],
+  ]) {
+    assert.deepEqual(decode(name, body), body);
+    for (const patch of [
+      ...cases,
+      { attempt: {} },
+      { credential: "secret" },
+      { ciphertext: "bulk" },
+    ]) {
+      assert.throws(() => decode(name, { ...body, ...patch }));
+    }
+    assert.throws(() => decodeRuntime(name, new Uint8Array(65537)), /64 KiB/);
+  }
 });
